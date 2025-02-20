@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg
+   width="24px"
+   height="24px"
+   viewBox="0 0 256 256"
+   xmlns="http://www.w3.org/2000/svg">
+  <g
+     id="layer1">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:15.99953938;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 16.056766,240 H 239.94325"/>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:15.99953938;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 16.056766,240 c 0,-47.97569 31.983762,-64.0813 31.983762,-64.0813 15.991919,-9.23291 31.9838,0 47.975681,-15.99189"
+       id="path907"/>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:15.99953938;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 96.016209,159.92681 c 0,0 15.991921,15.99189 31.983801,15.99189"/>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:15.99953938;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 239.94325,240 c 0,-47.97569 -31.9838,-64.0813 -31.9838,-64.0813 -15.99188,-9.23291 -31.98376,0 -47.97564,-15.99189"
+       id="path907-5"/>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:15.99953938;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 159.98381,159.92681 c 0,0 -15.99192,15.99189 -31.9838,15.99189"
+       id="path909-6"/>
+    <path
+       id="path974"
+       style="fill:none;stroke:#000000;stroke-width:15.99953938;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 128.00001,15.99977 c 31.9838,0 47.97568,15.991881 47.97568,63.967561 0,39.979759 -31.9838,63.967599 -47.97568,63.967599"/>
+    <path
+       id="path974-1"
+       style="fill:none;stroke:#000000;stroke-width:15.99953938;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 128.00001,15.99977 c -31.983801,0 -47.975682,15.991881 -47.975682,63.967561 0,39.979759 31.983802,63.967599 47.975682,63.967599"/>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:15.99953938;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 159.98381,159.92681 -7.41232,-27.66304"/>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:15.99953938;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 96.016209,159.92681 7.412321,-27.66304"/>
+  </g>
+</svg>

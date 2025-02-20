@@ -1,0 +1,371 @@
+
+
+
+
+
+
+main > .bottom {
+  display: flex;
+  flex-flow: row;
+  gap: 20px;
+  padding: 10px 5vw;
+  padding-bottom: 60px;
+}
+
+
+
+
+
+/* LEFT BOTTOM SIDE */
+.video-content {
+  display: flex;
+  flex-flow: column;
+  flex: 1;
+  gap: 10px;
+}
+
+/* VIDEO INFO TO "comment-white-box" */
+.video-data {
+  display: flex;
+  flex-flow: column;
+  gap: 10px;
+}
+
+.title {
+  font-size: large;
+  font-weight: 700;
+}
+
+/* ROW WITH CHANNEL AND VIDEO ACTIONS */
+.top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* START OWNER */
+.owner {
+  gap: 10px;
+  display: flex;
+  flex-flow: row;
+}
+
+.channel-info {
+  display: flex;
+  flex-flow: column;
+}
+
+.channel-name {
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  font-size: 18px;
+  overflow: hidden;
+  display: -webkit-box;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.followers-number {
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+.subscribe-btn {
+  color: #ffffff;
+  background-color: #000;
+  font-weight: 700;
+  border-radius: 20px;
+  align-self: center;
+  margin-left: 10px;
+  padding: 6px 10px;
+}
+
+.subscribe-btn:hover {
+  background-color: #474747;
+}
+
+.subscribe-btn[subscribed] {
+  color: #000000;
+  background-color: lightgray;
+}
+
+
+/* END OWNER */
+
+
+/* START ACTIONS */
+
+.actions {
+  display: flex;
+  flex: none;
+  gap: 10px;
+}
+
+.action {
+  gap: 5px;
+  background-color: #efefef;
+  border-radius: 40px;
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: 40px;
+  padding: 0 10px;
+}
+
+.like[selected] svg path,
+.dislike[selected] svg path {
+  fill: #000000;
+  stroke: none;
+}
+
+
+
+
+
+.action h4 {
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+}
+
+/* END ACTIONS */
+
+
+/* START DESCRIPTION */
+
+.about {
+  background-color: #efefef;
+  border-radius: 12px;
+  display: flex;
+  flex-flow: column;
+  padding: 10px;
+}
+
+.watch-info {
+  display: flex;
+  flex-flow: row;
+  grid-column-gap: 20px;
+}
+
+.watch-info h5 {
+  font-weight: 700;
+}
+
+.description-text {
+  text-align: justify;
+}
+
+/* END DESCRIPTION */
+
+
+
+
+.comments-white-box {
+  gap: 10px;
+  display: flex;
+  flex-flow: column;
+  flex: 1;
+}
+
+/* START CONTAINER WITH COMMENTS DATA */
+
+.comments-top-row {
+  gap: 60px;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+}
+
+.comments-number {
+  font-weight: 700;
+}
+
+
+.dropdown .toggle-sorting {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  gap: 10px;
+}
+
+
+
+.comments-middle-row {
+  display: flex;
+  gap: 20px;
+}
+
+.comments-middle-row .block {
+  display: flex;
+  flex-flow: column;
+  align-items: end;
+  gap: 5px;
+  flex: 1;
+}
+
+#input-comment-textarea {
+  background: transparent;
+  border-bottom: 1px solid #000;
+  width: 100%;
+  min-height: 20px;
+  outline: none;
+  overflow: hidden;
+  outline: none;
+  text-align: justify;
+  white-space: pre-wrap;
+  resize: none;
+  padding: 0 4px;
+}
+
+#input-comment-textarea:empty::before {
+  content: "Add comment…";
+  color: gray;
+  font-style: italic;
+  pointer-events: none;
+}
+
+.comments-middle-row button {
+  color: #ffffff;
+  background-color: #000;
+  border-radius: 20px;
+  padding: 5px 10px;
+  flex: none;
+}
+
+
+/* START COMMENTS */
+
+.comments-bottom {
+  gap: 16px;
+  display: flex;
+  flex-flow: column;
+}
+
+
+.comment {
+  display: flex;
+  flex-flow: row;
+  gap: 10px;
+}
+
+.comment-data {
+  display: flex;
+  flex-flow: column;
+  gap: 10px;
+}
+
+.comment-top {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  gap: 15px;
+}
+
+.commenter-name {
+  font-weight: 700;
+}
+
+.comment-date {
+  font-size: 12px;
+}
+
+.comment.text {
+  text-align: justify;
+}
+
+.comment-bottom {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.v-line {
+  background-color: #000000;
+  width: 2px;
+  height: 80%;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+/* END COMMENTS */
+
+/* END CONTAINER WITH COMMENTS DATA */
+
+
+
+/* RIGHT BOTTOM SIDE */
+.video-recommendations {
+  display: flex;
+  flex-flow: column;
+  gap: 10px;
+}
+
+
+/* FOR RECOMMENDATION VIDEO */
+.rec-video {
+  display: flex;
+  flex-flow: row;
+  gap: 6px;
+  width: 440px;
+}
+
+.rec-video .dropdown {
+  margin: 0 0 auto auto;
+}
+
+.preview {
+  border: 1px solid #000;
+  border-radius: 12px;
+  justify-content: center;
+  align-items: center;
+  align-self: auto;
+  flex: none;
+  position: relative;
+}
+
+.rec-metadata {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  padding: 6px 0;
+}
+
+.rec-video h3 {
+  font-weight: 700;
+  font-size: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.rec-bottom-metadata {
+  display: flex;
+  flex-flow: column;
+}
+
+.rec-bottom-metadata h4 {
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+.rec-video-options {
+  border-radius: 100%;
+  padding: 5px 5px;
+}
+
+.rec-video-options:hover {
+  background: #d5d5d5;
+}
+
+.time-rec-video {
+  color: #fff;
+  background-color: #0000008a;
+  padding: 0 4px;
+  position: absolute;
+  inset: auto 5px 5px auto;
+}
+
+
+

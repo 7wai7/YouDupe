@@ -1,0 +1,58 @@
+<main>
+    <div class="guide-spacer" hidden></div>
+    <div class="wrapper">
+        <div class="header">
+
+        </div>
+        <div class="metadata-wrapper">
+            <div class="metadata-row">
+                <div class="avatar">
+                    <svg width="180px" height="180px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="6" r="4" stroke="#000000" stroke-width="1.5" />
+                        <path opacity="0.5"
+                            d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"
+                            stroke="#000000" stroke-width="1.5" />
+                    </svg>
+                </div>
+                <div class="meta">
+                    <div class="top">
+                        <h1 class="name">Name</h1>
+                        <span>
+                            <h1>Followers:</h1>
+                            <h1 class="followers-number">0</h1>
+                            <h1>users</h1>
+                            <h1>•</h1>
+                            <h1 class="videos-number">0</h1>
+                            <h1>videos</h1>
+                        </span>
+                        <div class="about">About channel</div>
+                    </div>
+                    <button id="subscribe-btn">Subscribe</button>
+                </div>
+            </div>
+        </div>
+        <div id="content-top-row">
+            <button id="newer-videos-btn" active>Newer</button>
+            <button id="popular-videos-btn">Popular</button>
+        </div>
+        <div class="content">
+            <% for (let i = 0; i < 6; i++) { %>
+                <a href="#" class="video">
+                    <div class="preview">
+                        <img src="/img/media-play.svg" alt="">
+                    </div>
+                    <div class="metadata">
+                        <h1 class="title">Title</h1>
+                        <div class="meta-row">
+                            <h1>0</h1>
+                            <h1>Views</h1>
+                            <h1>•</h1>
+                            <h1>0</h1>
+                            <h1>ago</h1>
+                        </div>
+                    </div>
+                </a>
+            <% } %>
+        </div>
+    </div>
+</main>

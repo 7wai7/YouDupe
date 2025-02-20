@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo
+Mixer Tools -->
+
+<svg
+   width="24px"
+   height="24px"
+   viewBox="0 0 48 48"
+   xmlns="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <style
+       id="style1">.a{fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;}</style>
+  </defs>
+  <polyline
+     class="a"
+     points="13.005 5.5 16.673 11.129 13.005 16.757"
+     id="polyline1"
+     transform="matrix(1.263141,0,0,1.2631581,-6.3150686,-6.3157905)" />
+  <polyline
+     class="a"
+     points="22.551 5.5 26.22 11.129 22.551 16.757"
+     id="polyline2"
+     transform="matrix(1.263141,0,0,1.2631581,-6.3150686,-6.3157905)" />
+  <polyline
+     class="a"
+     points="32.097 5.5 35.766 11.129 32.097 16.757"
+     id="polyline3"
+     transform="matrix(1.263141,0,0,1.2631581,-6.3150686,-6.3157905)" />
+  <line
+     class="a"
+     x1="0.63157499"
+     y1="14.851328"
+     x2="47.367794"
+     y2="14.851328"
+     id="line3"
+     style="stroke-width:1.26315" />
+  <path
+     class="a"
+     d="m 30.968813,29.365773 -9.32476,-5.384086 a 1.6041891,1.6042108 0 0 0 -2.407041,1.389474 v 10.767792 a 1.6041891,1.6042108 0 0 0 2.407041,1.389473 l 9.32476,-5.384085 a 1.6041891,1.6042108 0 0 0 0,-2.778568 z"
+     id="path3"
+     style="stroke-width:1.26315" />
+  <path
+     class="a"
+     d="M 44.842144,0.6315789 H 3.1584892 A 2.526282,2.5263162 0 0 0 0.63220706,3.157895 V 44.842111 A 2.526282,2.5263162 0 0 0 3.1584892,47.368427 H 44.842144 a 2.526282,2.5263162 0 0 0 2.526282,-2.526316 V 3.157895 A 2.526282,2.5263162 0 0 0 44.842144,0.6315789 Z"
+     id="path4"
+     style="stroke-width:1.26315" />
+</svg>

@@ -1,0 +1,19 @@
+# Ігноруємо папку з модулями Node.js
+node_modules/
+
+# Ігноруємо папку з відео
+videos/
+
+# Ігноруємо файли логів
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ігноруємо файли `.env` з конфіденційними змінними
+.env
+
+# Ігноруємо кеш-папки
+.DS_Store
+Thumbs.db

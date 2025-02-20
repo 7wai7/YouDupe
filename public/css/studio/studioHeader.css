@@ -1,0 +1,107 @@
+header {
+    background-color: #ffffff;
+    z-index: 9990;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 20px;
+    padding: 10px 20px 5px;
+    position: sticky;
+    inset: 0 auto auto;
+}
+
+
+
+.section-row {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+}
+
+.logo h3 {
+    color: #000;
+    font-family: Oswald, sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+
+.search-row {
+    background-color: #000;
+    border-radius: 20px;
+    width: 600px;
+    height: 42px;
+    display: flex;
+    flex-flow: row;
+    padding: 2px 2px;
+}
+
+#search-input {
+    color: #000;
+    background-color: #fff;
+    flex: 1;
+    padding-left: 8px;
+    border-radius: 20px;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    overflow: hidden;
+    outline: none;
+}
+
+.search-row svg {
+    fill: #fff;
+}
+
+.search-btn {
+    padding: 5px 10px;
+}
+
+
+#create-video-btn {
+    color: #fff;
+    background-color: #000;
+    border: 2px solid #fff;
+    border-radius: 20px;
+    padding-left: 6px;
+    padding-right: 15px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+}
+
+#create-video-btn svg {
+    fill: #fff;
+}
+
+#create-video-btn:hover {
+    color: #000;
+    background-color: #fff;
+    border: 2px solid #000;
+}
+
+#create-video-btn:hover svg {
+    fill: #000;
+}
+
+.avatar-link {
+    border: 2px solid #000;
+    border-radius: 100%;
+}
+
+
+.dropdown .v-line {
+    background: lightgray;
+    width: 100%;
+    height: 1px;
+}
+
+.dropdown h1 {
+    font-size: 14px;
+}

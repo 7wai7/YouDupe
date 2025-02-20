@@ -1,0 +1,387 @@
+body {
+    display: flex;
+    flex-flow: column;
+}
+
+main {
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+}
+
+.top {
+    display: flex;
+    flex-flow: row;
+    border-bottom: 1px solid gray;
+}
+
+.bottom {
+    display: flex;
+    flex-flow: row;
+    flex: 1;
+}
+
+
+.img-wrapper {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    gap: 10px;
+    border-right: 1px solid gray;
+}
+
+
+.content-top {
+    flex: 1;
+}
+
+.content-top h1 {
+    font-weight: 500;
+    font-size: 26px;
+    margin: 20px;
+}
+
+.filters {
+    border-top: 1px solid gray;
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    padding: 0 20px;
+    padding-right: 50%;
+}
+
+.filters button {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.filters button:hover::after {
+    font-weight: 600;
+}
+
+.filters button[active] {
+    font-weight: 600;
+}
+
+
+.bottom nav {
+    width: 200px;
+    border-right: 1px solid gray;
+}
+
+.content {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+    gap: 20px;
+}
+
+.video {
+    display: flex;
+    flex-flow: row;
+}
+
+.h-line {
+    background-color: gray;
+    width: 90%;
+    height: 1px;
+    align-self: center;
+}
+
+.video .preview {
+    border-radius: 12px;
+    border: 1px solid #000;
+}
+
+.video .metadata-row {
+    flex: 1;
+    padding: 5px 30px;
+    display: grid;
+    align-items: start;
+    grid-template-columns: 1.5fr 1fr 1.5fr;
+}
+
+
+.video .title {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.video .date {
+    font-size: 14px;
+}
+
+.description-dropdown {
+    font-size: 14px;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.video .metadata-column {
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+}
+
+.video .meta-block {
+    display: flex;
+    flex-flow: row;
+    gap: 5px;
+}
+
+
+
+.delete-video-btn {
+    color: #fff;
+    background: #000;
+    border: 2px solid #fff;
+    padding: 5px 10px;
+    justify-self: end;
+}
+
+.delete-video-btn:hover {
+    color: #000;
+    background: #ff0000;
+    border: 2px solid #000;
+}
+
+
+
+
+
+#upload-video-modal,
+#change-description-modal,
+#confirm-delete-modal {
+    background: #00000067;
+    z-index: 9999;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    inset: 0 0;
+}
+
+
+
+#upload-video-modal .panel-modal {
+    background: #fff;
+    border-radius: 12px;
+    width: 70vw;
+    height: 80vh;
+    display: flex;
+    flex-flow: column;
+    min-height: 360px;
+}
+
+#upload-video-modal .header {
+    padding: 10px 30px;
+    width: 100%;
+    display: inline-flex;
+    justify-content: space-between;
+}
+
+#upload-video-modal .header h1 {
+    font-size: 22px;
+}
+
+#upload-video-modal .v-line {
+    width: 100%;
+    height: 1px;
+    background-color: gray;
+}
+
+
+
+#upload-video-modal .content-wrapper {
+    flex: 1;
+    padding: 20px;
+}
+
+#drop-zone {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    transition: 0.3s;
+}
+
+#drop-zone.dragover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+#drop-zone h1 {
+    font-size: 14px;
+}
+
+#drop-zone button {
+    padding: 4px 12px;
+    color: #fff;
+    background-color: #000;
+    border-radius: 12px;
+}
+
+
+
+#upload-information {
+    height: 100%;
+    display: flex;
+    flex-flow: row;
+    gap: 30px;
+}
+
+.information {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+}
+
+.information .meta-block {
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+}
+
+.information textarea {
+    font-size: 14px;
+    padding: 6px 10px;
+    width: 100%;
+    border: 2px solid #00000080;
+    outline: none;
+    white-space: pre-wrap;
+    resize: none;
+}
+
+#video-description-textarea {
+    flex: 1;
+    max-height: 200px;
+}
+
+.information h2 {
+    font-size: 18px;
+}
+
+.meta-preview-row {
+    display: inline-flex;
+    gap: 30px;
+}
+
+.meta-preview-wrapper-btn {
+    padding: 10px;
+    border: 1px solid #000;
+}
+
+.meta-preview-row svg {
+    margin: 0 auto;
+}
+
+.video-preview {
+    background: #000;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
+    margin: 0 0 auto auto;
+}
+
+
+
+
+
+
+#confirm-delete-modal .panel-modal {
+    background: #fff;
+    border-radius: 12px;
+    width: 400px;
+    padding: 20px 30px;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.choice {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    width: 50%;
+    flex: 1;
+}
+
+
+#delete-video-btn {
+    color: #fff;
+    background: #000;
+    padding: 5px 10px;
+}
+
+#delete-video-btn:hover {
+    color: #000;
+    background: #ff0000;
+}
+
+#cancel-deletion-btn {
+    color: #fff;
+    background: #000;
+    border: 2px solid #000;
+    padding: 5px 10px;
+}
+
+#cancel-deletion-btn:hover {
+    color: #000;
+    background: #fff;
+    border: 2px solid #000;
+}
+
+
+
+
+
+
+
+#change-description-modal .panel-modal {
+    background: #fff;
+    border-radius: 12px;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    gap: 20px;
+    width: 700px;
+    height: 600px;
+    padding: 30px;
+}
+
+#change-description-modal h1 {
+    font-size: 22px;
+    font-weight: 500;
+}
+
+#change-description-textarea {
+    width: 100%;
+    height: 100%;
+    padding: 10px 14px;
+    overflow: auto;
+    outline: none;
+    text-align: justify;
+    white-space: pre-wrap;
+    border: 3px solid #000;
+    border-radius: 12px;
+    resize: none;
+}
+
+#change-description-modal button {
+    font-size: 18px;
+    background: #e4e4e4;
+    padding: 5px 10px;
+    border-radius: 4px;
+}

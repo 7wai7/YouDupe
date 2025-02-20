@@ -1,0 +1,50 @@
+body {
+    background-color: #f8f8f8;
+    position: relative;
+    min-height: 100vh;
+}
+
+button {
+    cursor: pointer;
+}
+
+
+
+
+
+.dropdown {
+    width: max-content;
+    position: relative;
+}
+
+.dropdown .content {
+    position: absolute;
+    z-index: 1000;
+    background-color: #ffffff;
+    display: flex;
+    flex-flow: column;
+    gap: 10px;
+    padding: 10px 0;
+    border-radius: 10px;
+}
+
+.dropdown .content a,
+.dropdown .content button {
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0 10px;
+    font-size: large;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 30px;
+}
+
+/* .dropdown:hover .content {
+    display: flex;
+  } */
+
+.dropdown .content a:hover,
+.dropdown .content button:hover {
+    background-color: #dddddd;
+}

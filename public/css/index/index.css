@@ -1,0 +1,57 @@
+
+
+body {
+    background-color: #f8f8f8;
+    position: relative;
+    min-height: 100vh;
+}
+  
+main {
+    display: flex;
+    flex-flow: row;
+    flex: 1;
+}
+
+
+/* ++++++ VIDEOS CONTAINER */
+
+.contents {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 10px 30px 60px 30px;
+}
+
+.contents .video {
+    margin: 20px 20px;
+}
+
+.contents .preview {
+    border: 1px solid #000;
+    border-radius: 12px;
+}
+
+.contents .details {
+    display: flex;
+    flex-flow: row;
+    gap: 10px;
+    padding: 10px 0 0;
+}
+
+.contents .details h1 {
+    font-weight: 500;
+    font-size: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.contents .meta {
+    flex: 1;
+}
+
+
+/* VIDEOS CONTAINER ++++++ */

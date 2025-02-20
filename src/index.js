@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 
-import apiRouter from './routers/apiRouter.js';
+import apiRouter from './routers/api.js';
 import pageRoutes from './routers/pages.js';
 import authRoutes from './routers/auth.js';
 
@@ -38,7 +38,7 @@ app.use((err, req, res, next) => {
 
 async function startApp() {
     try {
-        // await mongoose.connect(DB_URL);
+        await mongoose.connect(DB_URL);
         app.listen(PORT, () => console.log(`Сервер працює на порті: http://localhost:${PORT}`));
     } catch (error) {
         console.log(error);

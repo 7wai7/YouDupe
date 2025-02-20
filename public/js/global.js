@@ -17,13 +17,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Виконати пошук при кліку на кнопку
-        searchBtn.addEventListener("click", (event) => {
+        searchBtn?.addEventListener("click", (event) => {
             event.preventDefault();
             search();
         });
 
         // Виконати пошук при натисканні Enter
-        searchInput.addEventListener("keydown", (event) => {
+        searchInput?.addEventListener("keydown", (event) => {
             if (event.key === "Enter") {
                 event.preventDefault();
                 search();
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
         const subscribeBtn = document.getElementById('subscribe-btn');
 
-        subscribeBtn.addEventListener('click', (event) => {
+        subscribeBtn?.addEventListener('click', (event) => {
             if(subscribeBtn.hasAttribute('subscribed')) {
                 subscribeBtn.removeAttribute('subscribed');
                 subscribeBtn.innerHTML = 'Subscribe';

@@ -12,8 +12,24 @@ const __dirname = dirname(__filename);
 const router = new Router();
 
 
-router.get('/', (req, res) => {
-    const videosPath = path.join(__dirname, '../../videos');
+router.get('/', async (req, res) => {
+    const videos = await Video.find();
+
+    console.log(videos);
+    
+
+    res.render('index', {
+        title: 'YouDupe',
+        stylesheets: ["index/index", 'header'],
+        scripts: ["index/buttons", 'header'],
+        header: '../partials/header',
+        videos
+    });
+
+
+
+
+    /* const videosPath = path.join(__dirname, '../../videos');
 
     fs.readdir(videosPath, (err, files) => {
         if (err) {
@@ -21,9 +37,7 @@ router.get('/', (req, res) => {
             return res.status(500).json({ message: 'Server error' });
         }
 
-        // Фільтруємо тільки відеофайли (mp4, webm, avi, mov тощо)
         const videoFiles = files
-            .filter(file => /\.(mp4|webm|avi|mov)$/i.test(file))
             .map(file => path.parse(file).name); // Видаляємо розширення
 
         res.render('index', {
@@ -33,7 +47,7 @@ router.get('/', (req, res) => {
             header: '../partials/header',
             videos: videoFiles
         });
-    });
+    }); */
 });
 
 router.get('/watch', async (req, res) => {

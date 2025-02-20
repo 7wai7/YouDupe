@@ -51,8 +51,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const cancelUploadVideoBtn = document.getElementById('cancel-upload-video-btn');
         const uploadVideoModal = document.getElementById('upload-video-modal');
 
+        const dropZone = document.getElementById("drop-zone");
+        const uploadContent = document.getElementById("upload-information");
+        const titleTextarea = document.getElementById('video-title-textarea');
+        const descriptionTextarea = document.getElementById('video-description-textarea');
+
+        const uploadedVideo = document.getElementById("uploaded-video");
+        const videoPreview = document.getElementById("video-preview");
+        const fileInput = document.getElementById("video-file-input");
+        const fileInputPreview = document.getElementById("preview-file-input");
+
         function hideModal() {
             uploadVideoModal.setAttribute('hidden', '');
+
+            dropZone.removeAttribute('hidden');
+            uploadContent.setAttribute('hidden', '');
+            titleTextarea.value = '';
+            descriptionTextarea.value = '';
+            uploadedVideo.src = '';
+            videoPreview.src = '';
+            fileInput.value = '';
+            fileInputPreview.value = '';
         }
 
         cancelUploadVideoBtn.addEventListener('click', (event) => {
@@ -76,76 +95,145 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
         const dropZone = document.getElementById("drop-zone");
-        const uploadContent = document.getElementById('upload-information');
-        const chooseFileBtn = document.getElementById('choose-file-btn');
-        const fileInput = document.getElementById("file-input");
+        const uploadContent = document.getElementById("upload-information");
+        const chooseFileBtn = document.getElementById("choose-file-btn");
+
+        const fileInput = document.getElementById("video-file-input");
+        const fileInputPreview = document.getElementById("preview-file-input");
+        const uploadedVideo = document.getElementById("uploaded-video");
         const videoPreview = document.getElementById("video-preview");
-
+    
+        document.getElementById("upload-preview-btn").addEventListener("click", () => fileInputPreview.click());
+        document.getElementById("create-preview-btn").addEventListener("click", createPreviewAutomatically);
         chooseFileBtn.addEventListener("click", () => fileInput.click());
-
+    
         dropZone.addEventListener("dragover", (e) => {
             e.preventDefault();
             dropZone.classList.add("dragover");
         });
-
+    
         dropZone.addEventListener("dragleave", () => {
             dropZone.classList.remove("dragover");
         });
-
+    
         dropZone.addEventListener("drop", (e) => {
             e.preventDefault();
             dropZone.classList.remove("dragover");
-
+    
             const file = e.dataTransfer.files[0];
             handleFile(file);
         });
-
-        // Завантаження файлу через input
+    
         fileInput.addEventListener("change", (e) => {
             const file = e.target.files[0];
-            handleFile(file);
+            
+            if (file) {
+                handleFile(file);
+                /* e.target.value = ""; */ // Очищаємо значення інпуту, щоб можна було вибрати той самий файл
+            }
         });
-
+    
+        fileInputPreview.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            uploadPreview(file);
+        });
+    
         function handleFile(file) {
             if (file && file.type.startsWith("video/")) {
                 const fileURL = URL.createObjectURL(file);
-                /* videoPreview.src = fileURL; */
-                captureFirstFrame(fileURL);
-
-                dropZone.setAttribute('hidden', '');
-                uploadContent.removeAttribute('hidden');
-            } else {
-                alert("Будь ласка, завантажте відеофайл!");
+                uploadedVideo.src = fileURL;
+    
+                uploadedVideo.onloadeddata = () => {
+                    createPreviewAutomatically();
+                };
+    
+                dropZone.setAttribute("hidden", "");
+                uploadContent.removeAttribute("hidden");
+            }
+        }
+    
+        function createPreviewAutomatically() {
+            uploadedVideo.crossOrigin = "anonymous";
+            uploadedVideo.currentTime = 1; // Перемотуємо на 1 секунду, щоб уникнути чорного екрану
+            uploadedVideo.muted = true;
+            uploadedVideo.play();
+    
+            uploadedVideo.onseeked = null; // Очищаємо попередній обробник, якщо був
+    
+            uploadedVideo.addEventListener("seeked", function generatePreview() {
+                const canvas = document.createElement("canvas");
+                canvas.width = uploadedVideo.videoWidth;
+                canvas.height = uploadedVideo.videoHeight;
+                const ctx = canvas.getContext("2d");
+    
+                ctx.drawImage(uploadedVideo, 0, 0, canvas.width, canvas.height);
+                videoPreview.src = canvas.toDataURL("image/png");
+    
+                uploadedVideo.removeEventListener("seeked", generatePreview); // Видаляємо обробник після виконання
+            }, { once: true });
+    
+            uploadedVideo.currentTime = 0; // Перемотуємо на перший кадр
+        }
+    
+        function uploadPreview(file) {
+            if (file && file.type.startsWith("image/")) {
+                const fileURL = URL.createObjectURL(file);
+                videoPreview.src = fileURL;
             }
         }
 
-        function captureFirstFrame(videoSrc) {
-            const video = document.createElement("video");
-            video.src = videoSrc;
-            video.crossOrigin = "anonymous";
-            video.currentTime = 1; // Встановлюємо на 1 секунду, щоб уникнути чорного екрану
-            video.muted = true;
-            video.play();
+
+        const previewFileInput = document.getElementById('preview-file-input');
+
+        document.getElementById("upload-video-btn").addEventListener("click", () => {
+            const formData = new FormData();
+
+            // Додаємо текстові поля
+            formData.append("title", document.getElementById('video-title-textarea').value);
+            formData.append("description", document.getElementById('video-description-textarea').value);
+
+            // Додаємо файли, якщо вони вибрані
+            if (fileInput.files[0]) {
+                formData.append("video", fileInput.files[0]);
+            }
+            console.log(previewFileInput.files[0]);
+            
+            if (previewFileInput.files[0]) {
+                formData.append("preview", previewFileInput.files[0]);
+            } else {
+                // Створюємо Blob із dataURL прев’ю
+                fetch(videoPreview.src)
+                    .then(res => res.blob()) // Конвертуємо в Blob
+                    .then(blob => {
+                        const previewFile = new File([blob], "preview.png", { type: "image/png" });
+                        formData.append("preview", previewFile);
         
-            video.addEventListener("loadeddata", () => {
-                const canvas = document.createElement("canvas");
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                const ctx = canvas.getContext("2d");
+                        // Відправляємо запит тільки після створення файлу
+                        sendUploadRequest(formData);
+                    });
+                return; // Вийти, щоб не викликати `sendUploadRequest()` двічі
+            }
         
-                video.addEventListener("seeked", () => {
-                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    videoPreview.src = canvas.toDataURL("image/png");
-                    videoPreview.style.display = "block";
-                });
-        
-                video.currentTime = 0; // Перемотуємо на перший кадр
-            });
+            sendUploadRequest(formData);
+        });
+
+        function sendUploadRequest(formData) {
+            fetch("api/studio/upload", {
+                method: "POST",
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(console.error);
         }
 
+    
     } catch (error) {
         console.error(error);
     }
+    
 
 
 

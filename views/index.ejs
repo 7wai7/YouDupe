@@ -4,7 +4,7 @@
         <% videos.forEach(video => { %>
             <div class="video">
                 <div class="preview">
-                    <a href="watch?v=<%= video %>">
+                    <a href="watch?v=<%= video._id %>">
                         <img src="/img/media-play.svg" width="auto">
                     </a>
                 </div>
@@ -17,8 +17,8 @@
                                 stroke="#000000" stroke-width="1.5" />
                         </svg>
                     </a>
-                    <a href="watch?v=<%= video %>" class="meta">
-                        <h1><%= video %></h1>
+                    <a href="watch?v=<%= video._id %>" class="meta">
+                        <h1><%= video.title %></h1>
                         <h2>Channel name</h2>
                         <h2>Views and date</h2>
                     </a>

@@ -1,6 +1,8 @@
 # Ігноруємо папку з модулями Node.js
 node_modules/
 
+previews/
+
 # Ігноруємо папку з відео
 videos/
 

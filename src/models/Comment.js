@@ -6,7 +6,7 @@ const commentSchema = new mongoose.Schema({
     video: { type: ObjectId, ref: "Video", required: true },
     likes: { type: Number, default: 0 },
     dislikes: { type: Number, default: 0 },
-    text: { type: String, maxlength: 500 },
+    text: { type: String, maxlength: 2600 },
 }, {
     timestamps: true
 });

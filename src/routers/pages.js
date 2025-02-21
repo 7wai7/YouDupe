@@ -59,7 +59,7 @@ router.get('/watch', async (req, res) => {
     res.render('watchVideo', {
         title: id,
         stylesheets: ["watch/videoPlayer", "watch/watch", 'header'],
-        scripts: ["watch/buttons", 'header'],
+        scripts: ["watch/buttons", 'header', "watch/script"],
         header: '../partials/header',
         video,
     });

@@ -11,16 +11,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 
-/* const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'videos/');
-    },
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1e9) + ext;
-        cb(null, uniqueName);
-    }
-}); */
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         if (file.fieldname === 'video') {
@@ -72,6 +62,17 @@ router.get("/video/:id", (req, res) => {
     }
 });
 
+router.get('/previews/:id', (req, res) => {
+    const previewPath = path.join(__dirname, '../../previews', `${req.params.id}.png`);
+
+    // Перевіряємо, чи існує файл
+    if (fs.existsSync(previewPath)) {
+        res.sendFile(previewPath);
+    } else {
+        res.status(404).send('Прев’ю не знайдено');
+    }
+});
+
 router.get("/video/download/:id", (req, res) => {
     const id = req.params.id;
     if (!id) return;
@@ -90,6 +91,20 @@ router.get("/video/download/:id", (req, res) => {
 });
 
 
+router.get("/recommendedVideos/:current_video_id", async (req, res) => {
+    const current_video_id = req.params.current_video_id;
+
+    let videos = await Video.find();
+
+    if (current_video_id) {
+        videos = videos.filter(video => video._id.toString() !== current_video_id);
+    }
+
+    res.render('partials/recommendedVideo', { videos, layout: false });
+})
+
+
+
 router.get("/studio/upload", (req, res) => {
     const filter = req.query.filter || "date";
     const sort = req.query.sort || "down";
@@ -98,30 +113,6 @@ router.get("/studio/upload", (req, res) => {
 
     res.json({ message: 'success' });
 });
-
-// Ендпоінт для завантаження відео
-/* router.post('/studio/upload', upload.single('video'), async (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ error: 'Файл не завантажено' });
-    }
-
-    try {
-        const video = new Video({
-            title: req.body.title || 'Без назви',
-            filename: req.file.filename,
-            path: `/videos/${req.file.filename}`,
-            user: req.user._id // ID користувача (можна взяти з сесії або JWT)
-        });
-
-        await video.save();
-
-        res.json({ message: 'Відео завантажене', video });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Помилка при збереженні відео' });
-    }
-}); */
-
 
 router.post("/studio/upload", async (req, res, next) => {
     try {
@@ -135,25 +126,28 @@ router.post("/studio/upload", async (req, res, next) => {
             { name: "preview", maxCount: 1 }
         ])(req, res, async (err) => {
             if (err) {
+                console.log('Помилка при завантаженні файлів');
                 console.error(err);
                 return res.status(500).json({ error: "Помилка при завантаженні файлів" });
             }
-            
             if (!req.files || !req.files.video) {
+                console.log('Відео не завантажено');
                 return res.status(400).json({ error: "Відео не завантажено" });
             }
 
             // Зберігаємо інформацію про відео в базу
+            video.duration = req.body.duration;
             video.title = req.body.title || "Untitled";
             video.description = req.body.description || "";
 
             await video.save();
 
+            console.log('Відео успішно завантажене');
             res.json({ message: "Відео успішно завантажене", video });
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: "Помилка при збереженні відео" });
+        res.status(500).json({ error: "Помилка при завантаженні відео" });
     }
 });
 

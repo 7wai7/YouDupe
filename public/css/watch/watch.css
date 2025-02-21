@@ -150,7 +150,7 @@ main > .bottom {
 }
 
 .description-text {
-  text-align: justify;
+  white-space: pre-line;
 }
 
 /* END DESCRIPTION */
@@ -293,7 +293,7 @@ main > .bottom {
 
 
 /* RIGHT BOTTOM SIDE */
-.video-recommendations {
+#video-recommendations {
   display: flex;
   flex-flow: column;
   gap: 10px;
@@ -313,11 +313,13 @@ main > .bottom {
 }
 
 .preview {
+  background: #000;
   border: 1px solid #000;
   border-radius: 12px;
-  justify-content: center;
+  display: flex;
   align-items: center;
-  align-self: auto;
+  aspect-ratio: 24 / 14; 
+  overflow: hidden;
   flex: none;
   position: relative;
 }

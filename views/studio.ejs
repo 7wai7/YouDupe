@@ -14,11 +14,8 @@
         <div class="content-top">
             <h1>Channel content</h1>
             <div class="filters">
-                <% createFilterBtn('date') %>
-                    <% createFilterBtn('views') %>
-                        <% createFilterBtn('comments') %>
-                            <% createFilterBtn('likes') %>
-                                <% createFilterBtn('dislikes') %>
+                <% createFilterBtn('date'); createFilterBtn('views'); createFilterBtn('comments');
+                    createFilterBtn('likes'); createFilterBtn('dislikes'); %>
             </div>
         </div>
     </div>
@@ -103,7 +100,8 @@
                                             <h1>Name</h1>
                                             <textarea name="video title" id="video-title-textarea"></textarea>
                                             <h1>Description</h1>
-                                            <textarea name="video description" id="video-description-textarea"></textarea>
+                                            <textarea name="video description"
+                                                id="video-description-textarea"></textarea>
                                         </div>
                                         <div class="preview-meta-block">
                                             <h2>Preview</h2>
@@ -119,7 +117,8 @@
                                                             class="style-scope tp-yt-iron-icon"></path>
                                                     </svg>
                                                     <h1>Upload preview</h1>
-                                                    <input type="file" id="preview-file-input" accept="image/png" hidden/>
+                                                    <input type="file" id="preview-file-input" accept="image/png"
+                                                        hidden />
                                                 </button>
                                                 <button id="create-preview-btn" class="meta-preview-wrapper-btn">
                                                     <svg width="24px" height="24px" viewBox="0 0 24 24">

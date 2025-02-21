@@ -219,8 +219,8 @@ main {
     position: relative;
 }
 
-/* ++++++ GUIDE CONTENT */
 
+/* ++++++ GUIDE CONTENT */
 
 .guide-spacer {
     width: 240px;
@@ -228,6 +228,7 @@ main {
 }
 
 .guide {
+    background-color: #f8f8f8;
     z-index: 99999;
     position: fixed;
     width: 240px;

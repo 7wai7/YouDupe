@@ -4,7 +4,7 @@
             <div class="bottom">
                 <div class="video-content">
                     <div class="video-data">
-                        <h4 class="title">Video name</h4>
+                        <h4 class="title"><%= video.title %></h4>
                         <div class="top-row">
                             <div class="owner">
                                 <a href="/channel" class="avatar-link">
@@ -73,7 +73,7 @@
                                         </svg>
                                     </button>
                                     <nav class="content" hidden>
-                                        <a href="/video/download/<%= id %>" download="sample-video.mp4" id="download">
+                                        <a href="/video/download/<%= video._id %>" download="sample-video.mp4" id="download">
                                             <div>
                                                 <svg width="24px" height="24px" viewBox="0 0 24 24"
                                                     xmlns="http://www.w3.org/2000/svg">
@@ -114,12 +114,7 @@
                                 <h5>Views</h5>
                                 <h5>Date</h5>
                             </div>
-                            <div class="description-text">This is some text inside of a div block. This is some text
-                                inside of a div block. This is some text inside of a div block. This is some text inside
-                                of a div block. This is some text inside of a div block. This is some text inside of a
-                                div block. This is some text inside of a div block. This is some text inside of a div
-                                block. This is some text inside of a div block. This is some text inside of a div block.
-                                This is some text inside of a div block. This is some text inside of a div block. </div>
+                            <div class="description-text"><%= video.description %></div>
                         </div>
                     </div>
                     <div class="comments-white-box">

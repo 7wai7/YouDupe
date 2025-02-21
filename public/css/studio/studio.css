@@ -179,7 +179,7 @@ main {
     height: 80vh;
     display: flex;
     flex-flow: column;
-    min-height: 360px;
+    min-height: max-content;
 }
 
 #upload-video-modal .header {

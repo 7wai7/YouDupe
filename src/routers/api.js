@@ -43,7 +43,6 @@ const router = new Router();
 
 router.get("/video/:id", (req, res) => {
     const id = req.params.id;
-    console.log(id);
 
     if (!id) return;
 
@@ -145,7 +144,7 @@ router.post("/studio/upload", async (req, res, next) => {
             }
 
             // Зберігаємо інформацію про відео в базу
-            video.title = req.body.title || "Без назви";
+            video.title = req.body.title || "Untitled";
             video.description = req.body.description || "";
 
             await video.save();

@@ -196,8 +196,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (fileInput.files[0]) {
                 formData.append("video", fileInput.files[0]);
             }
-            console.log(previewFileInput.files[0]);
-            
             if (previewFileInput.files[0]) {
                 formData.append("preview", previewFileInput.files[0]);
             } else {

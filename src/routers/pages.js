@@ -15,9 +15,6 @@ const router = new Router();
 router.get('/', async (req, res) => {
     const videos = await Video.find();
 
-    console.log(videos);
-    
-
     res.render('index', {
         title: 'YouDupe',
         stylesheets: ["index/index", 'header'],
@@ -55,16 +52,16 @@ router.get('/watch', async (req, res) => {
 
     if (!id) return res.redirect('/');
 
-    /* const video = await Video.findById(id);
+    const video = await Video.findById(id);
 
-    if(!video) return res.redirect('/'); */
+    if(!video) return res.redirect('/');
 
     res.render('watchVideo', {
         title: id,
         stylesheets: ["watch/videoPlayer", "watch/watch", 'header'],
         scripts: ["watch/buttons", 'header'],
         header: '../partials/header',
-        id,
+        video,
     });
 });
 

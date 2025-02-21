@@ -30,43 +30,67 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ADD COMMENT
     try {
-        const commentArea = document.getElementById("input-comment-textarea");
-        const addCommentBtn = document.getElementById("add-comment-btn");
+        document.querySelectorAll('.add-comment-wrapper').forEach((wrapper) => {
+            const commentArea = wrapper.querySelector(".input-comment-textarea");
+            const addCommentBtn = wrapper.querySelector(".add-comment-btn");
+    
+            function addComment() {
+                const savedText = commentArea.value;
+                const text = commentArea.value.trim();
+                commentArea.value = '';
 
-        function addComment() {
-            const savedText = commentArea.textContent;
-            const text = commentArea.textContent.trim();
-            commentArea.textContent = '';
-
-            if (text === "") return;
-
-            fetch('/add_comment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: { text }
-            })
-                .then(response => response.json())
-                .catch(err => {
-                    commentArea.textContent = savedText;
-                    console.error(err);
+                if (text === "") return;
+    
+                fetch('/add_comment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: { text }
                 })
-        }
-
-        // Виконати пошук при кліку на кнопку
-        addCommentBtn.addEventListener("click", (event) => {
-            event.preventDefault();
-            addComment();
-        });
-
-        // Виконати пошук при натисканні Enter
-        commentArea.addEventListener("keydown", (event) => {
-            if (event.key === "Control" && event.location === 1 && event.key === "Enter") {
-                event.preventDefault();
-                addComment();
+                    .then(response => response.json())
+                    .catch(err => {
+                        commentArea.value = savedText;
+                        console.error(err);
+                    })
             }
-        });
+    
+            addCommentBtn.addEventListener("click", addComment);
+    
+            commentArea.addEventListener("keydown", (event) => {
+                if (event.ctrlKey && event.key === "Enter") {
+                    addComment();
+                }
+            });
+        })
+    } catch (error) {
+        console.error(error);
+    }
+
+
+    
+    try {
+        document.querySelectorAll('.show-answers').forEach((btn) => {
+            btn.addEventListener('click', (event) => {
+                const wrapper = btn.parentElement.querySelector('.answers-wrapper');
+                wrapper.hasAttribute('hidden') ? wrapper.removeAttribute('hidden') : wrapper.setAttribute('hidden', '');
+            })
+        })
+
+        document.querySelectorAll('.reply-btn').forEach((btn) => {
+            btn.addEventListener('click', (event) => {
+                const wrapper = btn.closest('.comment-data').querySelector('.add-comment-wrapper');
+                wrapper.removeAttribute('hidden');
+            })
+        })
+
+        document.querySelectorAll('.cancel-comment-btn').forEach((btn) => {
+            btn.addEventListener('click', (event) => {
+                const wrapper = btn.closest('.add-comment-wrapper');
+                wrapper.setAttribute('hidden', '');
+                wrapper.querySelector('.input-comment-textarea').value = '';
+            })
+        })
     } catch (error) {
         console.error(error);
     }

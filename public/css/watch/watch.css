@@ -193,7 +193,7 @@ main > .bottom {
   gap: 20px;
 }
 
-.comments-middle-row .block {
+.add-comment-wrapper {
   display: flex;
   flex-flow: column;
   align-items: end;
@@ -201,7 +201,7 @@ main > .bottom {
   flex: 1;
 }
 
-#input-comment-textarea {
+.input-comment-textarea {
   background: transparent;
   border-bottom: 1px solid #000;
   width: 100%;
@@ -215,18 +215,23 @@ main > .bottom {
   padding: 0 4px;
 }
 
-#input-comment-textarea:empty::before {
+.input-comment-textarea:empty::before {
   content: "Add comment…";
   color: gray;
   font-style: italic;
   pointer-events: none;
 }
 
-.comments-middle-row button {
+.choice {
+  display: inline-flex;
+  gap: 30px;
+}
+
+.add-comment-btn {
   color: #ffffff;
   background-color: #000;
   border-radius: 20px;
-  padding: 5px 10px;
+  padding: 4px 10px;
   flex: none;
 }
 
@@ -240,7 +245,7 @@ main > .bottom {
 }
 
 
-.comment {
+.comment-wrapper {
   display: flex;
   flex-flow: row;
   gap: 10px;
@@ -282,9 +287,34 @@ main > .bottom {
   background-color: #000000;
   width: 2px;
   height: 80%;
-  margin-left: 5px;
-  margin-right: 5px;
+  margin: 0 5px;
 }
+
+.reply-btn {
+  margin-left: 30px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+
+.answers-wrapper {
+  border-left: 1px solid #000;
+  margin: 10px 0 0 60px;
+  padding-left: 10px;
+  display: flex;
+  flex-flow: column;
+  gap: 20px;
+}
+
+.show-answers {
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+  border-top-left-radius: 6px;
+  margin: 10px 0 6px 60px;
+  padding-left: 4px;
+  align-self: flex-start;
+}
+
 
 /* END COMMENTS */
 

@@ -145,13 +145,18 @@ document.addEventListener("DOMContentLoaded", () => {
     
     try {
         document.querySelectorAll(".textarea-autosize").forEach((textarea) => {
-            textarea.style.height = textarea.scrollHeight + "px";
+            const style = window.getComputedStyle(textarea);
+            const lineHeight = parseFloat(style.lineHeight); // Отримуємо висоту одного рядка
+            textarea.style.height = lineHeight + "px"; // Встановлюємо висоту під один рядок
             textarea.style.overflowY = "hidden";
-            
+        
             textarea.addEventListener("input", function() {
-                this.style.height = "auto";
-                this.style.height = this.scrollHeight + "px";
-                });
+                const style = window.getComputedStyle(this);
+                const lineHeight = parseFloat(style.lineHeight);
+                this.style.height = lineHeight + "px";
+
+                this.style.height = Math.max(this.scrollHeight, lineHeight) + "px";
+            });
         });
 
         /* inputTextAreaComment.addEventListener("paste", function (event) {

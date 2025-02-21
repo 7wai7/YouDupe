@@ -1,0 +1,60 @@
+<div class="comment-wrapper">
+    <a href="#" class="avatar-link">
+        <svg width="34px" height="34px" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="6" r="4" stroke="#000000" stroke-width="1.5" />
+            <path opacity="0.5"
+                d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"
+                stroke="#000000" stroke-width="1.5" />
+        </svg>
+    </a>
+    <div class="comment-data">
+        <div class="comment-top">
+            <a href="#" class="link">
+                <div class="commenter-name">Commenter</div>
+            </a>
+            <div class="comment-date">date</div>
+        </div>
+        <div class="comment-text">This is some text inside of a div block. This is some
+            text inside of a div block. This is some text inside of a div block. This is
+            some text inside of a div block. This is some text inside of a div block.
+            This is some text inside of a div block. This is some text inside of a div
+            block. This is some text inside of a div block. This is some text inside of
+            a div block.</div>
+        <div class="comment-bottom like-dislike-wrapper">
+            <a href="/comment/reaction/${commentId}/1" method="PUT" class="like">
+                <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M7.66003 10.1022L11.76 4.00221C12.16 3.40221 13.16 3.00221 13.96 3.30221C14.86 3.60221 15.46 4.60221 15.26 5.50221L14.76 8.70221C14.66 9.40221 15.16 9.90221 15.76 9.90221H19.76C21.26 9.90221 22.1801 11.0522 21.66 12.5022C21.14 13.9522 20.6801 16.5522 19.26 18.8022C18.6102 19.8318 17.8975 20.5522 16.6801 20.5522C12.6801 20.5522 6.66003 20.5522 6.66003 20.5522"
+                        stroke="#000" stroke-width="1.5" stroke-miterlimit="10" />
+                    <path
+                        d="M2.18005 10.5522C2.18005 9.99996 2.62777 9.55225 3.18005 9.55225H6.68005C7.23234 9.55225 7.68005 9.99996 7.68005 10.5522V20.5522H3.18005C2.62777 20.5522 2.18005 20.1045 2.18005 19.5522V10.5522Z"
+                        stroke="#000" stroke-width="1.5" />
+                </svg>
+            </a>
+            <h6>0</h6>
+            <div class="v-line"></div>
+            <a href="/comment/reaction/${commentId}/0" method="PUT" class="dislike">
+                <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path id="vector"
+                        d="M16.34 13.8978L12.24 19.9978C11.84 20.5978 10.84 20.9978 10.04 20.6978C9.14 20.3978 8.54 19.3978 8.74 18.4978L9.24 15.2978C9.34 14.5978 8.84 14.0978 8.24 14.0978H4.24C2.74 14.0978 1.8199 12.9478 2.34 11.4978C2.86 10.0478 3.3199 7.44784 4.74 5.19784C5.3898 4.16823 6.1025 3.44784 7.31986 3.44784C11.3199 3.44784 17.34 3.44784 17.34 3.44784"
+                        stroke="#000000" stroke-width="1.5" stroke-miterlimit="10" />
+                    <path id="rec"
+                        d="M21.82 13.4478C21.82 14 21.3722 14.4478 20.82 14.4478H17.32C16.7677 14.4478 16.32 14 16.32 13.4478V3.44784H20.82C21.3722 3.44784 21.82 3.89555 21.82 4.44784V13.4478Z"
+                        stroke="#000000" stroke-width="1.5" />
+                </svg>
+            </a>
+            <h6">0</h6>
+            <button class="reply-btn">Reply</button>
+        </div>
+        <div class="add-comment-wrapper" hidden>
+            <textarea name="Add comment" class="input-comment-textarea textarea-autosize" maxlength="2600"></textarea>
+            <div class="choice">
+                <button class="cancel-comment-btn">Cancel</button>
+                <button class="add-comment-btn">Comment</button>
+            </div>
+        </div>
+    </div>
+</div>

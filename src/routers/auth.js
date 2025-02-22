@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import jwt from 'jsonwebtoken'
 import User from '../models/User.js';
 
 const router = new Router();
@@ -35,17 +36,15 @@ router.post('/login', async (req, res, next) => {
         }
 
         const user = await User.findOne({ email });
-
         if (!user) return res.status(400).json({ message: "User not found." });
 
-        const isMatch = user.comparePassword(password);
-
+        const isMatch = await user.comparePassword(password);
         if (!isMatch) return res.status(400).json({ message: "Invalid password." });
 
         const token = jwt.sign({ id: user._id }, process.env.TOKEN_KEY);
 
         res.cookie('token', token, { httpOnly: true, secure: true }); // httpOnly захищає від доступу через JS
-        res.status(200).json({ message: "Successful signup." });
+        res.status(200).json({ message: "Successful login." });
     } catch (err) {
         next(err);
     }
@@ -53,7 +52,9 @@ router.post('/login', async (req, res, next) => {
 
 router.post('/logout', (req, res, next) => {
     try {
-        res.clearCookie('login');
+        console.log('log');
+        
+        res.clearCookie('token');
         return res.redirect('/');
     } catch (err) {
         next(err);

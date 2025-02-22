@@ -47,7 +47,7 @@
                 </div>
             </button>
             <nav class="content" hidden>
-                <a href="/channel">
+                <a href="/channel/<%= user.login %>">
                     <div>
                         <svg width="24px" height="24px" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
                             <g id="layer1">
@@ -125,7 +125,7 @@
                     <h1>Theme</h1>
                 </button>
                 <div class="v-line"></div>
-                <a href="/logout" method="POST">
+                <a href="api/auth/logout" method="POST">
                     <div>
                         <svg fill="#000000" width="24px" height="24px" viewBox="0 0 32 32" version="1.1"
                             xmlns="http://www.w3.org/2000/svg">

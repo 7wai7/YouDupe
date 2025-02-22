@@ -188,8 +188,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
             
-            // Додаємо текстові поля
-            formData.append("duration", uploadedVideo.duration);
             formData.append("title", document.getElementById('video-title-textarea').value);
             formData.append("description", document.getElementById('video-description-textarea').value);
 
@@ -200,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         const fileType = blob.type || "video/mp4"; // Якщо тип невідомий, встановлюємо MP4
                         const fileExt = fileType.split("/")[1] || "mp4"; // Отримуємо розширення
                         const videoFile = new File([blob], `video.${fileExt}`, { type: fileType });
-
+                        
                         formData.append("video", videoFile);
 
                         if (videoPreview.file) {

@@ -20,6 +20,7 @@ main {
 .metadata-row {
     display: inline-flex;
     gap: 10px;
+    width: 60%;
 }
 
 .avatar {
@@ -34,7 +35,6 @@ main {
     flex-flow: column;
     align-items: start;
     justify-content: space-between;
-    width: 50%;
 }
 
 .meta .name {
@@ -48,6 +48,8 @@ main {
 }
 
 .meta .about {
+    margin-top: 6px;
+    font-size: 14px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;

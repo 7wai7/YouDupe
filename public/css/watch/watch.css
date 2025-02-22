@@ -327,6 +327,7 @@ main > .bottom {
   display: flex;
   flex-flow: column;
   gap: 10px;
+  width: 440px;
 }
 
 
@@ -335,7 +336,7 @@ main > .bottom {
   display: flex;
   flex-flow: row;
   gap: 6px;
-  width: 440px;
+  width: 100%;
 }
 
 .rec-video .dropdown {

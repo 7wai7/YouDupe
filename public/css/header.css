@@ -144,7 +144,7 @@ header {
     margin-bottom: 30px;
 }
 
-form {
+#form {
     position: relative;
     display: flex;
     flex-flow: column;
@@ -154,12 +154,12 @@ form {
     gap: 10px;
 }
 
-form button[type="submit"] {
+#form #submit {
     margin-top: 30px;
 }
 
-form button[type="submit"],
-form input {
+#form #submit,
+#form input {
     outline: none;
     padding: 8px 10px;
     border: 1px solid #000;
@@ -167,11 +167,11 @@ form input {
     width: 60%;
 }
 
-form input:focus {
+#form input:focus {
     border: 1px solid gray;
 }
 
-form button[type="submit"]:hover {
+#form #submit:hover {
     color: #fff;
     background: #000;
 }
@@ -186,11 +186,6 @@ form button[type="submit"]:hover {
     width: 60%;
 }
 
-#password,
-#confirmPassword {
-    width: 100%;
-}
-
 #toggle-password,
 #toggle-confirmPassword {
     position: absolute;
@@ -198,6 +193,11 @@ form button[type="submit"]:hover {
     right: 10px;
     transform: translateY(-50%);
     cursor: pointer;
+}
+
+#password,
+#confirmPassword {
+    width: 100%;
 }
 
 

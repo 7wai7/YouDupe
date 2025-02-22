@@ -1,4 +1,9 @@
 
+async function checkAuth() {
+    const response = await fetch('/api/me', { method: 'GET' });
+    return response.ok;
+}
+
 function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -6,6 +11,31 @@ function formatTime(seconds) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+
+    try {
+        const actionsList = document.querySelectorAll("a[method]");
+
+        actionsList.forEach((e) => {
+            e.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                const href = e.getAttribute('href');
+                const method = e.getAttribute('method');
+
+                fetch(href, {
+                    method,
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" }
+                })
+                    .then(response => {
+                        console.log(response);
+
+                    })
+                    .catch(console.error);
+            });
+        });
+    } catch (error) {
+        console.error(error);
+    }
 
     // SEARCH TEXT AREA
     try {

@@ -1,13 +1,15 @@
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
-
+    console.log(await checkAuth());
+    
 
     try {
         const authoriseBtn = document.querySelector('.authorise-btn');
         const modal = document.getElementById("auth-modal");
         
-        const form = modal.querySelector('form');
+        const form = document.getElementById('form');
+        const submitBtn = document.getElementById('submit');
         const showSignupPanelBtn = document.getElementById("show-signup-panel-btn");
         const forgotPasswordBtn = document.querySelector('.forgot-password-btn');
         
@@ -26,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
             forgotPasswordBtn.removeAttribute('hidden');
             
             modal.querySelector('h2').innerHTML = "Login";
-            modal.querySelector('[type="submit"]').innerHTML = "Login";
+            document.getElementById('submit').innerHTML = "Login";
         }
 
         function showSignupPanel() {
@@ -39,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
             forgotPasswordBtn.setAttribute('hidden', '');
 
             modal.querySelector('h2').innerHTML = "Signup";
-            modal.querySelector('[type="submit"]').innerHTML = "Signup";
+            document.getElementById('submit').innerHTML = "Signup";
         }
 
         function clearForm() {
@@ -63,6 +65,31 @@ document.addEventListener("DOMContentLoaded", () => {
         showSignupPanelBtn.addEventListener('click', (event) => {
             showSignupPanel();
         });
+
+        submitBtn.addEventListener('click', (event) => {
+            const action = form.getAttribute('action');
+
+            fetch(action, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    login: login.value,
+                    email: email.value,
+                    password: passwordContainer.querySelector('input').value,
+                    confirmedPassword: confirmPasswordContainer.querySelector('input').value,
+                })
+            })
+            .then(response => {
+                if(response.ok) {
+                    window.location.reload();
+                }
+                return response.json()
+            })
+            .then(data => console.log(data))
+            .catch(console.error)
+        })
 
     } catch (error) {
         console.error(error);

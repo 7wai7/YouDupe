@@ -94,14 +94,3 @@ header {
     border: 2px solid #000;
     border-radius: 100%;
 }
-
-
-.dropdown .v-line {
-    background: lightgray;
-    width: 100%;
-    height: 1px;
-}
-
-.dropdown h1 {
-    font-size: 14px;
-}

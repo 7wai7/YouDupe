@@ -16,9 +16,9 @@
                                             stroke="#000000" stroke-width="1.5" />
                                     </svg>
                                 </a>
-                                <a href="/channel" class="channel-info">
-                                    <h4 class="channel-name">Channel Name</h4>
-                                    <h5 class="followers-number">Followers</h5>
+                                <a href="/channel/<%= userChannel?.login %>" class="channel-info">
+                                    <h4 class="channel-name"><%= userChannel?.login %></h4>
+                                    <h5 class="followers-number"><%= followersCount %> followers</h5>
                                 </a>
                                 <button id="subscribe-btn" class="subscribe-btn">Subscribe</button>
                             </div>
@@ -82,7 +82,7 @@
                                                         stroke-width="1.33358" />
                                                 </svg>
                                             </div>
-                                            <div>Download</div>
+                                            <h1>Download</h1>
                                         </a>
                                         <button>
                                             <div>
@@ -93,7 +93,7 @@
                                                         stroke="#121923" stroke-width="1.7442" />
                                                 </svg>
                                             </div>
-                                            <div>Watch later</div>
+                                            <h1>Watch later</h1>
                                         </button>
                                         <button>
                                             <div>
@@ -103,7 +103,7 @@
                                                         d="M 17,1.8640303 V 14.10472 a 1.6172688,1.8707597 0 0 1 -1.611451,1.864029 H 9.3179728 l -1.483466,2.750624 a 0.39704531,0.45927822 0 0 1 -0.7315523,0 L 5.6194886,15.968749 H -0.38709434 A 1.6172688,1.8707597 0 0 1 -2,14.10472 V 1.8640303 A 1.6172688,1.8707597 0 0 1 -0.38854871,0 H 15.388549 A 1.6172688,1.8707597 0 0 1 17,1.8640303 Z M 8.526791,12.048903 A 1.0267912,1.1877305 0 1 0 7.4999999,13.234951 1.0267912,1.1877305 0 0 0 8.526791,12.048903 Z M 6.6942742,8.970225 a 0.80572565,0.93201513 0 1 0 1.6114512,0 V 3.5278623 a 0.80572565,0.93201513 0 1 0 -1.6114512,0 z" />
                                                 </svg>
                                             </div>
-                                            <div>Complain</div>
+                                            <h1>Complain</h1>
                                         </button>
                                     </nav>
                                 </div>
@@ -138,8 +138,8 @@
                                     <div class="text">Sorting</div>
                                 </button>
                                 <nav class="content" hidden>
-                                    <button class="dropdown-link">Better</button>
-                                    <button class="dropdown-link">Newer</button>
+                                    <button>Better</button>
+                                    <button>Newer</button>
                                 </nav>
                             </div>
                         </div>

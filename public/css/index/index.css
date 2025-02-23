@@ -26,25 +26,6 @@ main {
     margin: 20px 20px;
 }
 
-.contents .preview {
-    background: #000;
-    display: flex;
-    align-items: center;
-    border: 1px solid #000;
-    aspect-ratio: 24 / 14; 
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-}
-
-.video-duration {
-    color: #fff;
-    background-color: #0000008a;
-    padding: 0 4px;
-    position: absolute;
-    inset: auto 5px 5px auto;
-  }
-
 .contents .details {
     display: flex;
     flex-flow: row;

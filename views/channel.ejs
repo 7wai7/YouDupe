@@ -36,13 +36,14 @@
             <button id="popular-videos-btn">Popular</button>
         </div>
         <div class="content">
-            <% for (let i = 0; i < 6; i++) { %>
-                <a href="#" class="video">
+            <% videos.forEach(video => { %>
+                <a href="/watch?v=<%= video._id %>" class="video">
                     <div class="preview">
-                        <img src="/img/media-play.svg" alt="">
+                        <img src="/api/previews/<%= video._id %>" alt="">
+                        <div class="video-duration"><%= formatTime(video.duration) %></div>
                     </div>
                     <div class="metadata">
-                        <h1 class="title">Title</h1>
+                        <h1 class="title"><%= video.title %></h1>
                         <div class="meta-row">
                             <h1>0</h1>
                             <h1>Views</h1>
@@ -52,7 +53,13 @@
                         </div>
                     </div>
                 </a>
-            <% } %>
+            <% }); %>
         </div>
     </div>
 </main>
+
+<% function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+} %>

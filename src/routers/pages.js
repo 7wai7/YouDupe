@@ -36,7 +36,7 @@ router.get('/watch', authMiddleware, async (req, res) => {
     if(!video) return res.redirect('/');
 
     const userChannel = await User.findById(video.user);
-    /* if(!userChannel) return res.redirect('/'); */
+    if(!userChannel) return res.redirect('/');
 
     const followers = await Follower.find({ user: userChannel._id });
     const followersCount = followers.length;
@@ -57,10 +57,9 @@ router.get('/channel/:login', authMiddleware, async (req, res) => {
     const userLogin = req.params.login;
 
     const userChannel = await User.findOne({ login: userLogin });
+    if(!userChannel) return res.redirect('/');
 
-    if(!userChannel) {
-        return res.redirect('/');
-    }
+    const videos = await Video.find({ user: userChannel._id });
 
     res.render('channel', {
         title: userChannel.login,
@@ -68,7 +67,8 @@ router.get('/channel/:login', authMiddleware, async (req, res) => {
         scripts: ["channel/script", 'header'],
         header: '../partials/header',
         user: req.user,
-        userChannel
+        userChannel,
+        videos
     });
 });
 

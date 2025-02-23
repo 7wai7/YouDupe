@@ -13,6 +13,22 @@ function formatTime(seconds) {
 document.addEventListener("DOMContentLoaded", () => {
 
     try {
+        document.getElementById('logout-btn')?.addEventListener('click', (event) => {
+            fetch('api/auth/logout', { method: 'POST' })
+            then(response => {
+                if(response.ok) {
+                    window.location.href = '/';
+                }
+                return response.json();
+            })
+            .then(data => console.log(data))
+            .catch(console.error)
+        })
+    } catch(error) {
+        console.error(error)
+    }
+
+    try {
         const actionsList = document.querySelectorAll("a[method]");
 
         actionsList.forEach((e) => {

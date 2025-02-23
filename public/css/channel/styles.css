@@ -110,16 +110,13 @@ main {
 }
 
 
+
+
 .content {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     row-gap: 40px;
     column-gap: 20px;
-}
-
-.content .preview {
-    border: 1px solid #000;
-    border-radius: 16px;
 }
 
 .content .title {

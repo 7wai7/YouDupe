@@ -9,7 +9,10 @@ const reactionSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Забезпечуємо, щоб реакція була або до коментаря, або до відео, але не до обох одразу
-reactionSchema.index({ user: 1, comment: 1 }, { unique: true, sparse: true });
-reactionSchema.index({ user: 1, video: 1 }, { unique: true, sparse: true });
+reactionSchema.index(
+    { user: 1, comment: 1, video: 1 },
+    { unique: true, partialFilterExpression: { $or: [{ comment: { $ne: null } }, { video: { $ne: null } }] } }
+);
+
 
 export default mongoose.model('Reaction', reactionSchema);

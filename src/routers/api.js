@@ -12,7 +12,7 @@ import { uk } from 'date-fns/locale';
 import { authMiddleware } from '../middlewares/middlewares.js';
 import Video from '../models/Video.js';
 import User from '../models/User.js';
-import { Comment, Reply } from '../models/Comment.js';
+import { Comment } from '../models/Comment.js';
 import Reaction from '../models/Reaction.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -101,7 +101,9 @@ router.get("/video/download/:id", (req, res) => {
 });
 
 
+
 // AJAX GETTERS
+
 router.get("/recommendedVideos/:current_video_id", async (req, res) => {
     const current_video_id = req.params.current_video_id;
     const limit = req.query.limit;
@@ -116,31 +118,69 @@ router.get("/recommendedVideos/:current_video_id", async (req, res) => {
     res.render('partials/recommendedVideo', { videos, layout: false });
 })
 
-router.get("/comments", async (req, res) => {
+router.get("/comments", authMiddleware, async (req, res) => {
     try {
         const videoId = req.query.video;
         let limit = parseInt(req.query.limit) || 10;
         let offset = parseInt(req.query.offset) || 0;
         const sort = req.query.sort || "popular";
 
-        if (!videoId) {
-            return res.status(400).json({ message: "Video ID is required" });
-        }
-
         // Опції сортування: "popular" -> за лайками, "newest" -> за датою
         const sortOptions = sort === "popular" ? { likes: -1 } : { createdAt: -1 };
 
-        const comments = await Comment.find({ video: videoId })
+        const comments = await Comment.find({ video: videoId, parentComment: null })
             .populate('user', 'login') // Підвантажуємо лише логін користувача (оптимізація)
             .sort(sortOptions)
             .skip(offset)
             .limit(limit);
 
+
+        // Отримуємо всі ID коментарів
+        const commentIds = comments.map(comment => comment._id);
+
+        const replies = await Comment.find({ parentComment: { $in: commentIds } })
+        .distinct("parentComment")
+
+        const replySet = new Set(replies.map(id => id.toString())); // Set для швидкого пошуку
+
+        comments.forEach(comment => {
+            comment.hasReply = replySet.has(comment._id.toString());
+        });
+
+
+
+        const reactions = await Reaction.find({ comment: { $in: commentIds } });
+
+        const reactionCount = {};
+        commentIds.forEach(id => reactionCount[id] = { likes: 0, dislikes: 0 });
+
+        reactions.forEach(reaction => {
+            if (reaction.reaction) {
+                reactionCount[reaction.comment].likes++;
+            } else {
+                reactionCount[reaction.comment].dislikes++;
+            }
+        });
+
+        const userId = req.user?._id;
+
+        // Об'єкт для збереження реакцій користувача
+        const userReactions = {};
+        if (userId) {
+            reactions.forEach(reaction => {
+                if (reaction.user.toString() === userId.toString()) {
+                    userReactions[reaction.comment] = reaction.reaction; // true (like) / false (dislike)
+                }
+            });
+        }
+
         res.render('partials/comment', {
             comments,
+            setParentComment: true,
+            reactionCount,
+            userReactions,
             formatDistanceToNow,
             uk,
-            hideRepliesBlock: false,
             layout: false
         });
     } catch (error) {
@@ -149,24 +189,55 @@ router.get("/comments", async (req, res) => {
     }
 });
 
-
-router.get("/comments/replies", async (req, res) => {
+router.get("/comments/replies", authMiddleware, async (req, res) => {
     try {
-        const commentId = req.query.commentId;
+        const videoId = req.query.video;
+        const commentId = req.query.comment;
         let limit = parseInt(req.query.limit) || 10;
         let offset = parseInt(req.query.offset) || 0;
 
-        const comments = Reply.find({ parentComment: commentId })
+
+        const comments = await Comment.find({ video: videoId, parentComment: commentId })
             .populate('user', 'login')
             .sort({ createdAt: 1 })
             .skip(offset)
             .limit(limit);
 
+
+
+        const commentIds = comments.map(comment => comment._id);
+        const reactions = await Reaction.find({ comment: { $in: commentIds } });
+
+        const reactionCount = {};
+        commentIds.forEach(id => reactionCount[id] = { likes: 0, dislikes: 0 });
+
+        reactions.forEach(reaction => {
+            if (reaction.reaction) {
+                reactionCount[reaction.comment].likes++;
+            } else {
+                reactionCount[reaction.comment].dislikes++;
+            }
+        });
+
+        const userId = req.user?._id;
+
+        // Об'єкт для збереження реакцій користувача
+        const userReactions = {};
+        if (userId) {
+            reactions.forEach(reaction => {
+                if (reaction.user.toString() === userId.toString()) {
+                    userReactions[reaction.comment] = reaction.reaction; // true (like) / false (dislike)
+                }
+            });
+        }
+
         res.render('partials/comment', {
             comments,
+            setParentComment: false,
+            reactionCount,
+            userReactions,
             formatDistanceToNow,
             uk,
-            hideRepliesBlock: false,
             layout: false
         });
     } catch (error) {
@@ -358,18 +429,16 @@ router.post("/studio/upload", authMiddleware, async (req, res, next) => {
             { name: "preview", maxCount: 1 }
         ])(req, res, async (err) => {
             if (err) {
-                console.error('Помилка при завантаженні файлів: ' + err);
-                return res.status(500).json({ error: "Помилка при завантаженні файлів" });
+                return res.status(500).json({ error: "Error uploading files" });
             }
             if (!req.files || !req.files.video) {
-                console.log('Відео не завантажено');
-                return res.status(400).json({ error: "Відео не завантажено" });
+                return res.status(400).json({ error: "Video not uploaded" });
             }
 
             ffmpeg.ffprobe(path.join(__dirname, `../../${req.files.video[0].path}`), async function (err, metadata) {
                 if (err) {
-                    console.error("Помилка при отриманні метаданих:", err);
-                    return res.status(500).json({ error: "Не вдалося отримати інформацію про відео" });
+                    console.error("Error retrieving metadata:", err);
+                    return res.status(500).json({ error: "Unable to retrieve video information" });
                 }
 
                 // Зберігаємо інформацію про відео в базу
@@ -380,8 +449,7 @@ router.post("/studio/upload", authMiddleware, async (req, res, next) => {
 
                 await video.save();
 
-                console.log('Відео успішно завантажене');
-                res.json({ message: "Відео успішно завантажене", video });
+                res.json({ message: "Video has been successfully uploaded", video });
             });
         });
     } catch (error) {
@@ -396,6 +464,10 @@ router.post("/comment", authMiddleware, async (req, res) => {
 
         const videoId = req.query.video;
         const text = req.body.text;
+
+        console.log('comment');
+        console.log('videoId', videoId);
+        console.log('text', text);
 
         const comment = new Comment({
             user: req.user,
@@ -415,12 +487,18 @@ router.post("/comment", authMiddleware, async (req, res) => {
 router.post("/comment/reply", authMiddleware, async (req, res) => {
     try {
         if (!req.user) return res.status(401).json({ message: 'Not registered' });
-
+        
+        const videoId = req.query.video;
         const parentCommentId = req.query.parentComment;
         const text = req.body.text;
 
-        const comment = new Reply({
+        console.log('reply');
+        console.log('parentCommentId', parentCommentId);
+        console.log('text', text);
+
+        const comment = new Comment({
             user: req.user,
+            video: videoId,
             parentComment: parentCommentId,
             text
         });
@@ -435,6 +513,8 @@ router.post("/comment/reply", authMiddleware, async (req, res) => {
 })
 
 
+
+// PUTS
 
 router.put("/:type/:id/reaction/:reaction", authMiddleware, async (req, res) => {
     try {
@@ -458,11 +538,11 @@ router.put("/:type/:id/reaction/:reaction", authMiddleware, async (req, res) => 
         if (existingReaction) {
             if (existingReaction.reaction === reaction) {
                 await Reaction.findByIdAndDelete(existingReaction._id);
-                return res.json({ message: "Reaction removed" });
+                return res.json({ message: "Reaction removed", reaction: null });
             } else {
                 existingReaction.reaction = reaction;
                 await existingReaction.save();
-                return res.json({ message: "Reaction updated" });
+                return res.json({ message: "Reaction updated", reaction });
             }
         } else {
             const newReaction = new Reaction({
@@ -471,7 +551,7 @@ router.put("/:type/:id/reaction/:reaction", authMiddleware, async (req, res) => 
                 ...(type === "comment" ? { comment: id } : { video: id })
             });
             await newReaction.save();
-            return res.json({ message: "Reaction added" });
+            return res.json({ message: "Reaction added", reaction: newReaction.reaction });
         }
     } catch (error) {
         console.error(error);

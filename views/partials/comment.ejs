@@ -1,5 +1,5 @@
 <% comments.forEach(comment=> { %>
-    <div class="comment" id="<%= comment._id %>">
+    <div class="comment <%= setParentComment ? 'parentComment' : '' %>" id="<%= comment._id %>" login="<%= comment.user.login %>">
         <div class="comment-wrapper">
             <a href="/channel/<%= comment.user.login %>" class="avatar-link">
                 <svg width="34px" height="34px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -19,12 +19,31 @@
                     <div class="comment-date">
                         <%= timeAgo(comment.createdAt) %>
                     </div>
+                    <div class="dropdown edit-comment-dropdown">
+                        <button class="edit-comment-btn">
+                            <svg width="16px" height="16px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12.15 28.012v-0.85c0.019-0.069 0.050-0.131 0.063-0.2 0.275-1.788 1.762-3.2 3.506-3.319 1.95-0.137 3.6 0.975 4.137 2.787 0.069 0.238 0.119 0.488 0.181 0.731v0.85c-0.019 0.056-0.050 0.106-0.056 0.169-0.269 1.65-1.456 2.906-3.081 3.262-0.125 0.025-0.25 0.063-0.375 0.094h-0.85c-0.056-0.019-0.113-0.050-0.169-0.056-1.625-0.262-2.862-1.419-3.237-3.025-0.037-0.156-0.081-0.3-0.119-0.444zM20.038 3.988l-0 0.85c-0.019 0.069-0.050 0.131-0.056 0.2-0.281 1.8-1.775 3.206-3.538 3.319-1.944 0.125-3.588-1-4.119-2.819-0.069-0.231-0.119-0.469-0.175-0.7v-0.85c0.019-0.056 0.050-0.106 0.063-0.162 0.3-1.625 1.244-2.688 2.819-3.194 0.206-0.069 0.425-0.106 0.637-0.162h0.85c0.056 0.019 0.113 0.050 0.169 0.056 1.631 0.269 2.863 1.419 3.238 3.025 0.038 0.15 0.075 0.294 0.113 0.437zM20.037 15.575v0.85c-0.019 0.069-0.050 0.131-0.063 0.2-0.281 1.794-1.831 3.238-3.581 3.313-1.969 0.087-3.637-1.1-4.106-2.931-0.050-0.194-0.094-0.387-0.137-0.581v-0.85c0.019-0.069 0.050-0.131 0.063-0.2 0.275-1.794 1.831-3.238 3.581-3.319 1.969-0.094 3.637 1.1 4.106 2.931 0.050 0.2 0.094 0.394 0.137 0.588z" fill="#000"></path>
+                            </svg>
+                        </button>
+                        <nav class="content" hidden>
+                            <button>
+                                <div>
+                                    <svg fill="#000000" width="24px" height="24px" viewBox="-2 0 19 19"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M 17,1.8640303 V 14.10472 a 1.6172688,1.8707597 0 0 1 -1.611451,1.864029 H 9.3179728 l -1.483466,2.750624 a 0.39704531,0.45927822 0 0 1 -0.7315523,0 L 5.6194886,15.968749 H -0.38709434 A 1.6172688,1.8707597 0 0 1 -2,14.10472 V 1.8640303 A 1.6172688,1.8707597 0 0 1 -0.38854871,0 H 15.388549 A 1.6172688,1.8707597 0 0 1 17,1.8640303 Z M 8.526791,12.048903 A 1.0267912,1.1877305 0 1 0 7.4999999,13.234951 1.0267912,1.1877305 0 0 0 8.526791,12.048903 Z M 6.6942742,8.970225 a 0.80572565,0.93201513 0 1 0 1.6114512,0 V 3.5278623 a 0.80572565,0.93201513 0 1 0 -1.6114512,0 z" />
+                                    </svg>
+                                </div>
+                                <h1>Complain</h1>
+                            </button>
+                        </nav>
+                    </div>
                 </div>
                 <div class="comment-text">
                     <%= comment.text %>
                 </div>
-                <div class="comment-bottom like-dislike-wrapper">
-                    <button class="like">
+                <div class="comment-bottom like-dislike-wrapper reaction-comment">
+                    <button class="like" <%= userReactions[comment._id] === true ? 'selected' : '' %>>
                         <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -36,10 +55,10 @@
                         </svg>
                     </button>
                     <h6>
-                        <%= comment.likes %>
+                        <%= reactionCount[comment._id].likes %>
                     </h6>
                     <div class="v-line"></div>
-                    <button class="dislike">
+                    <button class="dislike" <%= userReactions[comment._id] === false ? 'selected' : '' %>>
                         <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path id="vector"
@@ -50,10 +69,10 @@
                                 stroke="#000000" stroke-width="1.5" />
                         </svg>
                     </button>
-                    <h6">
-                        <%= comment.dislikes %>
-                            </h6>
-                            <button class="reply-btn">Reply</button>
+                    <h6>
+                        <%= reactionCount[comment._id].dislikes %>
+                    </h6>
+                    <button class="reply-btn">Reply</button>
                 </div>
                 <div class="add-comment-wrapper" hidden>
                     <textarea name="Add comment" class="input-comment-textarea textarea-autosize"
@@ -63,16 +82,20 @@
                         <button class="add-comment-btn">Comment</button>
                     </div>
                 </div>
-                <button class="show-answers" <%= hideRepliesBlock ? 'hidden' : '' %>>Answers</button>
+                <button class="show-answers-btn" <%= comment.hasReply ? '' : 'hidden' %>>Answers</button>
+                <div class="answers-wrapper" hidden>
+                    <div class="answers-container">
+
+                    </div>
+                    <button class="load-other-answers-btn">Other answers</button>
+                </div>
             </div>
         </div>
 
-        <div class="answers-wrapper" <%= hideRepliesBlock ? 'hidden' : '' %>>
-        </div>
     </div>
-    <% }); %>
+<% }); %>
 
 <% function timeAgo(date_) {
-    const date = new Date(date_);
+    const date=new Date(date_);
     return formatDistanceToNow(date, { addSuffix: true, locale: uk });
 } %>

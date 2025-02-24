@@ -44,7 +44,8 @@ router.get('/watch', authMiddleware, async (req, res) => {
 
 
     const comments = await Comment.find({ video: video._id });
-    const commentsCount = comments.length;
+    /* const replies = await Reply.find({ video: video._id }) */
+    const commentsCount = comments.length/*  + replies.length */;
 
     res.render('watchVideo', {
         title: id,

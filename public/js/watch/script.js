@@ -3,7 +3,7 @@ function setActionReaction(wrapper) {
     const like = wrapper.querySelector('.like');
     const dislike = wrapper.querySelector('.dislike');
 
-    like.addEventListener('click', () => {
+    /* like.addEventListener('click', () => {
         const isLiked = like.hasAttribute('selected');
         like.toggleAttribute('selected', !isLiked);
         dislike.removeAttribute('selected');
@@ -13,7 +13,7 @@ function setActionReaction(wrapper) {
         const isDisliked = dislike.hasAttribute('selected');
         dislike.toggleAttribute('selected', !isDisliked);
         like.removeAttribute('selected');
-    });
+    }); */
 }
 
 function setActionAddComment(wrapper) {
@@ -26,15 +26,17 @@ function setActionAddComment(wrapper) {
         commentArea.value = '';
         if (text === "") return;
 
-        const parentComment = wrapper.closest("comment");
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const videoId = urlParams.get('v');
+
+        const parentComment = wrapper.closest(".parentComment");
         let url;
 
         if(parentComment) {
             const parentCommentId = parentComment.id ;
-            url = `/comment/reply?parentComment=${parentCommentId}`;
+            url = `/comment/reply?video=${videoId}&parentComment=${parentCommentId}`;
         } else {
-            const urlParams = new URLSearchParams(window.location.search);
-            const videoId = urlParams.get('v');
             url = `/comment?video=${videoId}`;
         }
 
@@ -66,6 +68,93 @@ function setActionAddComment(wrapper) {
     });
 }
 
+function setCommentActions(container) {
+    container.querySelectorAll('.add-comment-wrapper').forEach(setActionAddComment)
+
+    container.querySelectorAll('.reply-btn').forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+            const wrapper = btn.closest('.comment-data').querySelector('.add-comment-wrapper');
+            wrapper.removeAttribute('hidden');
+
+            const commenter = btn.closest('.comment').getAttribute('login');
+            btn.closest('.comment-data').querySelector('.input-comment-textarea').value = `${commenter}, `;
+        })
+    })
+
+    container.querySelectorAll('.cancel-comment-btn').forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+            const wrapper = btn.closest('.add-comment-wrapper');
+            wrapper.setAttribute('hidden', '');
+            wrapper.querySelector('.input-comment-textarea').value = '';
+        })
+    })
+
+
+    container.querySelectorAll('.like-dislike-wrapper').forEach(wrapper => {
+        const type = wrapper.classList.contains('reaction-comment') ? 'comment' : wrapper.classList.contains('reaction-video') ? 'video' : null;
+        if(!type) return;
+
+        const like = wrapper.querySelector('.like');
+        const dislike = wrapper.querySelector('.dislike');
+
+        like.addEventListener('click', (event) => {
+            const id = type === 'comment' ? like.closest('.comment').id : new URLSearchParams(window.location.search).get('v');
+
+            const isLiked = like.hasAttribute('selected');
+            like.toggleAttribute('selected', !isLiked);
+            dislike.removeAttribute('selected');
+
+            fetch(`/api/${type}/${id}/reaction/1`, {
+                method: 'PUT',
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }
+            })
+            .catch(console.error);
+        });
+    
+        dislike.addEventListener('click', (event) => {
+            const id = type === 'comment' ? dislike.closest('.comment').id : new URLSearchParams(window.location.search).get('v');
+
+            const isDisliked = dislike.hasAttribute('selected');
+            dislike.toggleAttribute('selected', !isDisliked);
+            like.removeAttribute('selected');
+            
+            fetch(`/api/${type}/${id}/reaction/0`, {
+                method: 'PUT',
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }
+            })
+            .catch(console.error);
+        });
+    });
+
+    container.querySelectorAll(".textarea-autosize").forEach(setActionAutosizeTextarea);
+    container.querySelectorAll('.dropdown').forEach(setActionDropdown);
+}
+
+function loadReplies(container) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const videoId = urlParams.get('v');
+
+    const commentId = container.closest('.parentComment').id;
+    const offset = container.children.length;
+
+    fetch(`/api/comments/replies?video=${videoId}&comment=${commentId}&limit=10&offset=${offset}`, { method: 'GET' })
+    .then(response => response.text())
+    .then(htmlText => {
+        // Створюємо тимчасовий контейнер для перетворення рядка в HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = htmlText;
+
+        setCommentActions(tempDiv);
+        
+        // Додаємо всі отримані елементи в DOM
+        while (tempDiv.firstChild) {
+            container.appendChild(tempDiv.firstChild);
+        }
+
+        tempDiv.remove();
+    })
+}
+
 function loadComments() {
     const urlParams = new URLSearchParams(window.location.search);
     const currentVideoId = urlParams.get('v');
@@ -82,57 +171,31 @@ function loadComments() {
         tempDiv.innerHTML = htmlText;
 
 
-        tempDiv.querySelectorAll('.like-dislike-wrapper').forEach(setActionReaction);
-        tempDiv.querySelectorAll('.add-comment-wrapper').forEach(setActionAddComment)
-
-        tempDiv.querySelectorAll('.show-answers').forEach((btn) => {
+        setCommentActions(tempDiv);
+        
+        tempDiv.querySelectorAll('.show-answers-btn').forEach((btn) => {
             btn.addEventListener('click', (event) => {
                 const wrapper = btn.closest('.comment').querySelector('.answers-wrapper');
-                wrapper.hasAttribute('hidden') ? wrapper.removeAttribute('hidden') : wrapper.setAttribute('hidden', '');
+                const container = wrapper.querySelector('.answers-container');
+    
+               if(wrapper.hasAttribute('hidden')) {
+                    wrapper.removeAttribute('hidden');
+    
+                    loadReplies(container);
+                } else {
+                    wrapper.setAttribute('hidden', '')
+                }
             })
         })
 
-        tempDiv.querySelectorAll('.reply-btn').forEach((btn) => {
+        tempDiv.querySelectorAll('.load-other-answers-btn').forEach(btn => {
             btn.addEventListener('click', (event) => {
-                const wrapper = btn.closest('.comment-data').querySelector('.add-comment-wrapper');
-                wrapper.removeAttribute('hidden');
+                const wrapper = btn.closest('.comment').querySelector('.answers-wrapper');
+                const container = wrapper.querySelector('.answers-container');
+                
+                loadReplies(container);
             })
         })
-
-        tempDiv.querySelectorAll('.cancel-comment-btn').forEach((btn) => {
-            btn.addEventListener('click', (event) => {
-                const wrapper = btn.closest('.add-comment-wrapper');
-                wrapper.setAttribute('hidden', '');
-                wrapper.querySelector('.input-comment-textarea').value = '';
-            })
-        })
-
-        tempDiv.querySelectorAll('.like').forEach((btn) => {
-            btn.addEventListener('click', (event) => {
-                const commentId = btn.closest('.comment').id;
-
-                fetch(`/api/comment/${commentId}/reaction/1`, {
-                    method: 'PUT',
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" }
-                })
-                    .catch(console.error);
-            });
-        });
-
-        tempDiv.querySelectorAll('.dislike').forEach((btn) => {
-            btn.addEventListener('click', (event) => {
-                const commentId = btn.closest('.comment').id;
-
-                fetch(`/api/comment/${commentId}/reaction/0`, {
-                    method: 'PUT',
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" }
-                })
-                    .catch(console.error);
-            });
-        });
-
-        tempDiv.querySelectorAll(".textarea-autosize").forEach(setActionAutosizeTextarea);
-
 
         // Додаємо всі отримані елементи в DOM
         while (tempDiv.firstChild) {
@@ -178,6 +241,15 @@ document.addEventListener("DOMContentLoaded", () => {
     
     try {
         loadComments();
+    } catch (error) {
+        console.error(error);
+    }
+
+
+    
+    try {
+
+
     } catch (error) {
         console.error(error);
     }

@@ -13,16 +13,16 @@ function formatTime(seconds) {
 }
 
 function setActionAutosizeTextarea(textarea) {
-    const style = window.getComputedStyle(textarea);
-    const lineHeight = parseFloat(style.lineHeight); // Отримуємо висоту одного рядка
-    textarea.style.height = lineHeight + "px"; // Встановлюємо висоту під один рядок
     textarea.style.overflowY = "hidden";
+    
+    const style = window.getComputedStyle(textarea);
+    const lineHeight = parseFloat(style.lineHeight);
+    textarea.style.height =  "24px";
 
     textarea.addEventListener("input", function() {
         const style = window.getComputedStyle(this);
         const lineHeight = parseFloat(style.lineHeight);
         this.style.height = lineHeight + "px";
-
         this.style.height = Math.max(this.scrollHeight, lineHeight) + "px";
     });
 }
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
         document.getElementById('logout-btn')?.addEventListener('click', (event) => {
             fetch('api/auth/logout', { method: 'POST' })
-            then(response => {
+            .then(response => {
                 if(response.ok) {
                     window.location.href = '/';
                 }

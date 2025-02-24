@@ -20,33 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } */
 
 
-    
-    /* try {
-        document.querySelectorAll('.show-answers').forEach((btn) => {
-            btn.addEventListener('click', (event) => {
-                const wrapper = btn.parentElement.querySelector('.answers-wrapper');
-                wrapper.hasAttribute('hidden') ? wrapper.removeAttribute('hidden') : wrapper.setAttribute('hidden', '');
-            })
-        })
-
-        document.querySelectorAll('.reply-btn').forEach((btn) => {
-            btn.addEventListener('click', (event) => {
-                const wrapper = btn.closest('.comment-data').querySelector('.add-comment-wrapper');
-                wrapper.removeAttribute('hidden');
-            })
-        })
-
-        document.querySelectorAll('.cancel-comment-btn').forEach((btn) => {
-            btn.addEventListener('click', (event) => {
-                const wrapper = btn.closest('.add-comment-wrapper');
-                wrapper.setAttribute('hidden', '');
-                wrapper.querySelector('.input-comment-textarea').value = '';
-            })
-        })
-    } catch (error) {
-        console.error(error);
-    } */
-
 
 
 

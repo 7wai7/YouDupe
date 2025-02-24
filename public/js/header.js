@@ -1,9 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    console.log(await checkAuth());
-    
-
     try {
         const authoriseBtn = document.querySelector('.authorise-btn');
         const modal = document.getElementById("auth-modal");

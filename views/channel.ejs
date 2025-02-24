@@ -32,34 +32,11 @@
             </div>
         </div>
         <div id="content-top-row">
-            <button id="newer-videos-btn" active>Newer</button>
-            <button id="popular-videos-btn">Popular</button>
+            <button id="newer-videos-btn" sort="newer" active>Newer</button>
+            <button id="popular-videos-btn" sort="popular" >Popular</button>
         </div>
-        <div class="content">
-            <% videos.forEach(video => { %>
-                <a href="/watch?v=<%= video._id %>" class="video">
-                    <div class="preview">
-                        <img src="/api/previews/<%= video._id %>" alt="">
-                        <div class="video-duration"><%= formatTime(video.duration) %></div>
-                    </div>
-                    <div class="metadata">
-                        <h1 class="title"><%= video.title %></h1>
-                        <div class="meta-row">
-                            <h1>0</h1>
-                            <h1>Views</h1>
-                            <h1>•</h1>
-                            <h1>0</h1>
-                            <h1>ago</h1>
-                        </div>
-                    </div>
-                </a>
-            <% }); %>
+        <div id="content">
+            
         </div>
     </div>
 </main>
-
-<% function formatTime(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${minutes}:${secs.toString().padStart(2, '0')}`;
-} %>

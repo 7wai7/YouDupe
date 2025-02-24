@@ -1,75 +1,27 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    try {
+    /* try {
         const wrappers = document.querySelectorAll('.like-dislike-wrapper');
-
-        wrappers.forEach(wrapper => {
-            const like = wrapper.querySelector('.like');
-            const dislike = wrapper.querySelector('.dislike');
-
-            like.addEventListener('click', () => {
-                const isLiked = like.hasAttribute('selected');
-                like.toggleAttribute('selected', !isLiked);
-                dislike.removeAttribute('selected');
-            });
-
-            dislike.addEventListener('click', () => {
-                const isDisliked = dislike.hasAttribute('selected');
-                dislike.toggleAttribute('selected', !isDisliked);
-                like.removeAttribute('selected');
-            });
-        });
-
-
+        wrappers.forEach(setReactionActions);
     } catch (error) {
         console.error(error);
-    }
+    } */
 
 
 
     // ADD COMMENT
-    try {
+    /* try {
         document.querySelectorAll('.add-comment-wrapper').forEach((wrapper) => {
-            const commentArea = wrapper.querySelector(".input-comment-textarea");
-            const addCommentBtn = wrapper.querySelector(".add-comment-btn");
-    
-            function addComment() {
-                const savedText = commentArea.value;
-                const text = commentArea.value.trim();
-                commentArea.value = '';
-
-                if (text === "") return;
-    
-                fetch('/add_comment', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: { text }
-                })
-                    .then(response => response.json())
-                    .catch(err => {
-                        commentArea.value = savedText;
-                        console.error(err);
-                    })
-            }
-    
-            addCommentBtn.addEventListener("click", addComment);
-    
-            commentArea.addEventListener("keydown", (event) => {
-                if (event.ctrlKey && event.key === "Enter") {
-                    addComment();
-                }
-            });
+            
         })
     } catch (error) {
         console.error(error);
-    }
+    } */
 
 
     
-    try {
+    /* try {
         document.querySelectorAll('.show-answers').forEach((btn) => {
             btn.addEventListener('click', (event) => {
                 const wrapper = btn.parentElement.querySelector('.answers-wrapper');
@@ -93,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
     } catch (error) {
         console.error(error);
-    }
+    } */
 
 
 

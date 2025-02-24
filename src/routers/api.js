@@ -6,16 +6,22 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import { dirname } from 'path';
 import { log } from 'console';
+import { formatDistanceToNow } from 'date-fns';
+import { uk } from 'date-fns/locale';
+
 import { authMiddleware } from '../middlewares/middlewares.js';
 import Video from '../models/Video.js';
+import User from '../models/User.js';
+import { Comment, Reply } from '../models/Comment.js';
+import Reaction from '../models/Reaction.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        if(file.fieldname === 'video') cb(null, "videos/");
-        else if(file.fieldname === 'preview') cb(null, "previews/");
+        if (file.fieldname === 'video') cb(null, "videos/");
+        else if (file.fieldname === 'preview') cb(null, "previews/");
     },
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
@@ -31,7 +37,7 @@ const router = new Router();
 // GETTERS
 
 router.get('/me', authMiddleware, (req, res) => {
-    if(req.user) res.status(200).json({ message: 'Authorised' });
+    if (req.user) res.status(200).json({ message: 'Authorised' });
     else res.status(401).json({ message: 'Not registered' });
 });
 
@@ -98,6 +104,8 @@ router.get("/video/download/:id", (req, res) => {
 // AJAX GETTERS
 router.get("/recommendedVideos/:current_video_id", async (req, res) => {
     const current_video_id = req.params.current_video_id;
+    const limit = req.query.limit;
+    const offset = req.query.offset;
 
     let videos = await Video.find();
 
@@ -108,7 +116,66 @@ router.get("/recommendedVideos/:current_video_id", async (req, res) => {
     res.render('partials/recommendedVideo', { videos, layout: false });
 })
 
-router.get("/studio/upload", (req, res) => {
+router.get("/comments", async (req, res) => {
+    try {
+        const videoId = req.query.video;
+        let limit = parseInt(req.query.limit) || 10;
+        let offset = parseInt(req.query.offset) || 0;
+        const sort = req.query.sort || "popular";
+
+        if (!videoId) {
+            return res.status(400).json({ message: "Video ID is required" });
+        }
+
+        // Опції сортування: "popular" -> за лайками, "newest" -> за датою
+        const sortOptions = sort === "popular" ? { likes: -1 } : { createdAt: -1 };
+
+        const comments = await Comment.find({ video: videoId })
+            .populate('user', 'login') // Підвантажуємо лише логін користувача (оптимізація)
+            .sort(sortOptions)
+            .skip(offset)
+            .limit(limit);
+
+        res.render('partials/comment', {
+            comments,
+            formatDistanceToNow,
+            uk,
+            hideRepliesBlock: false,
+            layout: false
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
+});
+
+
+router.get("/comments/replies", async (req, res) => {
+    try {
+        const commentId = req.query.commentId;
+        let limit = parseInt(req.query.limit) || 10;
+        let offset = parseInt(req.query.offset) || 0;
+
+        const comments = Reply.find({ parentComment: commentId })
+            .populate('user', 'login')
+            .sort({ createdAt: 1 })
+            .skip(offset)
+            .limit(limit);
+
+        res.render('partials/comment', {
+            comments,
+            formatDistanceToNow,
+            uk,
+            hideRepliesBlock: false,
+            layout: false
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
+})
+
+router.get("/studio/load", (req, res) => {
     const filter = req.query.filter || "date";
     const sort = req.query.sort || "down";
 
@@ -116,6 +183,29 @@ router.get("/studio/upload", (req, res) => {
 
     res.json({ message: 'success' });
 });
+
+router.get("/channel/:login/load", async (req, res) => {
+    try {
+        const userLogin = req.params.login;
+        const sort = req.query.sort || "newer";
+
+        const userChannel = await User.findOne({ login: userLogin });
+        if (!userChannel) return res.status(404).render('partials/channelVideo', { videos: [], layout: false });
+
+        const sortOptions = sort === "popular" ? { likes: -1 } : { createdAt: -1 };
+        const videos = await Video.find({ user: userChannel._id }).sort(sortOptions);
+
+        res.render('partials/channelVideo', {
+            videos,
+            formatDistanceToNow,
+            uk,
+            layout: false
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
+})
 
 
 
@@ -256,8 +346,8 @@ router.get("/studio/upload", (req, res) => {
 
 router.post("/studio/upload", authMiddleware, async (req, res, next) => {
     try {
-        if(!req.user) return res.status(401).json({ message: 'Not registered'});
-        
+        if (!req.user) return res.status(401).json({ message: 'Not registered' });
+
         // Створюємо новий документ в базі (ID буде одразу доступним)
         const video = new Video({});
         req.videoId = video._id.toString(); // Зберігаємо ID для використання в Multer
@@ -276,12 +366,12 @@ router.post("/studio/upload", authMiddleware, async (req, res, next) => {
                 return res.status(400).json({ error: "Відео не завантажено" });
             }
 
-            ffmpeg.ffprobe(path.join(__dirname, `../../${req.files.video[0].path}`), async function(err, metadata) {
+            ffmpeg.ffprobe(path.join(__dirname, `../../${req.files.video[0].path}`), async function (err, metadata) {
                 if (err) {
                     console.error("Помилка при отриманні метаданих:", err);
                     return res.status(500).json({ error: "Не вдалося отримати інформацію про відео" });
                 }
-                
+
                 // Зберігаємо інформацію про відео в базу
                 video.user = req.user._id;
                 video.duration = metadata.format.duration;
@@ -294,11 +384,100 @@ router.post("/studio/upload", authMiddleware, async (req, res, next) => {
                 res.json({ message: "Відео успішно завантажене", video });
             });
         });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Помилка при завантаженні відео" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
     }
 });
+
+router.post("/comment", authMiddleware, async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).json({ message: 'Not registered' });
+
+        const videoId = req.query.video;
+        const text = req.body.text;
+
+        const comment = new Comment({
+            user: req.user,
+            video: videoId,
+            text
+        });
+
+        await comment.save();
+
+        res.json({ text });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
+})
+
+router.post("/comment/reply", authMiddleware, async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).json({ message: 'Not registered' });
+
+        const parentCommentId = req.query.parentComment;
+        const text = req.body.text;
+
+        const comment = new Reply({
+            user: req.user,
+            parentComment: parentCommentId,
+            text
+        });
+
+        await comment.save();
+
+        res.json({ text });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
+})
+
+
+
+router.put("/:type/:id/reaction/:reaction", authMiddleware, async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).json({ message: 'Not registered' });
+
+        const userId = req.user._id;
+        const { type, id } = req.params;
+        const reaction = Boolean(parseInt(req.params.reaction));
+
+        if (type !== "comment" && type !== "video") {
+            return res.status(400).json({ message: "Invalid reaction type" });
+        }
+
+
+        const filter = { user: userId };
+        if (type === "comment") filter.comment = id;
+        if (type === "video") filter.video = id;
+
+        const existingReaction = await Reaction.findOne(filter);
+
+        if (existingReaction) {
+            if (existingReaction.reaction === reaction) {
+                await Reaction.findByIdAndDelete(existingReaction._id);
+                return res.json({ message: "Reaction removed" });
+            } else {
+                existingReaction.reaction = reaction;
+                await existingReaction.save();
+                return res.json({ message: "Reaction updated" });
+            }
+        } else {
+            const newReaction = new Reaction({
+                user: userId,
+                reaction,
+                ...(type === "comment" ? { comment: id } : { video: id })
+            });
+            await newReaction.save();
+            return res.json({ message: "Reaction added" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
+})
 
 
 

@@ -8,6 +8,7 @@ import Video from '../models/Video.js';
 import { authMiddleware } from '../middlewares/middlewares.js';
 import User from '../models/User.js';
 import Follower from '../models/Follower.js';
+import { Comment } from '../models/Comment.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -41,6 +42,10 @@ router.get('/watch', authMiddleware, async (req, res) => {
     const followers = await Follower.find({ user: userChannel._id });
     const followersCount = followers.length;
 
+
+    const comments = await Comment.find({ video: video._id });
+    const commentsCount = comments.length;
+
     res.render('watchVideo', {
         title: id,
         stylesheets: ["watch/videoPlayer", "watch/watch", 'header'],
@@ -50,6 +55,7 @@ router.get('/watch', authMiddleware, async (req, res) => {
         userChannel,
         followersCount,
         video,
+        commentsCount,
     });
 });
 

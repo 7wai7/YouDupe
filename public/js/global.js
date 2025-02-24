@@ -1,6 +1,8 @@
 
 async function checkAuth() {
     const response = await fetch('/api/me', { method: 'GET' });
+    const message = await response.json();
+    console.log(message);
     return response.ok;
 }
 
@@ -8,6 +10,52 @@ function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
+}
+
+function setActionAutosizeTextarea(textarea) {
+    const style = window.getComputedStyle(textarea);
+    const lineHeight = parseFloat(style.lineHeight); // Отримуємо висоту одного рядка
+    textarea.style.height = lineHeight + "px"; // Встановлюємо висоту під один рядок
+    textarea.style.overflowY = "hidden";
+
+    textarea.addEventListener("input", function() {
+        const style = window.getComputedStyle(this);
+        const lineHeight = parseFloat(style.lineHeight);
+        this.style.height = lineHeight + "px";
+
+        this.style.height = Math.max(this.scrollHeight, lineHeight) + "px";
+    });
+}
+
+function setActionDropdown(dropdown) {
+    const button = dropdown.querySelector('button');
+    const content = dropdown.querySelector('.content');
+
+    button.addEventListener('click', function () {
+        content.hasAttribute('hidden') ? content.removeAttribute('hidden') : content.setAttribute('hidden', '');
+
+        // Отримати розміри кнопки і меню
+        const buttonRect = button.getBoundingClientRect();
+        const contentRect = content.getBoundingClientRect();
+        const screenWidth = window.innerWidth;
+
+        // Якщо меню виходить за праву межу екрану, то зміщуємо його ліворуч
+        if (buttonRect.right + contentRect.width > screenWidth) {
+            content.style.left = 'auto';
+            content.style.right = '0';
+        } else {
+            content.style.left = '0';
+            content.style.right = 'auto';
+        }
+
+        content.style.width = 'max-content';
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!dropdown.contains(event.target)) {
+            content.setAttribute('hidden', '');
+        }
+    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -28,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error(error)
     }
 
-    try {
+    /* try {
         const actionsList = document.querySelectorAll("a[method]");
 
         actionsList.forEach((e) => {
@@ -51,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     } catch (error) {
         console.error(error);
-    }
+    } */
 
     // SEARCH TEXT AREA
     try {
@@ -113,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 
 
-    try {
+    /* try {
         const icons = document.querySelectorAll('.icon');
 
         icons.forEach((icon) => {
@@ -145,78 +193,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     } catch (error) {
         console.error(error);
-    }
+    } */
 
 
 
     try {
-        document.querySelectorAll('.dropdown').forEach(function (dropdown) {
-            const button = dropdown.querySelector('button');
-            const content = dropdown.querySelector('.content');
-
-            button.addEventListener('click', function () {
-                content.hasAttribute('hidden') ? content.removeAttribute('hidden') : content.setAttribute('hidden', '');
-
-                // Отримати розміри кнопки і меню
-                const buttonRect = button.getBoundingClientRect();
-                const contentRect = content.getBoundingClientRect();
-                const screenWidth = window.innerWidth;
-
-                // Якщо меню виходить за праву межу екрану, то зміщуємо його ліворуч
-                if (buttonRect.right + contentRect.width > screenWidth) {
-                    content.style.left = 'auto';
-                    content.style.right = '0';
-                } else {
-                    content.style.left = '0';
-                    content.style.right = 'auto';
-                }
-
-                content.style.width = 'max-content';
-            });
-
-            document.addEventListener('click', function (event) {
-                if (!dropdown.contains(event.target)) {
-                    content.setAttribute('hidden', '');
-                }
-            });
-        });
+        document.querySelectorAll('.dropdown').forEach(setActionDropdown);
     } catch (error) {
         console.error(error);
     }
 
-
-
-
-
-    
     try {
-        document.querySelectorAll(".textarea-autosize").forEach((textarea) => {
-            const style = window.getComputedStyle(textarea);
-            const lineHeight = parseFloat(style.lineHeight); // Отримуємо висоту одного рядка
-            textarea.style.height = lineHeight + "px"; // Встановлюємо висоту під один рядок
-            textarea.style.overflowY = "hidden";
-        
-            textarea.addEventListener("input", function() {
-                const style = window.getComputedStyle(this);
-                const lineHeight = parseFloat(style.lineHeight);
-                this.style.height = lineHeight + "px";
-
-                this.style.height = Math.max(this.scrollHeight, lineHeight) + "px";
-            });
-        });
-
-        /* inputTextAreaComment.addEventListener("paste", function (event) {
-            event.preventDefault();
-            const text = (event.clipboardData || window.Clipboard).getData("text");
-            document.execCommand("insertText", false, text);
-        });
-
-        // Запобігаємо додаванню стилів при введенні
-        inputTextAreaComment.addEventListener("input", function () {
-            document.execCommand("removeFormat");
-        }); */
-
-        
+        document.querySelectorAll(".textarea-autosize").forEach(setActionAutosizeTextarea);
     } catch (error) {
         console.error(error);
     }

@@ -112,14 +112,14 @@ main {
 
 
 
-.content {
+#content {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     row-gap: 40px;
     column-gap: 20px;
 }
 
-.content .title {
+#content .title {
     font-size: 20px;
     font-weight: 500;
     overflow: hidden;
@@ -130,12 +130,12 @@ main {
     -webkit-box-orient: vertical;
 }
 
-.content .meta-row {
+#content .meta-row {
     margin-top: 10px;
     display: inline-flex;
     gap: 6px;
 }
 
-.content .meta-row h1 {
+#content .meta-row h1 {
     font-size: 14px;
 }

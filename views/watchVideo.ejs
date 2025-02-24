@@ -4,10 +4,12 @@
             <div class="bottom">
                 <div class="video-content">
                     <div class="video-data">
-                        <h4 class="title"><%= video.title %></h4>
+                        <h4 class="title">
+                            <%= video.title %>
+                        </h4>
                         <div class="top-row">
                             <div class="owner">
-                                <a href="/channel" class="avatar-link">
+                                <a href="/channel/<%= userChannel.login %>" class="avatar-link">
                                     <svg width="40px" height="40px" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <circle cx="12" cy="6" r="4" stroke="#000000" stroke-width="1.5" />
@@ -17,8 +19,12 @@
                                     </svg>
                                 </a>
                                 <a href="/channel/<%= userChannel.login %>" class="channel-info">
-                                    <h4 class="channel-name"><%= userChannel.login %></h4>
-                                    <h5 class="followers-number"><%= followersCount %> followers</h5>
+                                    <h4 class="channel-name">
+                                        <%= userChannel.login %>
+                                    </h4>
+                                    <h5 class="followers-number">
+                                        <%= followersCount %> followers
+                                    </h5>
                                 </a>
                                 <button id="subscribe-btn" class="subscribe-btn">Subscribe</button>
                             </div>
@@ -73,7 +79,8 @@
                                         </svg>
                                     </button>
                                     <nav class="content" hidden>
-                                        <a href="/video/download/<%= video._id %>" download="sample-video.mp4" id="download">
+                                        <a href="/video/download/<%= video._id %>" download="sample-video.mp4"
+                                            id="download">
                                             <div>
                                                 <svg width="24px" height="24px" viewBox="0 0 24 24"
                                                     xmlns="http://www.w3.org/2000/svg">
@@ -111,15 +118,24 @@
                         </div>
                         <div class="about">
                             <div class="watch-info">
-                                <h5>Views</h5>
-                                <h5>Date</h5>
+                                <h5>
+                                    <%= video.views %> Views
+                                </h5>
+                                <h5>
+                                    <%= new Date(video.createdAt).toLocaleDateString('uk-UA') %>
+                                </h5>
                             </div>
-                            <div class="description-text"><%= video.description %></div>
+                            <div class="description-text">
+                                <%= video.description %>
+                            </div>
                         </div>
                     </div>
                     <div class="comments-white-box">
                         <div class="comments-top-row">
-                            <h4 class="comments-number">Comments</h4>
+                            <h4 class="comments-number">
+                                <%= commentsCount %>
+                                    <%= commentsCount % 10===1 ? ' Comment' : ' Comments' %>
+                            </h4>
                             <div class="dropdown">
                                 <button class="toggle-sorting">
                                     <div>
@@ -153,23 +169,13 @@
                                         stroke="#000000" stroke-width="1.5" />
                                 </svg>
                             </a>
-                            <div class="add-comment-wrapper">
-                                <textarea name="Add comment" class="input-comment-textarea textarea-autosize" maxlength="2600"></textarea>
+                            <div class="add-comment-wrapper" notHide>
+                                <textarea name="Add comment" class="input-comment-textarea textarea-autosize"
+                                    maxlength="2600"></textarea>
                                 <button class="add-comment-btn">Comment</button>
                             </div>
                         </div>
-                        <div class="comments-bottom">
-                            <% for (let i=0; i < 5; i++) { %>
-                                <div class="comment">
-                                    <%- include('partials/comment.ejs') %>
-                                    <button class="show-answers">Answers</button>
-                                    <div class="answers-wrapper" hidden>
-                                        <% for (let i=0; i < 5; i++) { %>
-                                            <%- include('partials/comment.ejs') %>
-                                        <% } %>
-                                    </div>
-                                </div>
-                                <% } %>
+                        <div id="comments-content">
                         </div>
                     </div>
                 </div>

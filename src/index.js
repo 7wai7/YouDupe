@@ -3,11 +3,16 @@ import expressLayout from 'express-ejs-layouts';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import { dirname } from 'path';
 
 import apiRouter from './routers/api.js';
 import pageRoutes from './routers/pages.js';
 import authRoutes from './routers/auth.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
@@ -23,6 +28,7 @@ app.use(expressLayout);
 
 app.set('layout', './layouts/main');
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views')); // Переконайся, що це вказує на правильну директорію
 
 app.use("/api", apiRouter);
 app.use("/api/auth", authRoutes);

@@ -163,7 +163,6 @@ router.get("/comments", authMiddleware, async (req, res) => {
         });
 
         const userId = req.user?._id;
-
         // Об'єкт для збереження реакцій користувача
         const userReactions = {};
         if (userId) {
@@ -220,7 +219,6 @@ router.get("/comments/replies", authMiddleware, async (req, res) => {
         });
 
         const userId = req.user?._id;
-
         // Об'єкт для збереження реакцій користувача
         const userReactions = {};
         if (userId) {
@@ -529,7 +527,7 @@ router.put("/:type/:id/reaction/:reaction", authMiddleware, async (req, res) => 
         }
 
 
-        const filter = { user: userId };
+        let filter = { user: userId };
         if (type === "comment") filter.comment = id;
         if (type === "video") filter.video = id;
 
@@ -538,11 +536,9 @@ router.put("/:type/:id/reaction/:reaction", authMiddleware, async (req, res) => 
         if (existingReaction) {
             if (existingReaction.reaction === reaction) {
                 await Reaction.findByIdAndDelete(existingReaction._id);
-                return res.json({ message: "Reaction removed", reaction: null });
             } else {
                 existingReaction.reaction = reaction;
                 await existingReaction.save();
-                return res.json({ message: "Reaction updated", reaction });
             }
         } else {
             const newReaction = new Reaction({
@@ -551,8 +547,24 @@ router.put("/:type/:id/reaction/:reaction", authMiddleware, async (req, res) => 
                 ...(type === "comment" ? { comment: id } : { video: id })
             });
             await newReaction.save();
-            return res.json({ message: "Reaction added", reaction: newReaction.reaction });
         }
+
+
+        filter = {};
+        if (type === "comment") filter.comment = id;
+        if (type === "video") filter.video = id;
+        
+        const reactions = await Reaction.find(filter);
+        const reactionCount = { likes: 0, dislikes: 0 };
+
+        reactions.forEach(reaction => {
+            if (reaction.reaction) {
+                reactionCount.likes++;
+            } else {
+                reactionCount.dislikes++;
+            }
+        });
+        return res.json({ message: "Reaction added", reactionCount });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error", error });

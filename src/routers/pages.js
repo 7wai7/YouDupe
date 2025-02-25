@@ -9,6 +9,7 @@ import { authMiddleware } from '../middlewares/middlewares.js';
 import User from '../models/User.js';
 import Follower from '../models/Follower.js';
 import { Comment } from '../models/Comment.js';
+import Reaction from '../models/Reaction.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -44,8 +45,25 @@ router.get('/watch', authMiddleware, async (req, res) => {
 
 
     const comments = await Comment.find({ video: video._id });
-    /* const replies = await Reply.find({ video: video._id }) */
-    const commentsCount = comments.length/*  + replies.length */;
+    const commentsCount = comments.length;
+
+
+    const reactions = await Reaction.find({ video: video._id });
+    const reactionCount = { likes: 0, dislikes: 0 };
+
+    reactions.forEach(reaction => {
+        if (reaction.reaction) {
+            reactionCount.likes++;
+        } else {
+            reactionCount.dislikes++;
+        }
+    });
+
+    const userId = req.user?._id;
+    let userReaction = undefined;
+    if (userId) {
+        userReaction = reactions.find(reaction => reaction.user.toString() === userId.toString())?.reaction; // true (like) / false (dislike)   
+    }
 
     res.render('watchVideo', {
         title: id,
@@ -57,6 +75,8 @@ router.get('/watch', authMiddleware, async (req, res) => {
         followersCount,
         video,
         commentsCount,
+        reactionCount,
+        userReaction
     });
 });
 

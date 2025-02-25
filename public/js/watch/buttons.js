@@ -1,23 +1,13 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* try {
-        const wrappers = document.querySelectorAll('.like-dislike-wrapper');
-        wrappers.forEach(setReactionActions);
+    try {
+        const wrapper = document.querySelector('.like-dislike-wrapper.reaction-video');
+        setActionReaction(wrapper, 'video', new URLSearchParams(window.location.search).get('v'));
     } catch (error) {
         console.error(error);
-    } */
+    }
 
-
-
-    // ADD COMMENT
-    /* try {
-        document.querySelectorAll('.add-comment-wrapper').forEach((wrapper) => {
-            
-        })
-    } catch (error) {
-        console.error(error);
-    } */
 
 
 

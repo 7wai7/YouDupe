@@ -1,19 +1,41 @@
 
-function setActionReaction(wrapper) {
+function setActionReaction(wrapper, type, id) {
     const like = wrapper.querySelector('.like');
     const dislike = wrapper.querySelector('.dislike');
 
-    /* like.addEventListener('click', () => {
+    like.addEventListener('click', (event) => {
         const isLiked = like.hasAttribute('selected');
         like.toggleAttribute('selected', !isLiked);
         dislike.removeAttribute('selected');
+
+        fetch(`/api/${type}/${id}/reaction/1`, {
+            method: 'PUT',
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        })
+        .then(response => response.json())
+        .then(data => {
+            like.nextSibling.nextSibling.innerText = data.reactionCount.likes;
+            dislike.nextSibling.nextSibling.innerText = data.reactionCount.dislikes;
+        })
+        .catch(console.error);
     });
 
-    dislike.addEventListener('click', () => {
+    dislike.addEventListener('click', (event) => {
         const isDisliked = dislike.hasAttribute('selected');
         dislike.toggleAttribute('selected', !isDisliked);
         like.removeAttribute('selected');
-    }); */
+        
+        fetch(`/api/${type}/${id}/reaction/0`, {
+            method: 'PUT',
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        })
+        .then(response => response.json())
+        .then(data => {
+            like.nextSibling.nextSibling.innerText = data.reactionCount.likes;
+            dislike.nextSibling.nextSibling.innerText = data.reactionCount.dislikes;
+        })
+        .catch(console.error);
+    });
 }
 
 function setActionAddComment(wrapper) {
@@ -91,39 +113,9 @@ function setCommentActions(container) {
 
 
     container.querySelectorAll('.like-dislike-wrapper').forEach(wrapper => {
-        const type = wrapper.classList.contains('reaction-comment') ? 'comment' : wrapper.classList.contains('reaction-video') ? 'video' : null;
-        if(!type) return;
-
-        const like = wrapper.querySelector('.like');
-        const dislike = wrapper.querySelector('.dislike');
-
-        like.addEventListener('click', (event) => {
-            const id = type === 'comment' ? like.closest('.comment').id : new URLSearchParams(window.location.search).get('v');
-
-            const isLiked = like.hasAttribute('selected');
-            like.toggleAttribute('selected', !isLiked);
-            dislike.removeAttribute('selected');
-
-            fetch(`/api/${type}/${id}/reaction/1`, {
-                method: 'PUT',
-                headers: { "Content-Type": "application/x-www-form-urlencoded" }
-            })
-            .catch(console.error);
-        });
-    
-        dislike.addEventListener('click', (event) => {
-            const id = type === 'comment' ? dislike.closest('.comment').id : new URLSearchParams(window.location.search).get('v');
-
-            const isDisliked = dislike.hasAttribute('selected');
-            dislike.toggleAttribute('selected', !isDisliked);
-            like.removeAttribute('selected');
-            
-            fetch(`/api/${type}/${id}/reaction/0`, {
-                method: 'PUT',
-                headers: { "Content-Type": "application/x-www-form-urlencoded" }
-            })
-            .catch(console.error);
-        });
+        const type = 'comment';
+        const id = wrapper.closest('.comment').id;
+        setActionReaction(wrapper, type, id);
     });
 
     container.querySelectorAll(".textarea-autosize").forEach(setActionAutosizeTextarea);

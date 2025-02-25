@@ -4,15 +4,18 @@ function setActionReaction(wrapper, type, id) {
     const dislike = wrapper.querySelector('.dislike');
 
     like.addEventListener('click', (event) => {
-        const isLiked = like.hasAttribute('selected');
-        like.toggleAttribute('selected', !isLiked);
-        dislike.removeAttribute('selected');
-
         fetch(`/api/${type}/${id}/reaction/1`, {
             method: 'PUT',
             headers: { "Content-Type": "application/x-www-form-urlencoded" }
         })
-        .then(response => response.json())
+        .then(response => {
+            if(response.ok) {
+                const isLiked = like.hasAttribute('selected');
+                like.toggleAttribute('selected', !isLiked);
+                dislike.removeAttribute('selected');
+            }
+            return response.json()
+        })
         .then(data => {
             like.nextSibling.nextSibling.innerText = data.reactionCount.likes;
             dislike.nextSibling.nextSibling.innerText = data.reactionCount.dislikes;
@@ -21,15 +24,18 @@ function setActionReaction(wrapper, type, id) {
     });
 
     dislike.addEventListener('click', (event) => {
-        const isDisliked = dislike.hasAttribute('selected');
-        dislike.toggleAttribute('selected', !isDisliked);
-        like.removeAttribute('selected');
-        
         fetch(`/api/${type}/${id}/reaction/0`, {
             method: 'PUT',
             headers: { "Content-Type": "application/x-www-form-urlencoded" }
         })
-        .then(response => response.json())
+        .then(response => {
+            if(response.ok) {
+                const isDisliked = dislike.hasAttribute('selected');
+                dislike.toggleAttribute('selected', !isDisliked);
+                like.removeAttribute('selected');
+            }
+            return response.json()
+        })
         .then(data => {
             like.nextSibling.nextSibling.innerText = data.reactionCount.likes;
             dislike.nextSibling.nextSibling.innerText = data.reactionCount.dislikes;
@@ -71,10 +77,13 @@ function setActionAddComment(wrapper) {
             body: JSON.stringify({ text })
         })
             .then(response => {
-                if(response.ok && !wrapper.hasAttribute('notHide')) {
-                    wrapper.setAttribute('hidden', '');
+                if(response.ok) {
+                    if(!wrapper.hasAttribute('notHide')) wrapper.setAttribute('hidden', '');
+                    else loadComments();
                 }
+                return response.json();
             })
+            .then(data => console.log(data))
             .catch(err => {
                 commentArea.value = savedText;
                 console.error(err);
@@ -100,6 +109,11 @@ function setCommentActions(container) {
 
             const commenter = btn.closest('.comment').getAttribute('login');
             btn.closest('.comment-data').querySelector('.input-comment-textarea').value = `${commenter}, `;
+
+            const comment = btn.closest('.comment');
+            if(comment.classList.contains('parentComment')) {
+                comment.querySelector('.show-answers-btn').removeAttribute('hidden');
+            }
         })
     })
 
@@ -117,6 +131,23 @@ function setCommentActions(container) {
         const id = wrapper.closest('.comment').id;
         setActionReaction(wrapper, type, id);
     });
+
+    container.querySelectorAll('.delete-comment-btn').forEach(btn => {
+        btn.addEventListener('click', (event) => {
+            const id = btn.closest('.comment').id;
+
+            fetch(`/api/comment/${id}`, { method: 'delete' })
+                .then(response => {
+                    console.log(response)
+                    if(response.ok) {
+                        btn.closest('.comment').remove();
+                    }
+                    return response.json();
+                })
+                .then(data => console.log(data))
+                .catch(console.error);
+        });
+    })
 
     container.querySelectorAll(".textarea-autosize").forEach(setActionAutosizeTextarea);
     container.querySelectorAll('.dropdown').forEach(setActionDropdown);
@@ -185,10 +216,8 @@ function loadComments() {
 
         tempDiv.querySelectorAll('.load-other-answers-btn').forEach(btn => {
             btn.addEventListener('click', (event) => {
-                const wrapper = btn.closest('.comment').querySelector('.answers-wrapper');
-                const container = wrapper.querySelector('.answers-container');
-                
-                loadReplies(container);
+                const wrapper = btn.closest('.comment').querySelector('.answers-wrapper .answers-container');
+                loadReplies(wrapper);
             })
         })
 

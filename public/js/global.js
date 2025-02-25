@@ -27,6 +27,27 @@ function setActionAutosizeTextarea(textarea) {
     });
 }
 
+function setActionFetch(obj) {
+    const actionsList = obj.querySelectorAll("a[method]");
+
+    actionsList.forEach((e) => {
+        e.addEventListener('click', (event) => {
+            event.preventDefault();
+
+            const href = e.getAttribute('href');
+            const method = e.getAttribute('method');
+
+            fetch(href, {
+                method,
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(console.error);
+        });
+    });
+}
+
 function setActionDropdown(dropdown) {
     const button = dropdown.querySelector('button');
     const content = dropdown.querySelector('.content');
@@ -64,6 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('logout-btn')?.addEventListener('click', (event) => {
             fetch('api/auth/logout', { method: 'POST' })
             .then(response => {
+                console.log('logout');
+                
                 if(response.ok) {
                     window.location.href = '/';
                 }
@@ -77,26 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* try {
-        const actionsList = document.querySelectorAll("a[method]");
-
-        actionsList.forEach((e) => {
-            e.addEventListener('click', (event) => {
-                event.preventDefault();
-
-                const href = e.getAttribute('href');
-                const method = e.getAttribute('method');
-
-                fetch(href, {
-                    method,
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" }
-                })
-                    .then(response => {
-                        console.log(response);
-
-                    })
-                    .catch(console.error);
-            });
-        });
+        setActionFetch(document);
     } catch (error) {
         console.error(error);
     } */

@@ -52,7 +52,7 @@ router.post('/login', async (req, res, next) => {
 
 router.post('/logout', (req, res, next) => {
     try {
-        console.log('log');
+        console.log('logout');
         
         res.clearCookie('token');
         return res.redirect('/');

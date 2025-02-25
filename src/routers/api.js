@@ -14,7 +14,7 @@ import Video from '../models/Video.js';
 import User from '../models/User.js';
 import Comment from '../models/Comment.js';
 import Reaction from '../models/Reaction.js';
-import { getReactionsCount, getUserReactions } from '../service.js';
+import { deleteComment, getReactionsCount, getUserReactions } from '../service.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -164,6 +164,10 @@ router.get("/comments", authMiddleware, async (req, res) => {
 
         comments.forEach(comment => {
             comment.hasReply = replySet.has(comment._id.toString());
+            comment.canDelete = (
+                req.user && comment.user._id.toString() === req.user._id.toString()
+                || req.user && (req.user.role === 'admin' || req.user.role === 'moderator')
+            );
         });
 
 
@@ -206,6 +210,10 @@ router.get("/comments/replies", authMiddleware, async (req, res) => {
 
         const reactionCount = getReactionsCount(commentIds, reactions);
         const userReactions = getUserReactions(req, reactions);
+
+        comments.forEach(comment => {
+            comment.canDelete = req.user && comment.user._id.toString() === req.user._id.toString()
+        });
 
         res.render('partials/comment', {
             comments,
@@ -441,10 +449,6 @@ router.post("/comment", authMiddleware, async (req, res) => {
         const videoId = req.query.video;
         const text = req.body.text;
 
-        console.log('comment');
-        console.log('videoId', videoId);
-        console.log('text', text);
-
         const comment = new Comment({
             user: req.user,
             video: videoId,
@@ -467,10 +471,6 @@ router.post("/comment/reply", authMiddleware, async (req, res) => {
         const videoId = req.query.video;
         const parentCommentId = req.query.parentComment;
         const text = req.body.text;
-
-        console.log('reply');
-        console.log('parentCommentId', parentCommentId);
-        console.log('text', text);
 
         const comment = new Comment({
             user: req.user,
@@ -549,6 +549,21 @@ router.put("/:type/:id/reaction/:reaction", authMiddleware, async (req, res) => 
     }
 })
 
+
+
+// DELETES
+
+router.delete('/comment/:id', authMiddleware, async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: 'Not registered' });
+
+    const { success, message, error } = await deleteComment(req.user, req.params.id);
+
+    if (!success) {
+        return res.status(error ? 500 : 403).json({ success, message, error });
+    }
+
+    res.status(200).json({ success, message });
+})
 
 
 

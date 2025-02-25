@@ -78,28 +78,25 @@ export async function deleteVideo(userId, videoId) {
     }
 }
 
-export async function deleteComment(userId, commentId) {
+export async function deleteComment(user, commentId) {
     try {
-        const user = await User.findById(userId);
-        if(!user) {
-            return { success: false, message: 'User not found' }
-        }
-
         const comment = await Comment.findById(commentId);
         if(!comment) {
             return { success: false, message: 'Comment not found' }
         }
 
-        if(user.role === 'admin' || user.role === 'moderator' || user._id.tpString() === comment.user.toString()) {
-            await Comment.findByIdAndDelete(commentId);
-            return { success: true, message: 'Comment deleted successfully' }
-        }
+        const canDelete = user.role === 'admin' || user.role === 'moderator' || user._id.tpString() === comment.user.toString();
+        if(!canDelete) return { success: false, message: 'No rights to delete comment' }
 
-        return { success: false, message: 'No rights to delete comment' };
+        // Спочатку знаходим дочірні коментарі
+        await Comment.deleteMany({ parentComment: commentId });
+        await Comment.findByIdAndDelete(commentId);
+        return { success: true, message: 'Comment deleted successfully' };
     } catch (error) {
         return { success: false, message: 'Error when deleting comment', error };
     }
 }
+
 
 
 export function getReactionsCount(commentIds, reactions) {

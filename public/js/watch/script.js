@@ -91,7 +91,7 @@ function setActionAddComment(wrapper) {
 }
 
 function setCommentActions(container) {
-    container.querySelectorAll('.add-comment-wrapper').forEach(setActionAddComment)
+    container.querySelectorAll('.add-comment-wrapper').forEach(setActionAddComment);
 
     container.querySelectorAll('.reply-btn').forEach((btn) => {
         btn.addEventListener('click', (event) => {
@@ -148,12 +148,15 @@ function loadReplies(container) {
 }
 
 function loadComments() {
+    document.getElementById('comments-content').innerHTML = '';
+
     const urlParams = new URLSearchParams(window.location.search);
     const currentVideoId = urlParams.get('v');
 
     const offset = document.getElementById('comments-content').children.length;
+    const sort = document.getElementById('toggle-comment-sorting').getAttribute('sort');
 
-    fetch(`/api/comments?video=${currentVideoId}&limit=20&offset=${offset}`, { method: 'GET' })
+    fetch(`/api/comments?video=${currentVideoId}&limit=20&offset=${offset}&sort=${sort}`, { method: 'GET' })
     .then(response => response.text())
     .then(htmlText => {
         const content = document.getElementById('comments-content');
@@ -201,10 +204,11 @@ function loadComments() {
 
 document.addEventListener("DOMContentLoaded", () => {
     try {
+        const offset = document.getElementById('video-recommendations').children.length;
         const urlParams = new URLSearchParams(window.location.search);
         const currentVideoId = urlParams.get('v');
 
-        fetch(`/api/recommendedVideos/${currentVideoId}`, { method: 'GET' })
+        fetch(`/api/recommendedVideos?limit=20&offset=${offset}&current_video=${currentVideoId}`, { method: 'GET' })
         .then(response => response.text())
         .then(htmlText => {
             const container = document.getElementById('video-recommendations');
@@ -240,8 +244,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     
     try {
+        document.getElementById('sorting-popular-comments').addEventListener('click', (event) => {
+            const toggle =  document.getElementById('toggle-comment-sorting');
+            if(toggle.getAttribute('sort') === 'popular') return;
 
+            toggle.setAttribute('sort', 'popular');
+            loadComments();
+        });
+        document.getElementById('sorting-newer-comments').addEventListener('click', (event) => {
+            const toggle =  document.getElementById('toggle-comment-sorting');
+            if(toggle.getAttribute('sort') === 'newer') return;
 
+            toggle.setAttribute('sort', 'newer');
+            loadComments();
+        });
     } catch (error) {
         console.error(error);
     }

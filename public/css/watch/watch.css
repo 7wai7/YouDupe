@@ -180,7 +180,7 @@ main > .bottom {
 }
 
 
-.dropdown .toggle-sorting {
+#toggle-comment-sorting {
   display: flex;
   flex-flow: row;
   align-items: center;

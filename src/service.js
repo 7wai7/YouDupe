@@ -102,3 +102,32 @@ export async function deleteComment(userId, commentId) {
 }
 
 
+export function getReactionsCount(commentIds, reactions) {
+    const reactionCount = {};
+    commentIds.forEach(id => reactionCount[id] = { likes: 0, dislikes: 0 });
+
+    reactions.forEach(reaction => {
+        if (reaction.reaction) {
+            reactionCount[reaction.comment].likes++;
+        } else {
+            reactionCount[reaction.comment].dislikes++;
+        }
+    });
+
+    return reactionCount;
+}
+
+export function getUserReactions(req, reactions) {
+    const userId = req.user?._id;
+    // Об'єкт для збереження реакцій користувача
+    const userReactions = {};
+    if (userId) {
+        reactions.forEach(reaction => {
+            if (reaction.user.toString() === userId.toString()) {
+                userReactions[reaction.comment] = reaction.reaction; // true (like) / false (dislike)
+            }
+        });
+    }
+
+    return userReactions;
+}

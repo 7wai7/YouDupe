@@ -70,7 +70,7 @@ button {
     align-items: center;
     overflow: hidden;
     position: relative;
-    aspect-ratio: 24 / 14; 
+    aspect-ratio: 1280 / 720; 
 }
 
 .video-duration {

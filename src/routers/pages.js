@@ -4,11 +4,14 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import { dirname } from 'path';
 import { log } from 'console';
-import Video from '../models/Video.js';
+import { formatDistanceToNow } from 'date-fns';
+import { uk } from 'date-fns/locale';
+
 import { authMiddleware } from '../middlewares/middlewares.js';
 import User from '../models/User.js';
+import Video from '../models/Video.js';
 import Follower from '../models/Follower.js';
-import { Comment } from '../models/Comment.js';
+import Comment from '../models/Comment.js';
 import Reaction from '../models/Reaction.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,7 +21,7 @@ const router = new Router();
 
 
 router.get('/', authMiddleware, async (req, res) => {
-    const videos = await Video.find();
+    const videos = await Video.find().populate('user', 'login');
 
     res.render('index', {
         title: 'YouDupe',
@@ -26,7 +29,9 @@ router.get('/', authMiddleware, async (req, res) => {
         scripts: ["index/buttons", 'header'],
         header: '../partials/header',
         user: req.user,
-        videos
+        formatDistanceToNow,
+        uk,
+        videos,
     });
 });
 

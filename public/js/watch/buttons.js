@@ -2,6 +2,13 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     try {
+        const wrapper = document.querySelector('.comments-middle-row .add-comment-wrapper');
+        setActionAddComment(wrapper);
+    } catch (error) {
+        console.log(error);
+    }
+
+    try {
         const wrapper = document.querySelector('.like-dislike-wrapper.reaction-video');
         setActionReaction(wrapper, 'video', new URLSearchParams(window.location.search).get('v'));
     } catch (error) {

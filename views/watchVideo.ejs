@@ -141,7 +141,7 @@
                                     <%= commentsCount % 10===1 ? ' Comment' : ' Comments' %>
                             </h4>
                             <div class="dropdown">
-                                <button class="toggle-sorting">
+                                <button id="toggle-comment-sorting" sort="popular">
                                     <div>
                                         <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -158,8 +158,8 @@
                                     <div class="text">Sorting</div>
                                 </button>
                                 <nav class="content" hidden>
-                                    <button>Better</button>
-                                    <button>Newer</button>
+                                    <button id="sorting-popular-comments">Better</button>
+                                    <button id="sorting-newer-comments">Newer</button>
                                 </nav>
                             </div>
                         </div>
@@ -174,8 +174,7 @@
                                 </svg>
                             </a>
                             <div class="add-comment-wrapper" notHide>
-                                <textarea name="Add comment" class="input-comment-textarea textarea-autosize"
-                                    maxlength="2600"></textarea>
+                                <textarea name="Add comment" class="input-comment-textarea textarea-autosize"  maxlength="2600"></textarea>
                                 <button class="add-comment-btn">Comment</button>
                             </div>
                         </div>

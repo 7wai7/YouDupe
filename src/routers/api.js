@@ -12,8 +12,9 @@ import { uk } from 'date-fns/locale';
 import { authMiddleware } from '../middlewares/middlewares.js';
 import Video from '../models/Video.js';
 import User from '../models/User.js';
-import { Comment } from '../models/Comment.js';
+import Comment from '../models/Comment.js';
 import Reaction from '../models/Reaction.js';
+import { getReactionsCount, getUserReactions } from '../service.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -104,15 +105,16 @@ router.get("/video/download/:id", (req, res) => {
 
 // AJAX GETTERS
 
-router.get("/recommendedVideos/:current_video_id", async (req, res) => {
-    const current_video_id = req.params.current_video_id;
-    const limit = req.query.limit;
-    const offset = req.query.offset;
+router.get("/recommendedVideos", async (req, res) => {
+    const { limit, offset, current_video } = req.query;
 
-    let videos = await Video.find();
+    let videos = await Video.find()
+        .sort({ createdAt: 1 })
+        .skip(offset)
+        .limit(limit);
 
-    if (current_video_id) {
-        videos = videos.filter(video => video._id.toString() !== current_video_id);
+    if (current_video) {
+        videos = videos.filter(video => video._id.toString() !== current_video);
     }
 
     res.render('partials/recommendedVideo', { videos, layout: false });
@@ -123,20 +125,37 @@ router.get("/comments", authMiddleware, async (req, res) => {
         const videoId = req.query.video;
         let limit = parseInt(req.query.limit) || 10;
         let offset = parseInt(req.query.offset) || 0;
-        const sort = req.query.sort || "popular";
+        const sort = req.query.sort || "popular"; // "popular" -> за лайками, "newest" -> за датою
 
-        // Опції сортування: "popular" -> за лайками, "newest" -> за датою
-        const sortOptions = sort === "popular" ? { likes: -1 } : { createdAt: -1 };
+
+        
+        let userComments;
+        if(req.user) {
+            userComments = await Comment.find({ user: req.user, video: videoId, parentComment: null })
+            .populate('user', 'login')
+        }
 
         const comments = await Comment.find({ video: videoId, parentComment: null })
             .populate('user', 'login') // Підвантажуємо лише логін користувача (оптимізація)
-            .sort(sortOptions)
             .skip(offset)
             .limit(limit);
 
 
         // Отримуємо всі ID коментарів
         const commentIds = comments.map(comment => comment._id);
+        const reactions = await Reaction.find({ comment: { $in: commentIds } });
+
+        if(sort === "popular") {
+            const reactionCount = getReactionsCount(commentIds, reactions);
+
+            // Сортуємо коментарі за лайками
+            comments.sort((a, b) => {
+                const likesA = reactionCount[a._id.toString()]?.likes || 0;
+                const likesB = reactionCount[b._id.toString()]?.likes || 0;
+                return likesB - likesA; // Більше лайків — вище
+            });
+        } else comments.sort((a, b) => b.createdAt - a.createdAt)
+
 
         const replies = await Comment.find({ parentComment: { $in: commentIds } })
         .distinct("parentComment")
@@ -148,30 +167,8 @@ router.get("/comments", authMiddleware, async (req, res) => {
         });
 
 
-
-        const reactions = await Reaction.find({ comment: { $in: commentIds } });
-
-        const reactionCount = {};
-        commentIds.forEach(id => reactionCount[id] = { likes: 0, dislikes: 0 });
-
-        reactions.forEach(reaction => {
-            if (reaction.reaction) {
-                reactionCount[reaction.comment].likes++;
-            } else {
-                reactionCount[reaction.comment].dislikes++;
-            }
-        });
-
-        const userId = req.user?._id;
-        // Об'єкт для збереження реакцій користувача
-        const userReactions = {};
-        if (userId) {
-            reactions.forEach(reaction => {
-                if (reaction.user.toString() === userId.toString()) {
-                    userReactions[reaction.comment] = reaction.reaction; // true (like) / false (dislike)
-                }
-            });
-        }
+        const reactionCount = getReactionsCount(commentIds, reactions);
+        const userReactions = getUserReactions(req, reactions);
 
         res.render('partials/comment', {
             comments,
@@ -207,27 +204,8 @@ router.get("/comments/replies", authMiddleware, async (req, res) => {
         const commentIds = comments.map(comment => comment._id);
         const reactions = await Reaction.find({ comment: { $in: commentIds } });
 
-        const reactionCount = {};
-        commentIds.forEach(id => reactionCount[id] = { likes: 0, dislikes: 0 });
-
-        reactions.forEach(reaction => {
-            if (reaction.reaction) {
-                reactionCount[reaction.comment].likes++;
-            } else {
-                reactionCount[reaction.comment].dislikes++;
-            }
-        });
-
-        const userId = req.user?._id;
-        // Об'єкт для збереження реакцій користувача
-        const userReactions = {};
-        if (userId) {
-            reactions.forEach(reaction => {
-                if (reaction.user.toString() === userId.toString()) {
-                    userReactions[reaction.comment] = reaction.reaction; // true (like) / false (dislike)
-                }
-            });
-        }
+        const reactionCount = getReactionsCount(commentIds, reactions);
+        const userReactions = getUserReactions(req, reactions);
 
         res.render('partials/comment', {
             comments,

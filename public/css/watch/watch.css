@@ -32,8 +32,8 @@ main > .bottom {
 }
 
 .title {
-  font-size: large;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 600;
 }
 
 /* ROW WITH CHANNEL AND VIDEO ACTIONS */
@@ -210,13 +210,11 @@ main > .bottom {
   background: transparent;
   border-bottom: 1px solid #000;
   width: 100%;
-  min-height: 20px;
-  outline: none;
-  overflow: hidden;
+  min-height: 24px;
+  height: 24px;
   outline: none;
   text-align: justify;
   white-space: pre-wrap;
-  resize: none;
 }
 
 .input-comment-textarea:empty::before {
@@ -390,7 +388,7 @@ main > .bottom {
 }
 
 .rec-video h3 {
-  font-weight: 700;
+  font-weight: 600;
   font-size: 18px;
   overflow: hidden;
   text-overflow: ellipsis;

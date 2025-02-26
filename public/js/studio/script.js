@@ -1,45 +1,70 @@
+
 document.addEventListener("DOMContentLoaded", () => {
 
-    try {
-        const filtersContainer = document.querySelector('.filters');
-        const buttons = filtersContainer.querySelectorAll('button');
+    function loadVideos() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const filter = urlParams.get('filter') || 'date';
+        const sort = urlParams.get('sort') || 'down';
 
-        buttons.forEach((btn) => {
-            btn.addEventListener('click', (event) => {
-                if (btn.hasAttribute('active')) {
-                    btn.getAttribute('sort') === 'down' ? btn.setAttribute('sort', 'up') : btn.setAttribute('sort', 'down');
-                } else {
-                    const lastBtn = filtersContainer.querySelector('[active]');
-                    lastBtn.removeAttribute('active');
-                    lastBtn.removeAttribute('sort');
+        fetch(`/img/arrow-${sort}.svg`)
+            .then(response => response.text())
+            .then(html => {
+                const icon = document.getElementById('filter-icon');
+                icon.innerHTML = html;
+                document.getElementById(filter).appendChild(icon);
+            })
+            .catch(console.error);
 
-                    btn.setAttribute('active', '');
-                    btn.setAttribute('sort', 'down');
+        document.getElementById('filters').querySelector('[active]').removeAttribute('active');
+        document.getElementById(filter).setAttribute('active', '');
+
+        const container = document.getElementById('video-content');
+        const offset = container.querySelectorAll('.video').length;
+
+        fetch(`/api/studio/videos?filter=${filter}&sort=${sort}&limit=20&offset=${offset}`, { method: "GET" })
+            .then(response => response.text())
+            .then(htmlText => {
+                container.innerHTML = '';
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = htmlText;
+    
+                while(tempDiv.firstChild) {
+                    container.appendChild(tempDiv.firstChild);
                 }
-
-                const sort = btn.getAttribute('sort');
-
-                fetch(`/img/arrow-${sort}.svg`)
-                    .then(response => response.text())
-                    .then(html => {
-                        const icon = document.getElementById('filter-icon');
-                        btn.appendChild(icon);
-                        icon.innerHTML = html;
-                    })
-                    .catch(console.error);
+    
+                tempDiv.remove();
+            })
+            .catch(console.error);
+    }
 
 
-                const urlFilter = `?filter=${btn.id}&sort=${sort}`;
-                history.replaceState({}, '', '/studio' + urlFilter);
 
-                fetch('/api/studio/upload' + urlFilter, { method: "GET" })
-                    .then(response => response.text())
-                    .then(html => {
-                        document.getElementById('content').innerHTML = html;
-                    })
-                    .catch(console.error);
+    // ОБРОБКА КЛІКІВ НА ФІЛЬТРАХ
+    
+    try {
+        const filtersContainer = document.getElementById('filters');
+
+        filtersContainer.querySelectorAll('button').forEach((btn) => {
+            btn.addEventListener('click', (event) => {
+                const filter = filtersContainer.getAttribute('filter');
+                const sort = filtersContainer.getAttribute('sort');
+
+                if (btn.id === filter) {
+                    filtersContainer.setAttribute('sort', sort === 'down' ? 'up' : 'down');
+                } else {
+                    filtersContainer.setAttribute('filter', btn.id);
+                    filtersContainer.setAttribute('sort', 'down');
+                }
+                
+                const newFilter = filtersContainer.getAttribute('filter');
+                const newSort = filtersContainer.getAttribute('sort');
+                
+                history.replaceState({}, '', `/studio?filter=${newFilter}&sort=${newSort}`);
+                loadVideos();
             })
         })
+
+        loadVideos();
     } catch (error) {
         console.log(error);
     }
@@ -233,8 +258,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
-
     try {
         const modal = document.getElementById('confirm-delete-modal');
 
@@ -258,9 +281,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
         console.log(error);
     }
-
-
-
 
 
 

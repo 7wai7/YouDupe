@@ -73,7 +73,7 @@ router.get("/video/:id", (req, res) => {
     }
 });
 
-router.get('/previews/:id', (req, res) => {
+router.get('/preview/:id', (req, res) => {
     const previewPath = path.join(__dirname, '../../previews', `${req.params.id}.png`);
 
     // Перевіряємо, чи існує файл
@@ -106,7 +106,9 @@ router.get("/video/download/:id", (req, res) => {
 // AJAX GETTERS
 
 router.get("/recommendedVideos", async (req, res) => {
-    const { limit, offset, current_video } = req.query;
+    const offset = req.query.offset || 0;
+    const limit = req.query.limit || 10;
+    const current_video = req.query.current_video;
 
     let videos = await Video.find()
         .sort({ createdAt: 1 })
@@ -123,17 +125,17 @@ router.get("/recommendedVideos", async (req, res) => {
 router.get("/comments", authMiddleware, async (req, res) => {
     try {
         const videoId = req.query.video;
-        let limit = parseInt(req.query.limit) || 10;
-        let offset = parseInt(req.query.offset) || 0;
+        const offset = parseInt(req.query.offset) || 0;
+        const limit = parseInt(req.query.limit) || 10;
         const sort = req.query.sort || "popular"; // "popular" -> за лайками, "newest" -> за датою
 
 
         
-        let userComments;
+        /* let userComments;
         if(req.user) {
             userComments = await Comment.find({ user: req.user, video: videoId, parentComment: null })
             .populate('user', 'login')
-        }
+        } */
 
         const comments = await Comment.find({ video: videoId, parentComment: null })
             .populate('user', 'login') // Підвантажуємо лише логін користувача (оптимізація)
@@ -193,8 +195,8 @@ router.get("/comments/replies", authMiddleware, async (req, res) => {
     try {
         const videoId = req.query.video;
         const commentId = req.query.comment;
-        let limit = parseInt(req.query.limit) || 10;
-        let offset = parseInt(req.query.offset) || 0;
+        const offset = parseInt(req.query.offset) || 0;
+        const limit = parseInt(req.query.limit) || 10;
 
 
         const comments = await Comment.find({ video: videoId, parentComment: commentId })
@@ -230,13 +232,53 @@ router.get("/comments/replies", authMiddleware, async (req, res) => {
     }
 })
 
-router.get("/studio/load", (req, res) => {
-    const filter = req.query.filter || "date";
-    const sort = req.query.sort || "down";
+router.get("/studio/videos", authMiddleware, async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).json({ message: 'Not registered' });
 
-    log(filter + ", " + sort);
+        const filter = req.query.filter || "date";
+        const sort = parseInt(req.query.sort) || -1;
+        const offset = parseInt(req.query.offset) || 0;
+        const limit = parseInt(req.query.limit) || 10;
 
-    res.json({ message: 'success' });
+
+        const videos = await Video.find({ user: req.user._id });
+        const videoIds = videos.map(video => video._id);
+        const comments = await Comment.find({ video: { $in: videoIds } });
+        const commentCounts = {};
+
+
+        console.log(comments);
+        
+
+        let mongoFilter;
+        switch (filter) {
+            case 'date':
+                mongoFilter = 'createdAt';
+                break;
+        
+            case 'views':
+                mongoFilter = 'views';
+                break;
+    
+            case 'comments':
+                /* const videoIds = videos.map(video => video._id);
+                const comments = await Comment.find({ video: { $in: videoIds } });
+                const commentCounts = {}; */
+                break;
+    
+            case 'likes':
+                break;
+    
+            case 'dislikes':
+                break;
+        }
+
+        res.render('partials/studioVideo', { videos, layout: false });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
 });
 
 router.get("/channel/:login/load", async (req, res) => {
@@ -448,6 +490,7 @@ router.post("/comment", authMiddleware, async (req, res) => {
 
         const videoId = req.query.video;
         const text = req.body.text;
+        console.log(text);
 
         const comment = new Comment({
             user: req.user,
@@ -543,6 +586,20 @@ router.put("/:type/:id/reaction/:reaction", authMiddleware, async (req, res) => 
             }
         });
         return res.json({ message: "Reaction added", reactionCount });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
+})
+
+router.put("/video/:id/complain", authMiddleware, async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).json({ message: 'Not registered' });
+
+        const id = req.params.id;
+        
+
+        res.end();
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error", error });

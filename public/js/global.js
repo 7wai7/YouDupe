@@ -12,74 +12,128 @@ function formatTime(seconds) {
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
 }
 
-function setActionAutosizeTextarea(textarea) {
-    textarea.style.overflowY = "hidden";
-    
-    const style = window.getComputedStyle(textarea);
-    const lineHeight = parseFloat(style.lineHeight);
-    textarea.style.height =  "24px";
-
-    textarea.addEventListener("input", function() {
-        const style = window.getComputedStyle(this);
-        const lineHeight = parseFloat(style.lineHeight);
-        this.style.height = lineHeight + "px";
-        this.style.height = Math.max(this.scrollHeight, lineHeight) + "px";
-    });
-}
-
-function setActionFetch(obj) {
-    const actionsList = obj.querySelectorAll("a[method]");
-
-    actionsList.forEach((e) => {
-        e.addEventListener('click', (event) => {
-            event.preventDefault();
-
-            const href = e.getAttribute('href');
-            const method = e.getAttribute('method');
-
-            fetch(href, {
-                method,
-                headers: { "Content-Type": "application/x-www-form-urlencoded" }
-            })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(console.error);
-        });
-    });
-}
-
-function setActionDropdown(dropdown) {
-    const button = dropdown.querySelector('button');
-    const content = dropdown.querySelector('.content');
-
-    button.addEventListener('click', function () {
-        content.hasAttribute('hidden') ? content.removeAttribute('hidden') : content.setAttribute('hidden', '');
-
-        // Отримати розміри кнопки і меню
-        const buttonRect = button.getBoundingClientRect();
-        const contentRect = content.getBoundingClientRect();
-        const screenWidth = window.innerWidth;
-
-        // Якщо меню виходить за праву межу екрану, то зміщуємо його ліворуч
-        if (buttonRect.right + contentRect.width > screenWidth) {
-            content.style.left = 'auto';
-            content.style.right = '0';
-        } else {
-            content.style.left = '0';
-            content.style.right = 'auto';
-        }
-
-        content.style.width = 'max-content';
-    });
-
-    document.addEventListener('click', function (event) {
-        if (!dropdown.contains(event.target)) {
-            content.setAttribute('hidden', '');
-        }
-    });
-}
 
 document.addEventListener("DOMContentLoaded", () => {
+
+    // ДОДАВАННЯ EVENT DELEGATION
+    try {
+        document.addEventListener("input", function(event) {
+            if (event.target.matches(".textarea-autosize")) {
+                const textarea = event.target;
+                const style = window.getComputedStyle(textarea);
+                const lineHeight = parseFloat(style.lineHeight);
+        
+                textarea.style.height = lineHeight + 'px';
+                textarea.style.height = textarea.scrollHeight  + "px";
+            }
+        });
+    } catch (error) {
+        console.error(error);
+    }
+
+    try {
+        document.addEventListener("click", function (event) {
+            const dropdown = event.target.closest(".dropdown");
+
+        
+            // Якщо клікнули поза dropdown — закриваємо всі
+            if (!dropdown) {
+                document.querySelectorAll(".dropdown .content").forEach(content => {
+                    content.setAttribute("hidden", "");
+                });
+                return;
+            }
+        
+            const button = dropdown.querySelector("button");
+            const content = dropdown.querySelector(".content");
+
+        
+            // Якщо клікнули по кнопці — перемикаємо видимість
+            if (event.target.closest("button") === button) {
+                // Закриваємо всі інші dropdown
+                document.querySelectorAll(".dropdown .content").forEach(c => c.setAttribute("hidden", ""));
+        
+                content.removeAttribute("hidden");
+
+                // Отримати розміри кнопки і меню
+                const buttonRect = button.getBoundingClientRect();
+                const contentRect = content.getBoundingClientRect();
+                const screenWidth = window.innerWidth;
+    
+                // Якщо меню виходить за правий край, зміщуємо його ліворуч
+                if (buttonRect.right + contentRect.width > screenWidth) {
+                    content.style.left = "auto";
+                    content.style.right = "0";
+                } else {
+                    content.style.left = "0";
+                    content.style.right = "auto";
+                }
+    
+                content.style.width = "max-content";
+            }
+        });
+    } catch (error) {
+        console.error(error);
+    }
+
+
+    try {
+        document.addEventListener("click", async function (event) {
+            const btn = event.target.closest('.like, .dislike');
+            if (!btn) return;
+        
+            const wrapper = btn.closest(".like-dislike-wrapper");
+            const isLike = btn.classList.contains("like");
+        
+            const like = wrapper.querySelector(".like");
+            const dislike = wrapper.querySelector(".dislike");
+            const likeCountEl = wrapper.querySelector(".like-count");
+            const dislikeCountEl = wrapper.querySelector(".dislike-count");
+        
+            const type = wrapper.classList.contains("reaction-video") ? "video" : "comment";
+            const id = type === "video" 
+                ? new URLSearchParams(window.location.search).get("v") 
+                : wrapper.closest(".comment")?.id;
+        
+            try {
+                const response = await fetch(`/api/${type}/${id}/reaction/${isLike ? "1" : "0"}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" }
+                });
+        
+                if (!response.ok) throw new Error("Failed to update reaction");
+        
+                const data = await response.json();
+        
+                if (isLike) {
+                    like.toggleAttribute("selected");
+                    dislike.removeAttribute("selected");
+                } else {
+                    dislike.toggleAttribute("selected");
+                    like.removeAttribute("selected");
+                }
+        
+                likeCountEl.innerText = data.reactionCount.likes;
+                dislikeCountEl.innerText = data.reactionCount.dislikes;
+        
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    } catch (error) {
+        console.error(error);
+    }
+
+    try {
+        document.addEventListener("click", async function (event) {
+            
+        });
+    } catch (error) {
+        console.error(error);
+    }
+
+
+
 
     try {
         document.getElementById('logout-btn')?.addEventListener('click', (event) => {
@@ -99,11 +153,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error(error)
     }
 
-    /* try {
-        setActionFetch(document);
-    } catch (error) {
-        console.error(error);
-    } */
 
     // SEARCH TEXT AREA
     try {
@@ -162,55 +211,4 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error(error)
     }
 
-
-    // 
-
-    /* try {
-        const icons = document.querySelectorAll('.icon');
-
-        icons.forEach((icon) => {
-            const width = icon.getAttribute('width');
-            const height = icon.getAttribute('height');
-            icon.style.width = width;
-            icon.style.height = height;
-            
-            function f() {
-                const name = icon.getAttribute('name');
-                if(!name) return;
-                
-                fetch(`/img/${name}.svg`)
-                .then(response => response.text())  // Завантажуємо SVG як текст
-                .then(svgContent => {
-                    icon.innerHTML = svgContent;  // Вставляємо SVG в контейнер
-                })
-                .catch(console.error);
-            }
-
-            const observer = new MutationObserver(f);
-
-            observer.observe(icon, {
-                attributes: true,  // Спостерігаємо за змінами атрибутів
-                attributeFilter: ['name']  // Спостерігаємо тільки за атрибутом 'name'
-            });
-
-            f();
-        });
-    } catch (error) {
-        console.error(error);
-    } */
-
-
-
-    try {
-        document.querySelectorAll('.dropdown').forEach(setActionDropdown);
-    } catch (error) {
-        console.error(error);
-    }
-
-    try {
-        document.querySelectorAll(".textarea-autosize").forEach(setActionAutosizeTextarea);
-    } catch (error) {
-        console.error(error);
-    }
-    
 });

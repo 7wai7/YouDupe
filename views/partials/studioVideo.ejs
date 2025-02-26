@@ -1,0 +1,53 @@
+<% videos.forEach(video => { %>
+    <div class="video">
+        <img class="preview" src="/api/preview/<%= video._id %>" alt="" width="260px">
+        <div class="metadata-row">
+            <div>
+                <h1 class="title"><%= video.title %></h1>
+                <h1 class="date"><%= new Date(video.createdAt).toLocaleDateString('uk-UA') %></h1>
+                <button class="description-dropdown">
+                    <h1>Description</h1>
+                    <div class="description-dropdown-icon">
+                        <svg width="12px" height="12px" viewBox="0 0 16 16"
+                            xmlns="http://www.w3.org/2000/svg">
+
+                            <g id="layer1" transform="rotate(45 1254.793 524.438)">
+                                <path
+                                    style="fill:#373737;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                                    d="M11.532 1048.341H9.536v-9h-9v-2h11z" id="path4179" />
+                            </g>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+            <div class="metadata-column">
+                <div class="meta-block">
+                    <h1>Views: </h1>
+                    <h2 class="meta views"><%= video.views %></h2>
+                </div>
+                <div class="meta-block">
+                    <h1>Likes: </h1>
+                    <h2 class="meta likes">0</h2>
+                </div>
+                <div class="meta-block">
+                    <h1>Dislikes: </h1>
+                    <h2 class="meta dislikes">0</h2>
+                </div>
+                <div class="meta-block">
+                    <h1>Comments: </h1>
+                    <h2 class="meta comments">0</h2>
+                </div>
+                <div class="meta-block">
+                    <h1>Shares: </h1>
+                    <h2 class="meta shares"><%= video.shares %></h2>
+                </div>
+                <div class="meta-block">
+                    <h1>Complains: </h1>
+                    <h2 class="meta complains"><%= video.complains %></h2>
+                </div>
+            </div>
+            <button class="delete-video-btn">Delete</button>
+        </div>
+    </div>
+    <div class="h-line"></div>
+<% }); %>

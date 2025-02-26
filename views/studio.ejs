@@ -9,11 +9,11 @@
                         stroke="#000000" stroke-width="1.5" />
                 </svg>
             </div>
-            <h1>Channel name</h1>
+            <h1><%= user.login %></h1>
         </div>
         <div class="content-top">
             <h1>Channel content</h1>
-            <div class="filters">
+            <div id="filters" filter="date" sort="down">
                 <% createFilterBtn('date'); createFilterBtn('views'); createFilterBtn('comments');
                     createFilterBtn('likes'); createFilterBtn('dislikes'); %>
             </div>
@@ -23,150 +23,101 @@
         <nav>
 
         </nav>
-        <div class="content">
-            <% for (let i=0; i < 5; i++) { %>
-                <div class="video">
-                    <img class="preview" src="/img/media-play.svg" alt="" width="260px">
-                    <div class="metadata-row">
-                        <div>
-                            <h1 class="title">Video title</h1>
-                            <h1 class="date">Date</h1>
-                            <button class="description-dropdown">
-                                <h1>Description</h1>
-                                <div class="description-dropdown-icon">
-                                    <svg width="12px" height="12px" viewBox="0 0 16 16"
-                                        xmlns="http://www.w3.org/2000/svg">
+        <div id="video-content"></div>
 
-                                        <g id="layer1" transform="rotate(45 1254.793 524.438)">
+        
+        <div id="upload-video-modal" hidden>
+            <div class="panel-modal">
+                <div class="header">
+                    <h1>Upload the video</h1>
+                    <button id="cancel-upload-video-btn">
+                        <svg fill="#000000" width="24px" height="24px" viewBox="0 0 16 16"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z"
+                                fill-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="v-line"></div>
+                <div class="content-wrapper">
+                    <div id="drop-zone">
+                        <h1>Drag and drop the video file you want to upload here</h1>
+                        <button id="choose-file-btn">Choose file</button>
+                        <input type="file" id="video-file-input" accept="video/*" hidden />
+                    </div>
+                    <div id="upload-information" hidden>
+                        <div class="information">
+                            <div class="meta-block">
+                                <h1>Name</h1>
+                                <textarea name="video title" id="video-title-textarea"></textarea>
+                                <h1>Description</h1>
+                                <textarea name="video description"
+                                    id="video-description-textarea"></textarea>
+                            </div>
+                            <div class="preview-meta-block">
+                                <h2>Preview</h2>
+                                <div class="meta-preview-row">
+                                    <button id="upload-preview-btn" class="meta-preview-wrapper-btn">
+                                        <svg width="24px" height="24px" viewBox="0 0 24 24"
+                                            preserveAspectRatio="xMidYMid meet" focusable="false"
+                                            class="style-scope tp-yt-iron-icon"
+                                            style="pointer-events: none;">
                                             <path
-                                                style="fill:#373737;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-                                                d="M11.532 1048.341H9.536v-9h-9v-2h11z" id="path4179" />
-                                        </g>
-                                    </svg>
+                                                d="M14,13.6l2.8,3.4h-5.4l0.3-0.4L14,13.6 M8.9,14.7l1.2,1.9l0.3,0.4H7.1L8.9,14.7 M14,12l-3,4l-2-3l-4,5h14L14,12L14,12z
+                                            M21,7h-2v2h-2V7h-2V5h2V3h2v2h2V7z M13,4v6v1h1h6v9H4V4H13 M14,3H3v18h18V10h-7V3L14,3z"
+                                                class="style-scope tp-yt-iron-icon"></path>
+                                        </svg>
+                                        <h1>Upload preview</h1>
+                                        <input type="file" id="preview-file-input" accept="image/png"
+                                            hidden />
+                                    </button>
+                                    <button id="create-preview-btn" class="meta-preview-wrapper-btn">
+                                        <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                            <path
+                                                d="M9.91,8.7l0.6,2.12l0.15,0.54l0.54,0.15l2.12,0.6l-2.12,0.6l-0.54,0.15l-0.15,0.54l-0.6,2.12l-0.6-2.12l-0.15-0.54 L8.62,12.7l-2.12-0.6l2.12-0.6l0.54-0.15l0.15-0.54L9.91,8.7 M9.91,5.01l-1.56,5.53L2.83,12.1l5.53,1.56l1.56,5.53l1.56-5.53 L17,12.1l-5.53-1.56L9.91,5.01L9.91,5.01z M16.72,16.81l-2.76,0.78l2.76,0.78l0.78,2.76l0.78-2.76l2.76-0.78l-2.76-0.78l-0.78-2.76 L16.72,16.81z M17.5,2.96l-0.78,2.76L13.96,6.5l2.76,0.78l0.78,2.76l0.78-2.76l2.76-0.78l-2.76-0.78L17.5,2.96z"
+                                                class="style-scope tp-yt-iron-icon"></path>
+                                        </svg>
+                                        <h1>Create automatically</h1>
+                                    </button>
                                 </div>
-                            </button>
-                        </div>
-                        <div class="metadata-column">
-                            <div class="meta-block">
-                                <h1>Views: </h1>
-                                <h2 class="meta views">0</h2>
-                            </div>
-                            <div class="meta-block">
-                                <h1>Likes: </h1>
-                                <h2 class="meta likes">0</h2>
-                            </div>
-                            <div class="meta-block">
-                                <h1>Dislikes: </h1>
-                                <h2 class="meta dislikes">0</h2>
-                            </div>
-                            <div class="meta-block">
-                                <h1>Shares: </h1>
-                                <h2 class="meta shares">0</h2>
-                            </div>
-                            <div class="meta-block">
-                                <h1>Complains: </h1>
-                                <h2 class="meta complains">0</h2>
                             </div>
                         </div>
-                        <button class="delete-video-btn">Delete</button>
+                        <div class="video-data">
+                            <h1>Uploaded video</h1>
+                            <video id="uploaded-video" controls class="video-preview"></video>
+                            <h2>Preview</h2>
+                            <div class="video-preview">
+                                <img id="video-preview" width="auto"></img>
+                            </div>
+                            <button id="upload-video-btn">Upload video</button>
+                        </div>
                     </div>
                 </div>
-                <div class="h-line"></div>
-                <% } %>
+            </div>
+        </div>
 
-                    <div id="upload-video-modal" hidden>
-                        <div class="panel-modal">
-                            <div class="header">
-                                <h1>Upload the video</h1>
-                                <button id="cancel-upload-video-btn">
-                                    <svg fill="#000000" width="24px" height="24px" viewBox="0 0 16 16"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z"
-                                            fill-rule="evenodd" />
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="v-line"></div>
-                            <div class="content-wrapper">
-                                <div id="drop-zone">
-                                    <h1>Drag and drop the video file you want to upload here</h1>
-                                    <button id="choose-file-btn">Choose file</button>
-                                    <input type="file" id="video-file-input" accept="video/*" hidden />
-                                </div>
-                                <div id="upload-information" hidden>
-                                    <div class="information">
-                                        <div class="meta-block">
-                                            <h1>Name</h1>
-                                            <textarea name="video title" id="video-title-textarea"></textarea>
-                                            <h1>Description</h1>
-                                            <textarea name="video description"
-                                                id="video-description-textarea"></textarea>
-                                        </div>
-                                        <div class="preview-meta-block">
-                                            <h2>Preview</h2>
-                                            <div class="meta-preview-row">
-                                                <button id="upload-preview-btn" class="meta-preview-wrapper-btn">
-                                                    <svg width="24px" height="24px" viewBox="0 0 24 24"
-                                                        preserveAspectRatio="xMidYMid meet" focusable="false"
-                                                        class="style-scope tp-yt-iron-icon"
-                                                        style="pointer-events: none;">
-                                                        <path
-                                                            d="M14,13.6l2.8,3.4h-5.4l0.3-0.4L14,13.6 M8.9,14.7l1.2,1.9l0.3,0.4H7.1L8.9,14.7 M14,12l-3,4l-2-3l-4,5h14L14,12L14,12z
-                                                        M21,7h-2v2h-2V7h-2V5h2V3h2v2h2V7z M13,4v6v1h1h6v9H4V4H13 M14,3H3v18h18V10h-7V3L14,3z"
-                                                            class="style-scope tp-yt-iron-icon"></path>
-                                                    </svg>
-                                                    <h1>Upload preview</h1>
-                                                    <input type="file" id="preview-file-input" accept="image/png"
-                                                        hidden />
-                                                </button>
-                                                <button id="create-preview-btn" class="meta-preview-wrapper-btn">
-                                                    <svg width="24px" height="24px" viewBox="0 0 24 24">
-                                                        <path
-                                                            d="M9.91,8.7l0.6,2.12l0.15,0.54l0.54,0.15l2.12,0.6l-2.12,0.6l-0.54,0.15l-0.15,0.54l-0.6,2.12l-0.6-2.12l-0.15-0.54 L8.62,12.7l-2.12-0.6l2.12-0.6l0.54-0.15l0.15-0.54L9.91,8.7 M9.91,5.01l-1.56,5.53L2.83,12.1l5.53,1.56l1.56,5.53l1.56-5.53 L17,12.1l-5.53-1.56L9.91,5.01L9.91,5.01z M16.72,16.81l-2.76,0.78l2.76,0.78l0.78,2.76l0.78-2.76l2.76-0.78l-2.76-0.78l-0.78-2.76 L16.72,16.81z M17.5,2.96l-0.78,2.76L13.96,6.5l2.76,0.78l0.78,2.76l0.78-2.76l2.76-0.78l-2.76-0.78L17.5,2.96z"
-                                                            class="style-scope tp-yt-iron-icon"></path>
-                                                    </svg>
-                                                    <h1>Create automatically</h1>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="video-data">
-                                        <h1>Uploaded video</h1>
-                                        <video id="uploaded-video" controls class="video-preview"></video>
-                                        <h2>Preview</h2>
-                                        <div class="video-preview">
-                                            <img id="video-preview" width="auto"></img>
-                                        </div>
-                                        <button id="upload-video-btn">Upload video</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div id="change-description-modal" hidden>
+            <div class="panel-modal">
+                <h1>Change description</h1>
+                <textarea name="Change description" id="change-description-textarea"
+                    maxlength="2600"></textarea>
 
-                    <div id="change-description-modal" hidden>
-                        <div class="panel-modal">
-                            <h1>Change description</h1>
-                            <textarea name="Change description" id="change-description-textarea"
-                                maxlength="2600"></textarea>
+                <div class="choice">
+                    <button id="change-description-btn">Change</button>
+                    <button id="cancel-change-description-btn">Cancel</button>
+                </div>
+            </div>
+        </div>
 
-                            <div class="choice">
-                                <button id="change-description-btn">Change</button>
-                                <button id="cancel-change-description-btn">Cancel</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="confirm-delete-modal" hidden>
-                        <div class="panel-modal">
-                            <h1>Are you sure you want to delete the video?</h1>
-                            <div class="choice">
-                                <button id="delete-video-btn">Yes</button>
-                                <button id="cancel-deletion-btn">No</button>
-                            </div>
-                        </div>
-                    </div>
+        <div id="confirm-delete-modal" hidden>
+            <div class="panel-modal">
+                <h1>Are you sure you want to delete the video?</h1>
+                <div class="choice">
+                    <button id="delete-video-btn">Yes</button>
+                    <button id="cancel-deletion-btn">No</button>
+                </div>
+            </div>
         </div>
     </div>
 </main>

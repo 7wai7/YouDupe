@@ -108,8 +108,6 @@ router.get('/studio', authMiddleware, async (req, res) => {
     const filter = req.query.filter || "date";
     const sort = req.query.sort || "down";
     
-    log(filter + ", " + sort);
-
     res.render('studio', {
         title: 'Studio',
         stylesheets: ["studio/studio", 'studio/studioHeader'],

@@ -80,3 +80,9 @@ button {
     position: absolute;
     inset: auto 5px 5px auto;
 }
+
+.textarea-autosize {
+    display: block;
+    overflow: hidden;
+    resize: none;
+}

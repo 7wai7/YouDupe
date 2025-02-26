@@ -1,7 +1,7 @@
 <% videos.forEach(video => { %>
     <a href="/watch?v=<%= video._id %>" class="video">
         <div class="preview">
-            <img src="/api/previews/<%= video._id %>" alt="">
+            <img src="/api/preview/<%= video._id %>" alt="">
             <div class="video-duration"><%= formatTime(video.duration) %></div>
         </div>
         <div class="metadata">

@@ -6,8 +6,6 @@ const videoSchema = new mongoose.Schema({
     duration: { type: String, required: true },
     title: { type: String, required: true, maxlength: 100 },
     description: { type: String, maxlength: 2600 },
-    likes: { type: Number, default: 0 },
-    dislikes: { type: Number, default: 0 },
     views: { type: Number, default: 0 },
     shares: { type: Number, default: 0 },
     complains: { type: Number, default: 0 },

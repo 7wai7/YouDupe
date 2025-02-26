@@ -44,7 +44,7 @@ main {
     margin: 20px;
 }
 
-.filters {
+#filters {
     border-top: 1px solid gray;
     display: flex;
     align-items: center;
@@ -53,18 +53,18 @@ main {
     padding-right: 50%;
 }
 
-.filters button {
+#filters button {
     display: flex;
     flex-flow: row;
     align-items: center;
     padding: 10px 0;
 }
 
-.filters button:hover::after {
+#filters button:hover::after {
     font-weight: 600;
 }
 
-.filters button[active] {
+#filters button[active] {
     font-weight: 600;
 }
 
@@ -74,7 +74,7 @@ main {
     border-right: 1px solid gray;
 }
 
-.content {
+#video-content {
     padding: 20px;
     flex: 1;
     display: flex;

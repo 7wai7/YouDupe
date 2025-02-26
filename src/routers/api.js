@@ -243,7 +243,7 @@ router.get("/studio/videos", authMiddleware, async (req, res) => {
         if (!req.user) return res.status(401).json({ message: 'Not registered' });
 
         const filter = req.query.filter || "date";
-        const sort = req.query.sort === 'up' ? -1 : 1; // 1 - ASC, -1 - DESC
+        const sort = req.query.sort === 'up' ? 1 : -1; // 1 - ASC, -1 - DESC
         const offset = parseInt(req.query.offset) || 0;
         const limit = parseInt(req.query.limit) || 10;
 
@@ -527,7 +527,7 @@ router.post("/studio/upload", authMiddleware, async (req, res, next) => {
 
                 await video.save();
 
-                res.json({ message: "Video has been successfully uploaded", video });
+                res.json({ message: "Video has been successfully uploaded" });
             });
         });
     } catch (error) {

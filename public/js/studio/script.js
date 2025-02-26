@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.querySelector('#filters .active').classList.remove('active');
         document.querySelector(`[data-btnfilter="${filter}"]`).classList.add('active');
-        
+
 
         const container = document.getElementById('video-content');
         const offset = container.querySelectorAll('.video').length;
@@ -27,11 +27,11 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(htmlText => {
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = htmlText;
-    
-                while(tempDiv.firstChild) {
+
+                while (tempDiv.firstChild) {
                     container.appendChild(tempDiv.firstChild);
                 }
-    
+
                 tempDiv.remove();
             })
             .catch(console.error);
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ОБРОБКА КЛІКІВ НА ФІЛЬТРАХ
-    
+
     try {
         const filtersContainer = document.getElementById('filters');
 
@@ -55,10 +55,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     filtersContainer.dataset.filter = btn.dataset.btnfilter;
                     filtersContainer.dataset.sort = 'down';
                 }
-                
+
                 const newFilter = filtersContainer.dataset.filter;
                 const newSort = filtersContainer.dataset.sort;
-                
+
                 history.replaceState({}, '', `/studio?filter=${newFilter}&sort=${newSort}`);
                 document.getElementById('video-content').innerHTML = '';
                 loadVideos();
@@ -107,22 +107,15 @@ document.addEventListener("DOMContentLoaded", () => {
         createVideoBtn.addEventListener('click', (event) => {
             uploadVideoModal.removeAttribute('hidden');
         });
-    } catch (error) {
-        console.log(error);
-    }
 
 
 
-    try {
-        const dropZone = document.getElementById("drop-zone");
-        const uploadContent = document.getElementById("upload-information");
+
         const chooseFileBtn = document.getElementById("choose-file-btn");
 
         const videoFileInput = document.getElementById("video-file-input");
         const previewFileInput = document.getElementById("preview-file-input");
 
-        const uploadedVideo = document.getElementById("uploaded-video");
-        const videoPreview = document.getElementById("video-preview");
 
         document.getElementById("upload-preview-btn").addEventListener("click", () => previewFileInput.click());
         document.getElementById("create-preview-btn").addEventListener("click", createPreviewAutomatically);
@@ -154,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         previewFileInput.addEventListener("change", (e) => {
             const file = e.target.files[0];
-            
+
             if (file && file.type.startsWith("image/")) {
                 previewFileInput.value = ""; // Очищаємо input, щоб можна було вибрати той самий файл ще раз
                 videoPreview.src = ""; // Очищаємо прев'ю перед оновленням
@@ -206,6 +199,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         document.getElementById("upload-video-btn").addEventListener("click", () => {
+            if (document.getElementById('upload-video-btn').hasAttribute('notAvailable')) return;
+
+            document.getElementById('upload-video-btn').setAttribute('notAvailable', '');
+            const spinner = document.querySelector('.upload-video-btn-wrapper .loading-spinner');
+            spinner?.classList.toggle('spinner');
+            spinner?.removeAttribute('hidden');
+
+
             const formData = new FormData();
 
             // Перевірка наявності відео перед відправкою
@@ -213,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error("Файл відео не завантажений!");
                 return;
             }
-            
+
             formData.append("title", document.getElementById('video-title-textarea').value);
             formData.append("description", document.getElementById('video-description-textarea').value);
 
@@ -224,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         const fileType = blob.type || "video/mp4"; // Якщо тип невідомий, встановлюємо MP4
                         const fileExt = fileType.split("/")[1] || "mp4"; // Отримуємо розширення
                         const videoFile = new File([blob], `video.${fileExt}`, { type: fileType });
-                        
+
                         formData.append("video", videoFile);
 
                         if (videoPreview.file) {
@@ -245,7 +246,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 method: "POST",
                 body: formData,
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById('upload-video-btn').removeAttribute('notAvailable');
+                        spinner?.classList.toggle('spinner');
+                        spinner?.setAttribute('hidden', '');
+                        hideModal();
+                    }
+                    return response.json()
+                })
                 .then(data => {
                     console.log(data);
                 })
@@ -287,45 +296,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
         const modal = document.getElementById('change-description-modal');
-        const dropdownList = document.querySelectorAll('.description-dropdown');
         const changeBtn = document.getElementById('change-description-btn');
         const cancelBtn = document.getElementById('cancel-change-description-btn');
-
-
-        dropdownList.forEach((dropdown) => {
-            dropdown.addEventListener('mouseenter', (event) => {
-                fetch('/img/arrow-2-down.svg')
-                    .then(response => response.text())
-                    .then(html => {
-                        dropdown.querySelector('.description-dropdown-icon').innerHTML = html;
-                    })
-                    .catch(console.error);
-            })
-
-            dropdown.addEventListener('mouseleave', (event) => {
-                fetch('/img/arrow-2-right.svg')
-                    .then(response => response.text())
-                    .then(html => {
-                        dropdown.querySelector('.description-dropdown-icon').innerHTML = html;
-                    })
-                    .catch(console.error);
-            })
-
-            dropdown.addEventListener('click', (event) => {
-                modal.removeAttribute('hidden');
-            })
-        })
-
+        const videoContent = document.getElementById('video-content');
+    
+        
+        videoContent.addEventListener('mouseover', (event) => {
+            const dropdown = event.target.closest('.description-dropdown');
+            if (!dropdown) return;
+    
+            fetch('/img/arrow-2-right.svg')
+                .then(response => response.text())
+                .then(html => {
+                    dropdown.querySelector('.description-dropdown-icon').innerHTML = html;
+                })
+                .catch(console.error);
+        });
+    
+        videoContent.addEventListener('mouseout', (event) => {
+            const dropdown = event.target.closest('.description-dropdown');
+            if (!dropdown) return;
+    
+            fetch('/img/arrow-2-down.svg')
+                .then(response => response.text())
+                .then(html => {
+                    dropdown.querySelector('.description-dropdown-icon').innerHTML = html;
+                })
+                .catch(console.error);
+        });
+    
+        // Обробник кліку для відкриття модального вікна
+        videoContent.addEventListener('click', (event) => {
+            const dropdown = event.target.closest('.description-dropdown');
+            if (!dropdown) return;
+    
+            modal.removeAttribute('hidden');
+        });
+    
+        // Закриття модального вікна при кліку поза ним\
         modal.addEventListener('click', (event) => {
             if (event.target === modal) {
                 modal.setAttribute('hidden', '');
             }
-        })
-
-        cancelBtn.addEventListener('click', (event) => {
-            modal.setAttribute('hidden', '');
-        })
+        });
+    
+        // Закриття модального вікна при натисканні кнопки "Скасувати"
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => {
+                modal.setAttribute('hidden', '');
+            });
+        }
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
+    
 });

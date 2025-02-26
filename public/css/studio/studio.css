@@ -306,21 +306,44 @@ main {
     border-radius: 10px;
 }
 
-.video-data button {
+.upload-video-btn-wrapper {
+    display: inline-flex;
+    gap: 10px;
+    align-self: self-end;
+    margin: auto 0 0 auto;
+}
+
+#upload-video-btn {
     color: #fff;
     background: #000;
     border: 1px solid #000;
     border-radius: 12px;
     padding: 4px 8px;
-    align-self: self-end;
-    margin: auto 0 0 auto;
 }
 
-.video-data button:hover {
+#upload-video-btn:hover {
     color: #000;
     background: #fff;
 }
 
+#upload-video-btn[notAvailable] {
+    color: #000;
+    background: lightgray;
+}
+
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    animation: rotate 1s linear infinite;
+}
 
 
 

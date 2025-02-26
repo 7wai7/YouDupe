@@ -13,8 +13,8 @@
         </div>
         <div class="content-top">
             <h1>Channel content</h1>
-            <div id="filters" filter="date" sort="down">
-                <% createFilterBtn('date'); createFilterBtn('views'); createFilterBtn('comments');
+            <div id="filters" data-filter="createdAt" data-sort="down">
+                <% createFilterBtn('createdAt'); createFilterBtn('views'); createFilterBtn('comments');
                     createFilterBtn('likes'); createFilterBtn('dislikes'); %>
             </div>
         </div>
@@ -122,30 +122,31 @@
     </div>
 </main>
 
-<% function createFilterBtn(name) { %>
-    <button id="<%= name %>" <% if(filter===name ) { %>
-        <%= 'active' %> sort="<%= sort %>" <% } %> >
-                    <h2>
-                        <%= (name.charAt(0).toUpperCase() + name.slice(1)) %>
-                    </h2>
-                    <% if(filter===name ) getFilterIcon() %>
+<% function createFilterBtn(name) { %> 
+    <button data-btnfilter="<%= name %>" class="<%= filter === name ? 'active' : '' %>">
+        <h2>
+            <%= (name === 'createdAt' ? 'Date' : name.charAt(0).toUpperCase() + name.slice(1)) %>
+        </h2>
+        <% if(filter === name) { %>
+            <%= getFilterIcon() %>
+        <% } %>
     </button>
-    <% } %>
+<% } %>
 
-        <% function getFilterIcon() { %>
-            <div id="filter-icon">
-                <% if(sort==="down" ) { %>
-                    <svg width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="m 12.666918,2.528 v 16.392001 l 3.530664,-3.529334 0.943022,0.942667 -5.13927,5.138666 -5.1406042,-5.138666 0.9430221,-0.942667 3.5293301,3.526667 V 2.528 Z"
-                            stroke-width="1.33358" />
-                    </svg>
-                    <% } else { %>
-                        <svg width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M 11.334416,21.472 V 5.079999 L 7.8037518,8.609333 6.8607298,7.666666 12,2.528 17.140604,7.666666 16.197582,8.609333 12.668252,5.082666 V 21.472 Z"
-                                stroke-width="1.33358" />
-                        </svg>
-                        <% } %>
-                            <% } %>
-            </div>
+<% function getFilterIcon() { %>
+    <div id="filter-icon">
+        <% if(sort === "down") { %>
+            <svg width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="m 12.666918,2.528 v 16.392001 l 3.530664,-3.529334 0.943022,0.942667 -5.13927,5.138666 -5.1406042,-5.138666 0.9430221,-0.942667 3.5293301,3.526667 V 2.528 Z"
+                    stroke-width="1.33358" />
+            </svg>
+        <% } else { %>
+            <svg width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M 11.334416,21.472 V 5.079999 L 7.8037518,8.609333 6.8607298,7.666666 12,2.528 17.140604,7.666666 16.197582,8.609333 12.668252,5.082666 V 21.472 Z"
+                    stroke-width="1.33358" />
+            </svg>
+        <% } %>
+    </div>
+<% } %>

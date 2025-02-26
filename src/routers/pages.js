@@ -105,7 +105,7 @@ router.get('/channel/:login', authMiddleware, async (req, res) => {
 });
 
 router.get('/studio', authMiddleware, async (req, res) => {
-    const filter = req.query.filter || "date";
+    const filter = req.query.filter || "createdAt";
     const sort = req.query.sort || "down";
     
     res.render('studio', {

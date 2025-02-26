@@ -111,6 +111,7 @@ router.get("/recommendedVideos", async (req, res) => {
     const current_video = req.query.current_video;
 
     let videos = await Video.find()
+        .populate('user', 'login')
         .sort({ createdAt: 1 })
         .skip(offset)
         .limit(limit);
@@ -119,7 +120,12 @@ router.get("/recommendedVideos", async (req, res) => {
         videos = videos.filter(video => video._id.toString() !== current_video);
     }
 
-    res.render('partials/recommendedVideo', { videos, layout: false });
+    res.render('partials/recommendedVideo', {
+        videos,
+        formatDistanceToNow,
+        uk,
+        layout: false
+    });
 })
 
 router.get("/comments", authMiddleware, async (req, res) => {
@@ -237,49 +243,95 @@ router.get("/studio/videos", authMiddleware, async (req, res) => {
         if (!req.user) return res.status(401).json({ message: 'Not registered' });
 
         const filter = req.query.filter || "date";
-        const sort = parseInt(req.query.sort) || -1;
+        const sort = req.query.sort === 'up' ? -1 : 1; // 1 - ASC, -1 - DESC
         const offset = parseInt(req.query.offset) || 0;
         const limit = parseInt(req.query.limit) || 10;
 
 
-        const videos = await Video.find({ user: req.user._id });
-        const videoIds = videos.map(video => video._id);
-        const comments = await Comment.find({ video: { $in: videoIds } });
-        const commentCounts = {};
+        /* let videosQuery = Video.find({ user: req.user._id });
+        const videoIds = await Video.distinct("_id", { user: req.user._id }); */
 
 
-        console.log(comments);
-        
+        // !!! ЯКЩО НЕМА ПІД ВІДЕО КОМЕНТАРІВ АБО РЕАКЦІЙ, ОБ'ЄКТ В МАСИВ НЕ ЗАПИШЕТЬСЯ
 
-        let mongoFilter;
-        switch (filter) {
-            case 'date':
-                mongoFilter = 'createdAt';
-                break;
-        
-            case 'views':
-                mongoFilter = 'views';
-                break;
-    
-            case 'comments':
-                /* const videoIds = videos.map(video => video._id);
-                const comments = await Comment.find({ video: { $in: videoIds } });
-                const commentCounts = {}; */
-                break;
-    
-            case 'likes':
-                break;
-    
-            case 'dislikes':
-                break;
-        }
+        /* const reactions = await Reaction.aggregate([
+            { $match: { video: { $in: videoIds } } },
+            { $group: {
+                    _id: "$video",
+                    likes: {
+                        $sum: {
+                            $cond: [{ $eq: ["$reaction", true] }, 1, 0]
+                        }
+                    },
+                    dislikes: {
+                        $sum: {
+                            $cond: [{ $eq: ["$reaction", false] }, 1, 0]
+                        }
+                    }
+                }
+            }
+        ]);
 
-        res.render('partials/studioVideo', { videos, layout: false });
+        const comments = await Comment.aggregate([
+            { $match: { video: { $in: videoIds } } },
+            { $group: {
+                    _id: "$video",
+                    comments: { $sum: 1 }
+                }
+            }
+        ]);
+
+
+        const reactionCounts = Object.fromEntries(reactions.map(r => [r._id.toString(), r]));
+        const commentCounts = Object.fromEntries(comments.map(c => [c._id.toString(), c]));
+
+
+        const videos = await videosQuery.lean();
+        videos.forEach(video => {
+            video.likes = reactionCounts[video._id]?.likes || 0;
+            video.dislikes = reactionCounts[video._id]?.dislikes || 0;
+            video.comments = commentCounts[video._id]?.comments || 0;
+        }); */
+
+        const sortedVideos = await Video.aggregate([
+            { $match: { user: req.user._id } }, // Вибираємо всі відео користувача
+            { $lookup: { 
+                from: "reactions",
+                localField: "_id",
+                foreignField: "video",
+                as: "reactions"
+            }}, // Підтягуємо реакції
+            { $lookup: { 
+                from: "comments",
+                localField: "_id",
+                foreignField: "video",
+                as: "comments"
+            }}, // Підтягуємо коментарі
+            { $addFields: {
+                likes: { 
+                    $size: { 
+                        $filter: { input: "$reactions", as: "r", cond: { $eq: ["$$r.reaction", true] } }
+                    }
+                },
+                dislikes: { 
+                    $size: { 
+                        $filter: { input: "$reactions", as: "r", cond: { $eq: ["$$r.reaction", false] } }
+                    }
+                },
+                comments: { $size: "$comments" }
+            }}, // Додаємо підрахунки лайків, дизлайків і коментарів
+            { $sort: { [filter]: sort } }, // Динамічне сортування
+            { $skip: offset }, // Пропускаємо зайві елементи
+            { $limit: limit } // Обмежуємо кількість результатів
+        ]);
+
+        res.render('partials/studioVideo', { videos: sortedVideos, layout: false });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error", error });
     }
 });
+
 
 router.get("/channel/:login/load", async (req, res) => {
     try {

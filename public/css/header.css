@@ -150,7 +150,7 @@ header {
     flex-flow: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    width: 60%;
     gap: 10px;
 }
 
@@ -164,8 +164,13 @@ header {
     padding: 8px 10px;
     border: 1px solid #000;
     border-radius: 6px;
-    width: 60%;
+    width: 100%;
 }
+
+/* #password,
+#confirmPassword {
+    width: 100%;
+} */
 
 #form input:focus {
     border: 1px solid gray;
@@ -176,14 +181,10 @@ header {
     background: #000;
 }
 
-/* #show-signup-panel-btn {
-    margin-top: 20px;
-} */
-
 #password-container,
 #confirm-password-container {
     position: relative;
-    width: 60%;
+    width: 100%;
 }
 
 #toggle-password,
@@ -193,11 +194,6 @@ header {
     right: 10px;
     transform: translateY(-50%);
     cursor: pointer;
-}
-
-#password,
-#confirmPassword {
-    width: 100%;
 }
 
 

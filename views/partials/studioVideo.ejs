@@ -4,7 +4,14 @@
         <div class="metadata-row">
             <div>
                 <h1 class="title"><%= video.title %></h1>
-                <h1 class="date"><%= new Date(video.createdAt).toLocaleDateString('uk-UA') %></h1>
+                <h1 class="date"><%= new Date(video.createdAt).toLocaleDateString('uk-UA', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                }) %></h1>
                 <button class="description-dropdown">
                     <h1>Description</h1>
                     <div class="description-dropdown-icon">
@@ -27,15 +34,15 @@
                 </div>
                 <div class="meta-block">
                     <h1>Likes: </h1>
-                    <h2 class="meta likes">0</h2>
+                    <h2 class="meta likes"><%= video.likes %></h2>
                 </div>
                 <div class="meta-block">
                     <h1>Dislikes: </h1>
-                    <h2 class="meta dislikes">0</h2>
+                    <h2 class="meta dislikes"><%= video.dislikes %></h2>
                 </div>
                 <div class="meta-block">
                     <h1>Comments: </h1>
-                    <h2 class="meta comments">0</h2>
+                    <h2 class="meta comments"><%= video.comments %></h2>
                 </div>
                 <div class="meta-block">
                     <h1>Shares: </h1>

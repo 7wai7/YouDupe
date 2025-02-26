@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function loadVideos() {
         const urlParams = new URLSearchParams(window.location.search);
-        const filter = urlParams.get('filter') || 'date';
+        const filter = urlParams.get('filter') || 'createdAt';
         const sort = urlParams.get('sort') || 'down';
 
         fetch(`/img/arrow-${sort}.svg`)
@@ -11,12 +11,13 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(html => {
                 const icon = document.getElementById('filter-icon');
                 icon.innerHTML = html;
-                document.getElementById(filter).appendChild(icon);
+                document.querySelector(`[data-btnfilter="${filter}"]`).appendChild(icon);
             })
             .catch(console.error);
 
-        document.getElementById('filters').querySelector('[active]').removeAttribute('active');
-        document.getElementById(filter).setAttribute('active', '');
+        document.querySelector('#filters .active').classList.remove('active');
+        document.querySelector(`[data-btnfilter="${filter}"]`).classList.add('active');
+        
 
         const container = document.getElementById('video-content');
         const offset = container.querySelectorAll('.video').length;
@@ -24,7 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch(`/api/studio/videos?filter=${filter}&sort=${sort}&limit=20&offset=${offset}`, { method: "GET" })
             .then(response => response.text())
             .then(htmlText => {
-                container.innerHTML = '';
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = htmlText;
     
@@ -46,20 +46,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         filtersContainer.querySelectorAll('button').forEach((btn) => {
             btn.addEventListener('click', (event) => {
-                const filter = filtersContainer.getAttribute('filter');
-                const sort = filtersContainer.getAttribute('sort');
+                const filter = filtersContainer.dataset.filter;
+                const sort = filtersContainer.dataset.sort;
 
-                if (btn.id === filter) {
-                    filtersContainer.setAttribute('sort', sort === 'down' ? 'up' : 'down');
+                if (btn.dataset.btnfilter === filter) {
+                    filtersContainer.dataset.sort = sort === 'down' ? 'up' : 'down'
                 } else {
-                    filtersContainer.setAttribute('filter', btn.id);
-                    filtersContainer.setAttribute('sort', 'down');
+                    filtersContainer.dataset.filter = btn.dataset.btnfilter;
+                    filtersContainer.dataset.sort = 'down';
                 }
                 
-                const newFilter = filtersContainer.getAttribute('filter');
-                const newSort = filtersContainer.getAttribute('sort');
+                const newFilter = filtersContainer.dataset.filter;
+                const newSort = filtersContainer.dataset.sort;
                 
                 history.replaceState({}, '', `/studio?filter=${newFilter}&sort=${newSort}`);
+                document.getElementById('video-content').innerHTML = '';
                 loadVideos();
             })
         })

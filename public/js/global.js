@@ -139,14 +139,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('logout-btn')?.addEventListener('click', (event) => {
             fetch('api/auth/logout', { method: 'POST' })
             .then(response => {
-                console.log('logout');
-                
                 if(response.ok) {
                     window.location.href = '/';
                 }
-                return response.json();
             })
-            .then(data => console.log(data))
             .catch(console.error)
         })
     } catch(error) {

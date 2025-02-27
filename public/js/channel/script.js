@@ -3,16 +3,26 @@ document.addEventListener("DOMContentLoaded", () => {
     function loadVideos(sort) {
         const match = window.location.pathname.match(/^\/channel\/([^\/]+)/);
         const login = match ? match[1] : null;
+        
+        const container = document.getElementById('content');
+        const offset = container.querySelectorAll('.video').length;
     
-        fetch(`/api/channel/${login}/load?sort=${sort}`, { method: 'GET' })
+        fetch(`/api/channel/${login}/load?sort=${sort}&offset=${offset}`, { method: 'GET' })
         .then(response => response.text())
-        .then(html => {
-            document.getElementById('content').innerHTML = html;
+        .then(htmlText => {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlText;
+
+            const fragment = document.createDocumentFragment();
+            while (tempDiv.firstChild) {
+                fragment.appendChild(tempDiv.firstChild);
+            }
+
+            content.appendChild(fragment);
+            tempDiv.remove();
         })
         .catch(console.error);
     }
-
-    loadVideos('newer');
 
     try {
         const contentTopRow = document.getElementById('content-top-row');
@@ -24,10 +34,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     btn.setAttribute('active', '');
 
                     const sort = btn.getAttribute('sort');
+                    document.getElementById('content').innerHTML = '';
                     loadVideos(sort);
                 }
             })
-        })
+        });
+
+        loadVideos('newer');
     } catch (error) {
         console.error(error)
     }

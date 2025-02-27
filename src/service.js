@@ -1,6 +1,7 @@
 import { User } from './models/User.js';
 import Video from './models/Video.js';
 import Comment from './models/Comment.js';
+import Reaction from './models/Reaction.js';
 
 export async function changeRole(moderatorId, userId, newRole) {
     try {
@@ -24,6 +25,7 @@ export async function changeRole(moderatorId, userId, newRole) {
 
         return { success: false, message: 'No rights to change role' };
     } catch (error) {
+        console.error(error);
         return { success: false, message: 'Error when changing the role', error };
     }
 };
@@ -50,6 +52,7 @@ export async function deleteAccount(moderatorId, userId) {
 
         return { success: true, message: 'Account deleted successfully' };
     } catch (error) {
+        console.error(error);
         return { success: false, message: 'Error when deleting an account', error };
     }
 };
@@ -74,6 +77,7 @@ export async function deleteVideo(userId, videoId) {
 
         return { success: false, message: 'No rights to delete video' };
     } catch (error) {
+        console.error(error);
         return { success: false, message: 'Error when deleting a video', error };
     }
 }
@@ -88,12 +92,24 @@ export async function deleteComment(user, commentId) {
         const canDelete = user.role === 'admin' || user.role === 'moderator' || user._id.tpString() === comment.user.toString();
         if(!canDelete) return { success: false, message: 'No rights to delete comment' }
 
-        // Спочатку знаходим дочірні коментарі
+
+        // Знаходимо всі дочірні коментарі (ID)
+        const childComments = await Comment.find({ parentComment: commentId }).select('_id');
+        const childCommentIds = childComments.map(comment => comment._id);
+
+        // Видаляємо всі реакції, пов'язані з цими коментарями включаючи головний
+        await Reaction.deleteMany({ comment: { $in: [commentId, ...childCommentIds] } });
+
+        // Видаляємо всі дочірні коментарі
         await Comment.deleteMany({ parentComment: commentId });
+
+        // Видаляємо головний коментар
         await Comment.findByIdAndDelete(commentId);
+
         return { success: true, message: 'Comment deleted successfully' };
     } catch (error) {
-        return { success: false, message: 'Error when deleting comment', error };
+        console.error(error);
+        return { success: false, message: 'Error when deleting comment', error: error.message };
     }
 }
 

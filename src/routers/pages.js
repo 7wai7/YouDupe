@@ -105,6 +105,8 @@ router.get('/channel/:login', authMiddleware, async (req, res) => {
 });
 
 router.get('/studio', authMiddleware, async (req, res) => {
+    if (!req.user) return res.status(401).json('Not registered');
+
     const filter = req.query.filter || "createdAt";
     const sort = req.query.sort || "down";
     
@@ -116,6 +118,16 @@ router.get('/studio', authMiddleware, async (req, res) => {
         user: req.user,
         filter,
         sort
+    });
+});
+
+router.get('/coming-soon', authMiddleware, async (req, res) => {
+    res.render('coming soon', {
+        title: 'Coming soon',
+        stylesheets: ["coming soon", 'header'],
+        scripts: ['header'],
+        header: '../partials/header',
+        user: req.user,
     });
 });
 

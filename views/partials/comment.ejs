@@ -44,7 +44,7 @@
                                 </div>
                                 <h1>Delete</h1>
                             </button>
-                            <button class="complain-comment">
+                            <button class="complain-comment" <%= comment.canComplain ? '' : 'hidden' %>>
                                 <div>
                                     <svg fill="#000000" width="24px" height="24px" viewBox="-2 0 19 19"
                                         xmlns="http://www.w3.org/2000/svg">
@@ -61,7 +61,7 @@
                     <%= comment.text %>
                 </div>
                 <div class="comment-bottom like-dislike-wrapper reaction-comment">
-                    <button class="like" <%= userReactions[comment._id] === true ? 'selected' : '' %>>
+                    <button class="like" <%= comment.userReaction === true ? 'selected' : '' %>                        >
                         <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -73,10 +73,10 @@
                         </svg>
                     </button>
                     <h6 class="like-count">
-                        <%= reactionCount[comment._id].likes %>
+                        <%= comment.likes %>
                     </h6>
                     <div class="v-line"></div>
-                    <button class="dislike" <%= userReactions[comment._id] === false ? 'selected' : '' %>>
+                    <button class="dislike" <%= comment.userReaction === false ? 'selected' : '' %>                        >
                         <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path id="vector"
@@ -88,7 +88,7 @@
                         </svg>
                     </button>
                     <h6 class="dislike-count">
-                        <%= reactionCount[comment._id].dislikes %>
+                        <%= comment.dislikes %>
                     </h6>
                     <button class="reply-btn">Reply</button>
                 </div>

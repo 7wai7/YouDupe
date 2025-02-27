@@ -1,3 +1,9 @@
+let isFetching = false; // Чи зараз завантажуються коментарі
+let hasMoreComments = true; // Чи є ще коментарі для завантаження
+let isFetchingVideos = false;
+let hasMoreVideos = true;
+
+
 
 
 function loadReplies(container) {
@@ -6,6 +12,7 @@ function loadReplies(container) {
 
     const commentId = container.closest('.parentComment').id;
     const offset = container.children.length;
+
 
     fetch(`/api/comments/replies?video=${videoId}&comment=${commentId}&limit=10&offset=${offset}`, { method: 'GET' })
         .then(response => response.text())
@@ -24,11 +31,16 @@ function loadReplies(container) {
 }
 
 function loadComments() {
+    if (isFetching || !hasMoreComments) return; // Якщо вже вантажиться або немає більше коментарів - виходимо
+    isFetching = true;
+
+
     const urlParams = new URLSearchParams(window.location.search);
     const currentVideoId = urlParams.get('v');
 
     const offset = document.querySelectorAll('#comments-content .comment').length;
     const sort = document.getElementById('toggle-comment-sorting').getAttribute('sort');
+
 
     fetch(`/api/comments?video=${currentVideoId}&limit=10&offset=${offset}&sort=${sort}`, { method: 'GET' })
         .then(response => response.text())
@@ -38,6 +50,11 @@ function loadComments() {
             // Створюємо тимчасовий контейнер для перетворення рядка в HTML
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = htmlText;
+            
+            if(tempDiv.children.length === 0) {
+                hasMoreComments = false;
+                return;
+            }
 
             const fragment = document.createDocumentFragment();
             while (tempDiv.firstChild) {
@@ -46,9 +63,49 @@ function loadComments() {
 
             content.appendChild(fragment);
             tempDiv.remove();
+
+            isFetching = false;
         })
         .catch(console.error)
 }
+
+
+
+function loadVideoRecommendations() {
+    if (isFetchingVideos || !hasMoreVideos) return; // Якщо вже вантажиться або немає більше коментарів - виходимо
+    isFetchingVideos = true;
+
+
+    const offset = document.querySelectorAll('#video-recommendations .rec-video').length;    
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentVideoId = urlParams.get('v');
+
+    fetch(`/api/recommendedVideos?limit=10&offset=${offset}&current_video=${currentVideoId}`, { method: 'GET' })
+        .then(response => response.text())
+        .then(htmlText => {
+            const container = document.getElementById('video-recommendations');
+
+            // Створюємо тимчасовий контейнер для перетворення рядка в HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlText;
+            
+            if(tempDiv.children.length === 0) {
+                hasMoreComments = false;
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+            while (tempDiv.firstChild) {
+                fragment.appendChild(tempDiv.firstChild);
+            }
+
+            container.appendChild(fragment);
+            tempDiv.remove();
+            isFetchingVideos = false;
+        })
+        .catch(console.error)
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
     try {
@@ -68,32 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
         })
     } catch (error) {
         console.error(error)
-    }
-
-    try {
-        const offset = document.getElementById('video-recommendations').children.length;
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentVideoId = urlParams.get('v');
-
-        fetch(`/api/recommendedVideos?limit=20&offset=${offset}&current_video=${currentVideoId}`, { method: 'GET' })
-            .then(response => response.text())
-            .then(htmlText => {
-                const container = document.getElementById('video-recommendations');
-
-                // Створюємо тимчасовий контейнер для перетворення рядка в HTML
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = htmlText;
-
-                // Додаємо всі отримані елементи в DOM
-                while (tempDiv.firstChild) {
-                    container.appendChild(tempDiv.firstChild);
-                }
-
-                tempDiv.remove();
-            })
-            .catch(console.error)
-    } catch (error) {
-        console.error(error);
     }
 
 
@@ -238,7 +269,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     try {
-        loadComments();
+        window.addEventListener('scroll', () => {
+            if (!hasMoreComments || isFetching) return;
+        
+            const container = document.getElementById('comments-content');
+            if (!container) return;
+
+            const rect = container.getBoundingClientRect();
+            const scrollPosition = window.innerHeight + window.scrollY;
+
+            if (rect.bottom - 100 <= scrollPosition) {
+                loadComments();
+            }
+        });
+    } catch (error) {
+        console.error(error);
+    }
+
+
+
+    try {
+        window.addEventListener('scroll', () => {
+            if (!hasMoreVideos || isFetchingVideos) return;
+        
+            const container = document.getElementById('video-recommendations');
+            if (!container) return;
+
+            const rect = container.getBoundingClientRect();
+            const scrollPosition = window.innerHeight + window.scrollY;
+
+            if (rect.bottom - 100 <= scrollPosition) {
+                loadVideoRecommendations();
+            }
+        });
     } catch (error) {
         console.error(error);
     }

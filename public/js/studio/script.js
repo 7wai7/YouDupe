@@ -1,40 +1,71 @@
+let isFetchingVideos = false;
+let hasMoreVideos = true;
+
+function loadVideos() {
+    if (isFetchingVideos || !hasMoreVideos) return; // Якщо вже вантажиться або немає більше коментарів - виходимо
+    isFetchingVideos = true;
+
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const filter = urlParams.get('filter') || 'createdAt';
+    const sort = urlParams.get('sort') || 'down';
+
+    fetch(`/img/arrow-${sort}.svg`)
+        .then(response => response.text())
+        .then(html => {
+            const icon = document.getElementById('filter-icon');
+            icon.innerHTML = html;
+            document.querySelector(`[data-btnfilter="${filter}"]`).appendChild(icon);
+        })
+        .catch(console.error);
+
+    document.querySelector('#filters .active').classList.remove('active');
+    document.querySelector(`[data-btnfilter="${filter}"]`).classList.add('active');
+
+
+    const container = document.getElementById('video-content');
+    const offset = container.querySelectorAll('.video').length;
+
+    fetch(`/api/studio/videos?filter=${filter}&sort=${sort}&limit=10&offset=${offset}`, { method: "GET" })
+        .then(response => response.text())
+        .then(htmlText => {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlText;
+
+            const fragment = document.createDocumentFragment();
+            while (tempDiv.firstChild) {
+                fragment.appendChild(tempDiv.firstChild);
+            }
+
+            container.appendChild(fragment);
+            tempDiv.remove();
+            isFetchingVideos = false;
+        })
+        .catch(console.error);
+}
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    function loadVideos() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const filter = urlParams.get('filter') || 'createdAt';
-        const sort = urlParams.get('sort') || 'down';
+    try {
+        loadVideos();
+        
+        window.addEventListener('scroll', () => {
+            if (!hasMoreVideos || isFetchingVideos) return;
+        
+            const container = document.getElementById('video-recommendations');
+            if (!container) return;
 
-        fetch(`/img/arrow-${sort}.svg`)
-            .then(response => response.text())
-            .then(html => {
-                const icon = document.getElementById('filter-icon');
-                icon.innerHTML = html;
-                document.querySelector(`[data-btnfilter="${filter}"]`).appendChild(icon);
-            })
-            .catch(console.error);
+            const rect = container.getBoundingClientRect();
+            const scrollPosition = window.innerHeight + window.scrollY;
 
-        document.querySelector('#filters .active').classList.remove('active');
-        document.querySelector(`[data-btnfilter="${filter}"]`).classList.add('active');
-
-
-        const container = document.getElementById('video-content');
-        const offset = container.querySelectorAll('.video').length;
-
-        fetch(`/api/studio/videos?filter=${filter}&sort=${sort}&limit=20&offset=${offset}`, { method: "GET" })
-            .then(response => response.text())
-            .then(htmlText => {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = htmlText;
-
-                while (tempDiv.firstChild) {
-                    container.appendChild(tempDiv.firstChild);
-                }
-
-                tempDiv.remove();
-            })
-            .catch(console.error);
+            if (rect.bottom - 100 <= scrollPosition) {
+                loadVideos();
+            }
+        });
+    } catch (error) {
+        console.error(error);
     }
 
 

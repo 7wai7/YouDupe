@@ -11,7 +11,7 @@ import { uk } from 'date-fns/locale';
 
 import { authMiddleware } from '../middlewares/middlewares.js';
 import Video from '../models/Video.js';
-import User from '../models/User.js';
+import { User } from '../models/User.js';
 import Comment from '../models/Comment.js';
 import Reaction from '../models/Reaction.js';
 import { deleteComment, getReactionsCount, getUserReactions } from '../service.js';
@@ -332,6 +332,15 @@ router.get("/studio/videos", authMiddleware, async (req, res) => {
     }
 });
 
+router.get("/video/:id/description", async (req, res) => {
+    try {
+        const video = await Video.findById(req.params.id);
+        res.json({ description: video.description });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error', error });
+    }
+})
 
 router.get("/channel/:login/load", async (req, res) => {
     try {
@@ -655,6 +664,23 @@ router.put("/video/:id/complain", authMiddleware, async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error", error });
+    }
+})
+
+router.put("/video/:id/description", authMiddleware, async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).json({ message: 'Not registered' });
+        
+        const id = req.params.id;
+        const text =  req.body.text;
+
+        await Video.findByIdAndUpdate(id, { description: text })
+
+        res.json({ message: 'Description changed succesfully' })      
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error', error })
     }
 })
 

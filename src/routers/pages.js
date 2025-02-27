@@ -8,7 +8,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { uk } from 'date-fns/locale';
 
 import { authMiddleware } from '../middlewares/middlewares.js';
-import User from '../models/User.js';
+import { User } from '../models/User.js';
 import Video from '../models/Video.js';
 import Follower from '../models/Follower.js';
 import Comment from '../models/Comment.js';

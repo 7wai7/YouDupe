@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 });
 
-function isEnableEmail(email) {
+export function isEnableEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 }
@@ -41,4 +41,4 @@ userSchema.methods.comparePassword = function(candidatePassword) {
     return bcrypt.compare(candidatePassword, this.password);
 };
 
-export default mongoose.model('User', userSchema);
+export const User = mongoose.model('User', userSchema);

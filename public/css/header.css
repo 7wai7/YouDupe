@@ -144,7 +144,7 @@ header {
     margin-bottom: 30px;
 }
 
-#form {
+#auth-form {
     position: relative;
     display: flex;
     flex-flow: column;
@@ -154,12 +154,12 @@ header {
     gap: 10px;
 }
 
-#form #submit {
+#auth-form #submit {
     margin-top: 30px;
 }
 
-#form #submit,
-#form input {
+#auth-form #submit,
+#auth-form input {
     outline: none;
     padding: 8px 10px;
     border: 1px solid #000;
@@ -167,28 +167,21 @@ header {
     width: 100%;
 }
 
-/* #password,
-#confirmPassword {
-    width: 100%;
-} */
-
-#form input:focus {
+#auth-form input:focus {
     border: 1px solid gray;
 }
 
-#form #submit:hover {
+#auth-form #submit:hover {
     color: #fff;
     background: #000;
 }
 
-#password-container,
-#confirm-password-container {
+.password-container {
     position: relative;
     width: 100%;
 }
 
-#toggle-password,
-#toggle-confirmPassword {
+.toggle-password {
     position: absolute;
     top: 50%;
     right: 10px;

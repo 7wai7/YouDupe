@@ -183,29 +183,31 @@
     <div id="auth-modal" hidden>
         <div id="auth-panel" class="panel">
             <h2>Login</h2>
-            <div id="form" action="/api/auth/login">
-                <input id="login" name="login" placeholder="Login" required hidden />
-                <input id="email" name="email" placeholder="Email" type="email" required />
-
-                <!-- Контейнер для поля пароля та кнопки toggle -->
-                <div id="password-container">
-                    <input type="password" id="password" name="password" placeholder="Password" required />
-                    <span id="toggle-password">
+            <form id="auth-form" action="/api/auth/login" data-type="login">
+                <input id="login" name="login" placeholder="Login" hidden />
+                <input id="email" name="email" placeholder="Email" />
+    
+                <!-- Контейнер для пароля та кнопки toggle -->
+                <div class="password-container">
+                    <input type="password" id="password" name="password" placeholder="Password" />
+                    <span class="toggle-password" id="toggle-password">
                         <i class="fas fa-eye-slash"></i>
                     </span>
                 </div>
-
-                <div id="confirm-password-container" hidden>
-                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password"
-                        required />
-                    <span id="toggle-confirmPassword">
+    
+                <div class="password-container" id="confirm-password-container" hidden>
+                    <input type="password" id="confirm-password" name="confirmPassword" placeholder="Confirm password" />
+                    <span class="toggle-password" id="toggle-confirm-password">
                         <i class="fas fa-eye-slash"></i>
                     </span>
                 </div>
-
+    
+                <p class="error-message" hidden></p>
+    
                 <a href="#" class="forgot-password-btn">Forgot password?</a>
-                <button id="submit">Login</button>
-                <button id="show-signup-panel-btn">Don't have an account?</button>
-            </div>
+                <button type="submit" id="submit">Login</button>
+                <button type="button" id="show-signup-panel-btn">Don't have an account?</button>
+            </form>
         </div>
     </div>
+    

@@ -249,9 +249,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 .then(response => {
                     if (response.ok) {
                         document.getElementById('upload-video-btn').removeAttribute('notAvailable');
+                        const spinner = document.querySelector('.upload-video-btn-wrapper .loading-spinner');
                         spinner?.classList.toggle('spinner');
                         spinner?.setAttribute('hidden', '');
                         hideModal();
+                        document.getElementById('video-content').innerHTML = '';
+                        loadVideos();
                     }
                     return response.json()
                 })
@@ -331,21 +334,51 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!dropdown) return;
     
             modal.removeAttribute('hidden');
+            modal.dataset.videoid = dropdown.closest('.video').id;
+
+            fetch(`/api/video/${modal.dataset.videoid}/description`, { method: 'GET' })
+            .then(response => {
+                if(response.ok) {}
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                
+                document.getElementById('change-description-textarea').value = data.description;
+            })
+            .catch(console.error)
         });
     
         // Закриття модального вікна при кліку поза ним\
         modal.addEventListener('click', (event) => {
             if (event.target === modal) {
                 modal.setAttribute('hidden', '');
+                document.getElementById('change-description-textarea').value = '';
             }
         });
     
         // Закриття модального вікна при натисканні кнопки "Скасувати"
-        if (cancelBtn) {
-            cancelBtn.addEventListener('click', () => {
-                modal.setAttribute('hidden', '');
-            });
-        }
+        cancelBtn.addEventListener('click', () => {
+            modal.setAttribute('hidden', '');
+            document.getElementById('change-description-textarea').value = '';
+        });
+        
+        changeBtn.addEventListener('click', () => {
+            const textarea = document.getElementById('change-description-textarea');
+            const videoId = modal.dataset.videoid;
+
+            fetch(`/api/video/${videoId}/description`, {
+                method: 'PUT',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: textarea.value })
+            })
+            .then(response => {
+                if(response.ok) {}
+                return response.json();
+            })
+            .then(data => console.log(data))
+            .catch(console.error)
+        });
     } catch (error) {
         console.error(error);
     }

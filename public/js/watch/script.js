@@ -143,14 +143,14 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
-            if (event.target.matches('.delete-comment-btn')) {
-                const btn = event.target;
-                const id = btn.closest('.comment').id;
+            const deleteCommentBtn = event.target.closest('.delete-comment-btn');
+            if (deleteCommentBtn) {
+                const id = deleteCommentBtn.closest('.comment').id;
 
                 fetch(`/api/comment/${id}`, { method: 'delete' })
                     .then(response => {
                         if (response.ok) {
-                            btn.closest('.comment').remove();
+                            deleteCommentBtn.closest('.comment').remove();
                         }
                         return response.json();
                     })

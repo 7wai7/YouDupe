@@ -7,9 +7,7 @@ const router = new Router();
 
 router.post('/signup', async (req, res, next) => {
     try {
-        const { login, email, password, confirmedPassword } = req.body;
-        console.log(login, email, password, confirmedPassword);
-        
+        const { login, email, password, confirmPassword } = req.body;
 
         if (!login) return res.status(400).json({ message: 'Login are required', error: 'login'});
         if (!email) return res.status(400).json({ message: 'Email are required', error: 'email'});
@@ -19,7 +17,7 @@ router.post('/signup', async (req, res, next) => {
         const existedUser = await User.findOne({ email });
         if (existedUser) return res.status(400).json({ message: 'This email already exist', error: 'email'});
 
-        if (password != confirmedPassword) {
+        if (password != confirmPassword) {
             return res.status(400).json({ message: 'Password confirmation is not equal to the password', error: 'password confirmation' })
         }
 

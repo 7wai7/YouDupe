@@ -5,7 +5,6 @@ import ffmpeg from 'fluent-ffmpeg';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { dirname } from 'path';
-import { log } from 'console';
 import { formatDistanceToNow } from 'date-fns';
 import { uk } from 'date-fns/locale';
 
@@ -244,7 +243,6 @@ router.get("/comments", authMiddleware, async (req, res) => {
         res.status(500).json({ message: "Server error", error });
     }
 });
-
 
 router.get("/comments/replies", authMiddleware, async (req, res) => {
     try {

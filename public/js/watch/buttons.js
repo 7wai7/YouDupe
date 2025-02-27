@@ -228,7 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
             playerContainer.style.cursor = 'default';
 
             clearTimeout(timeout);
-            timeout = setTimeout(hideControls, 1000); // 1 секунда
+            timeout = setTimeout(hideControls, 1200);
         }
 
         playerContainer.addEventListener('mousemove', showControls);

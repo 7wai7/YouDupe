@@ -5,6 +5,53 @@ let hasMoreVideos = true;
 
 
 
+async function addComment(commentArea) {
+    const wrapper = commentArea.closest(".add-comment-wrapper");
+    const savedText = commentArea.value;
+    const text = savedText.trim();
+    
+    if (!text) return;
+
+    commentArea.value = ""; // Очищуємо поле введення
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const videoId = urlParams.get("v");
+
+    const parentComment = wrapper.closest(".parentComment");
+    const url = parentComment
+        ? `/api/comment/reply?video=${videoId}&parentComment=${parentComment.id}`
+        : `/api/comment?video=${videoId}`;
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text })
+        });
+
+        if (response.ok) {
+            if (!wrapper.hasAttribute("notHide")) {
+                const comment = commentArea.closest(".comment");
+                if (comment?.classList.contains("parentComment")) {
+                    comment.querySelector(".show-answers-btn")?.removeAttribute("hidden");
+                }
+                wrapper.setAttribute("hidden", "");
+            } else {
+                loadComments();
+            }
+        } else {
+            throw new Error("Server error");
+        }
+
+        const data = await response.json();
+        console.log(data);
+
+    } catch (err) {
+        commentArea.value = savedText; // Повертаємо старий текст у разі помилки
+        console.error(err);
+    }
+};
+
 
 function loadReplies(container) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -108,6 +155,53 @@ function loadVideoRecommendations() {
 
 
 document.addEventListener("DOMContentLoaded", () => {
+
+    try {
+        const video = document.getElementById("custom-video");
+        if (!video) return;
+    
+        const maxWatchTime = 1200; // Максимальний час перегляду (20 хвилин)
+        let watchedTime = 0;
+        let hasCountedView = false;
+        let intervalId = null;
+    
+        video.addEventListener("play", () => {
+            if (intervalId) return; // Запобігаємо створенню кількох інтервалів
+    
+            intervalId = setInterval(() => {
+                if (hasCountedView || video.paused || video.ended /* || document.hidden */) return;
+    
+                watchedTime += 1;
+    
+                if (watchedTime >= video.duration * 0.3 || watchedTime >= maxWatchTime) {
+                    hasCountedView = true;
+                    clearInterval(intervalId); // Зупиняємо лічильник після зарахування перегляду
+    
+                    fetch(`/api/video/${video.dataset.id}/view`, { method: "PUT" })
+                        .then(res => res.json())
+                        .then(data => console.log(data.message))
+                        .catch(console.error);
+                }
+            }, 1000);
+        });
+    
+        video.addEventListener("pause", () => { // Зупиняємо таймер на паузі
+            clearInterval(intervalId);
+            intervalId = null;
+        });
+
+        video.addEventListener("ended", () => { // Зупиняємо після завершення відео
+            clearInterval(intervalId);
+            intervalId = null;
+        });
+    } catch (error) {
+        console.error(error);
+    }
+    
+    
+    
+
+
     try {
         document.querySelector('.complain-video-btn')?.addEventListener('click', (event) => {
             const videoId = new URLSearchParams(window.location.search).get("v");
@@ -197,53 +291,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     try {
-        async function addComment(commentArea) {
-            const wrapper = commentArea.closest(".add-comment-wrapper");
-            const savedText = commentArea.value;
-            const text = savedText.trim();
-            
-            if (!text) return;
-
-            commentArea.value = ""; // Очищуємо поле введення
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const videoId = urlParams.get("v");
-
-            const parentComment = wrapper.closest(".parentComment");
-            const url = parentComment
-                ? `/api/comment/reply?video=${videoId}&parentComment=${parentComment.id}`
-                : `/api/comment?video=${videoId}`;
-
-            try {
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ text })
-                });
-
-                if (response.ok) {
-                    if (!wrapper.hasAttribute("notHide")) {
-                        const comment = commentArea.closest(".comment");
-                        if (comment?.classList.contains("parentComment")) {
-                            comment.querySelector(".show-answers-btn")?.removeAttribute("hidden");
-                        }
-                        wrapper.setAttribute("hidden", "");
-                    } else {
-                        loadComments();
-                    }
-                } else {
-                    throw new Error("Server error");
-                }
-
-                const data = await response.json();
-                console.log(data);
-
-            } catch (err) {
-                commentArea.value = savedText; // Повертаємо старий текст у разі помилки
-                console.error(err);
-            }
-        };
-
         document.addEventListener("click", async function (event) {
             if (!event.target.matches(".add-comment-btn")) return;
 

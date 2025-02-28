@@ -15,6 +15,7 @@ import Comment from '../models/Comment.js';
 import Reaction from '../models/Reaction.js';
 import { deleteComment, getReactionsCount, getUserReactions } from '../service.js';
 import mongoose from 'mongoose';
+import Follower from '../models/Follower.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -105,30 +106,75 @@ router.get("/video/download/:id", (req, res) => {
 
 // AJAX GETTERS
 
-router.get("/recommendedVideos", async (req, res) => {
-    const offset = parseInt(req.query.offset) || 0;
-    const limit = parseInt(req.query.limit) || 10;
-    const current_video = req.query.current_video;
+router.get("/header/notifications", authMiddleware, async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).json({ message: 'Not registered' });
 
-    let query = Video.find()
-        .populate('user', 'login')
-        .sort({ createdAt: 1 })
-        .skip(offset)
-        .limit(limit);
+        const videos = await Video.aggregate([
+            {
+                $lookup: {
+                    from: 'followers',
+                    localField: 'user',   // Поле в "videos", яке містить ID користувача
+                    foreignField: 'user', // Поле в "followers", яке вказує на користувача
+                    as: 'followers'
+                }
+            },
+            {
+                $match: {
+                    'followers.follower': req.user._id  // Фільтруємо, щоб підписник був req.user
+                }
+            },
+            { $project: { "user": 1, "title": 1, "createdAt": 1, "followers": 1, } },
+            { $sort: { createdAt: 1 } }
+        ]);
 
-    if (current_video) {
-        query = query.where('_id').ne(current_video);
-    }
+        const populatedVideos = await Video.populate(videos, {
+            path: 'user',          // поле в Video, яке містить ObjectId користувача
+            select: 'login'        // вибираємо лише поле login з колекції User
+        });
 
-    const videos = await query;
         
+        res.render('partials/notification video', {
+            videos: populatedVideos,
+            formatDistanceToNow,
+            uk,
+            layout: false
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
+})
 
-    res.render('partials/recommendedVideo', {
-        videos,
-        formatDistanceToNow,
-        uk,
-        layout: false
-    });
+router.get("/recommendedVideos", async (req, res) => {
+    try {
+        const offset = parseInt(req.query.offset) || 0;
+        const limit = parseInt(req.query.limit) || 10;
+        const current_video = req.query.current_video;
+
+        let query = Video.find()
+            .populate('user', 'login')
+            .sort({ createdAt: 1 })
+            .skip(offset)
+            .limit(limit);
+
+        if (current_video) {
+            query = query.where('_id').ne(current_video);
+        }
+
+        const videos = await query;
+            
+
+        res.render('partials/recommendedVideo', {
+            videos,
+            formatDistanceToNow,
+            uk,
+            layout: false
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
 })
 
 router.get("/comments", authMiddleware, async (req, res) => {
@@ -414,7 +460,7 @@ router.get("/channel/:login/load", async (req, res) => {
 
         const videos = await Video.aggregate([
             { $match: { user: userChannel._id } },
-            {
+            /* {
                 $lookup: {
                     from: 'reactions',
                     localField: '_id',
@@ -430,8 +476,8 @@ router.get("/channel/:login/load", async (req, res) => {
                         }
                     }
                 }
-            },
-            { $sort: { [sort === 'newer' ? 'createdAt' : 'likes']: -1 } },
+            }, */
+            { $sort: { [sort === 'newer' ? 'createdAt' : 'views']: -1 } },
             { $skip: offset },
             { $limit: limit }
         ]);
@@ -604,6 +650,20 @@ router.put("/:type/:id/reaction/:reaction", authMiddleware, async (req, res) => 
     }
 })
 
+router.put("/video/:id/view", async (req, res) => {
+    try {
+        const videoId = req.params.id;
+        if (!videoId) return res.status(400).json({ message: "Invalid video ID" });
+
+        await Video.findByIdAndUpdate(videoId, { $inc: { views: 1 } });
+
+        res.json({ message: "View count updated" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
+});
+
 router.put("/video/:id/complain", authMiddleware, async (req, res) => {
     try {
         if (!req.user) return res.status(401).json('Not registered');
@@ -627,13 +687,43 @@ router.put("/video/:id/description", authMiddleware, async (req, res) => {
 
         await Video.findByIdAndUpdate(id, { description: text })
 
-        res.json({ message: 'Description changed succesfully' })
+        res.json({ message: 'Description changed successfully' })
 
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error', error })
     }
 })
+
+router.put('/:channel/subscribe', authMiddleware, async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).json({ error: 'Not registered' });
+
+        const login = req.params.channel;
+
+        const user = await User.findOne({ login });
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        const existingFollowing = await Follower.findOne({ user: user._id, follower: req.user._id });
+        if (existingFollowing) {
+            await existingFollowing.deleteOne();
+            return res.json({ message: 'unsubscribed' });
+        }
+
+        await Follower.findOneAndUpdate(
+            { user: user._id, follower: req.user._id },
+            { user: user._id, follower: req.user._id },
+            { upsert: true, new: true }
+        );
+
+        return res.json({ message: 'subscribed' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error', error });
+    }
+});
+
+
 
 
 

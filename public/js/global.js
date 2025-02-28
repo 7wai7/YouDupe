@@ -124,14 +124,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error(error);
     }
 
-    try {
-        document.addEventListener("click", async function (event) {
-            
-        });
-    } catch (error) {
-        console.error(error);
-    }
-
 
 
 
@@ -189,20 +181,26 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
         const subscribeBtn = document.getElementById('subscribe-btn');
 
-        subscribeBtn?.addEventListener('click', (event) => {
-            if(subscribeBtn.hasAttribute('subscribed')) {
-                subscribeBtn.removeAttribute('subscribed');
-                subscribeBtn.innerHTML = 'Subscribe';
-            } else {
-                subscribeBtn.setAttribute('subscribed', '');
-                subscribeBtn.innerHTML = 'Subscribed';
+        subscribeBtn?.addEventListener('click', async (event) => {
+            const { channellogin: login } = subscribeBtn.dataset;
+            if(!login) return;
+
+            const response = await fetch(`/api/${login}/subscribe`, { method: 'PUT' });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+
+                if (data.message === 'subscribed') {
+                    subscribeBtn.setAttribute('subscribed', '');
+                    subscribeBtn.textContent = 'Subscribed';
+                } else if (data.message === 'unsubscribed') {
+                    subscribeBtn.removeAttribute('subscribed');
+                    subscribeBtn.textContent = 'Subscribe';
+                }
             }
 
-            fetch(`/api/subscribed/${subscribeBtn.hasAttribute('subscribed')}`, { method: 'PUT' })
-            .catch(console.error);
-
         })
-        
     } catch (error) {
         console.error(error)
     }

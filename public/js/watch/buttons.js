@@ -1,26 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-
-    // SUBSCRIBE
-    try {
-        const subscribe_btn = document.getElementById('subscribe-btn');
-
-        subscribe_btn.addEventListener('click', (event) => {
-            fetch('/subscribe', { method: 'POST' })
-                .catch(console.error)
-
-            if (subscribe_btn.classList.contains("not-subscribed"))
-                subscribe_btn.classList.remove("not-subscribed");
-            else subscribe_btn.classList.add("not-subscribed");
-        });
-    } catch (error) {
-        console.error(error);
-    }
-
-
-
-
     // ++++++ VIDEO BUTTONS ++++++
 
     try {
@@ -153,27 +133,36 @@ document.addEventListener("DOMContentLoaded", () => {
         const timeCurrent = document.getElementById('time-current');
         const timeDuration = document.getElementById('time-duration')
 
-
-        function updateTime() {
-            timeCurrent.innerHTML = formatTime(video.currentTime);
+        function initializeVideo() {
+            if (video.readyState >= 1) { // Перевіряємо, чи мета-дані вже завантажені
+                videoSlider.max = video.duration;
+                timeDuration.innerHTML = formatTime(video.duration);
+                video.play();
+                console.log("Video metadata loaded");
+            } else {
+                console.log("Metadata not ready, waiting...");
+                video.addEventListener("loadedmetadata", initializeVideo, { once: true });
+            }
         }
 
+        initializeVideo();
 
-        video.addEventListener("loadedmetadata", () => {
-            videoSlider.max = video.duration;
-            timeDuration.innerHTML = formatTime(video.duration);
-            video.play();
-        });
-
-        // Змінює час відтворення при русі повзунка
-        videoSlider.addEventListener("input", () => {
-            video.currentTime = videoSlider.value;
+        video.addEventListener("canplay", () => {
+            if (!videoSlider.max) {
+                videoSlider.max = video.duration;
+                timeDuration.innerHTML = formatTime(video.duration);
+            }
         });
 
         // Оновлює повзунок під час відтворення відео
         video.addEventListener("timeupdate", () => {
             videoSlider.value = video.currentTime;
-            updateTime();
+            timeCurrent.innerHTML = formatTime(video.currentTime);
+        });
+
+        // Змінює час відтворення при русі повзунка
+        videoSlider.addEventListener("input", () => {
+            video.currentTime = videoSlider.value;
         });
     } catch (error) {
         console.error(error);

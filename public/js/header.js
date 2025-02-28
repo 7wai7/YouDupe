@@ -1,123 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    /* try {
-        const authoriseBtn = document.querySelector('.authorise-btn');
-        const modal = document.getElementById("auth-modal");
-        
-        const form = document.getElementById('form');
-        const submitBtn = document.getElementById('submit');
-        const showSignupPanelBtn = document.getElementById("show-signup-panel-btn");
-        const forgotPasswordBtn = document.querySelector('.forgot-password-btn');
-        
-        const login = document.getElementById("login");
-        const email = document.getElementById("email");
-        const passwordContainer = document.getElementById("password-container");
-        const confirmPasswordContainer = document.getElementById("confirm-password-container");
-
-        function updatePanel() {
-            const type = form.dataset.type;
-
-            if(type === 'login') {
-                form.setAttribute('action', '/api/auth/login');
-                login.setAttribute('hidden', '');
-                showSignupPanelBtn.removeAttribute('hidden');
-                confirmPasswordContainer.setAttribute('hidden', '');
-                forgotPasswordBtn.removeAttribute('hidden');
-                
-                modal.querySelector('h2').innerHTML = "Login";
-                document.getElementById('submit').innerHTML = "Login";
-            } else {
-                form.setAttribute('action', '/api/auth/signup');
-                login.removeAttribute('hidden');
-                showSignupPanelBtn.setAttribute('hidden', '');
-                confirmPasswordContainer.removeAttribute('hidden');
-                forgotPasswordBtn.setAttribute('hidden', '');
-    
-                modal.querySelector('h2').innerHTML = "Signup";
-                document.getElementById('submit').innerHTML = "Signup";
-            }
-
-            login.value = '';
-            email.value = '';
-            passwordContainer.querySelector('input').value = '';
-            confirmPasswordContainer.querySelector('input').value = '';
-        }
-
-        function showLoginPanel() {
-            form.dataset.type = 'login';
-            updatePanel();
-        }
-
-        function showSignupPanel() {
-            form.dataset.type = 'signup';
-            updatePanel();
-        }
-
-        authoriseBtn.addEventListener('click', (event) => {
-            modal.removeAttribute('hidden');
-            showLoginPanel();
-        });
-
-        modal.addEventListener('click', (event) => {
-            if(event.target === modal) {
-                modal.setAttribute('hidden', '');
-            }
-        });
-
-        showSignupPanelBtn.addEventListener('click', (event) => {
-            showSignupPanel();
-        });
-
-        submitBtn.addEventListener('click', (event) => {
-            const action = form.getAttribute('action');
-
-            fetch(action, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    login: login.value,
-                    email: email.value,
-                    password: passwordContainer.querySelector('input').value,
-                    confirmedPassword: confirmPasswordContainer.querySelector('input').value,
-                })
-            })
-            .then(response => {
-                if(response.ok) {
-                    window.location.reload();
-                }
-                return response.json()
-            })
-            .then(data => {
-                if(data.message) console.log(data.message);
-                
-                if(data.error) {
-                    switch (data.error) {
-                        case 'invalid email':
-                            const email = document.getElementById("email");
-
-
-                            break;
-
-                        case 'invalid password':
-                            const passwordContainer = document.getElementById("password-container");
-                            break;
-
-                        case 'password confirmation':
-                            const confirmPasswordContainer = document.getElementById("confirm-password-container");
-                            break;
-                    }
-                }
-            })
-            .catch(console.error)
-        })
-
-    } catch (error) {
-        console.error(error);
-    } */
-
     try {
         const modal = document.getElementById("auth-modal");
         const form = document.getElementById("auth-form");
@@ -266,9 +149,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
-
-
-
     try {
         const menuBtn = document.getElementById('menu');
         const guide = document.querySelector('.guide');
@@ -278,6 +158,21 @@ document.addEventListener("DOMContentLoaded", async () => {
             guide.hasAttribute('hidden') ? guide.removeAttribute('hidden') : guide.setAttribute('hidden', '');
             if(guideSpacer) !guide.hasAttribute('hidden') ? guideSpacer.removeAttribute('hidden') : guideSpacer.setAttribute('hidden', '');
         })
+    } catch (error) {
+        console.error(error);
+    }
+
+    
+
+
+    try {
+        const container = document.querySelector('#notifications-dropdown .content');
+
+        if(container) {
+            const res = await fetch(`/api/header/notifications`, { method: 'GET' })
+            const data = await res.text();
+            if(res.ok) container.innerHTML = data;
+        }
     } catch (error) {
         console.error(error);
     }

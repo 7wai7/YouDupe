@@ -48,6 +48,7 @@ router.get('/watch', authMiddleware, async (req, res) => {
     const followers = await Follower.find({ user: userChannel._id });
     const followersCount = followers.length;
 
+    const isFollowing = !!(await Follower.findOne({ user: userChannel._id, follower: req.user._id }));
 
     const comments = await Comment.find({ video: video._id });
     const commentsCount = comments.length;
@@ -78,6 +79,7 @@ router.get('/watch', authMiddleware, async (req, res) => {
         user: req.user,
         userChannel,
         followersCount,
+        isFollowing,
         video,
         commentsCount,
         reactionCount,
@@ -91,7 +93,11 @@ router.get('/channel/:login', authMiddleware, async (req, res) => {
     const userChannel = await User.findOne({ login: userLogin });
     if(!userChannel) return res.redirect('/');
 
+    const followers = await Follower.find({ user: userChannel._id });
+    const followersCount = followers.length;
+
     const videos = await Video.find({ user: userChannel._id });
+    const isFollowing = !!(await Follower.findOne({ user: userChannel._id, follower: req.user._id }));
 
     res.render('channel', {
         title: userChannel.login,
@@ -100,7 +106,9 @@ router.get('/channel/:login', authMiddleware, async (req, res) => {
         header: '../partials/header',
         user: req.user,
         userChannel,
-        videos
+        videos,
+        followersCount,
+        isFollowing
     });
 });
 

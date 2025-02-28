@@ -19,15 +19,16 @@
                         <h1 class="name"><%= userChannel.login %></h1>
                         <span>
                             <h1>Followers:</h1>
-                            <h1 class="followers-number">0</h1>
+                            <h1 class="followers-number"><%= followersCount %></h1>
                             <h1>users</h1>
                             <h1>•</h1>
-                            <h1 class="videos-number">0</h1>
+                            <h1 class="videos-number"><%= videos.length %></h1>
                             <h1>videos</h1>
                         </span>
                         <div class="about"><%= userChannel.about %></div>
                     </div>
-                    <button id="subscribe-btn">Subscribe</button>
+                    <button id="subscribe-btn" <%= user._id.toString() === userChannel._id.toString() ? 'hidden' : '' %>  <%= isFollowing ? 'subscribed' : '' %>  data-channellogin="<%= userChannel.login %>"><%= isFollowing ? 'Subscribed' : 'Subscribe' %></button>
+                    <a href="/studio" id="manage-video-btn" <%= user._id.toString() !== userChannel._id.toString() ? 'hidden' : '' %>>Manage video</a>
                 </div>
             </div>
         </div>

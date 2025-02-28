@@ -40,10 +40,6 @@ button {
     height: 30px;
 }
 
-/* .dropdown:hover .content {
-    display: flex;
-  } */
-
 .dropdown .content a:hover,
 .dropdown .content button:hover {
     background-color: #dddddd;

@@ -1,12 +1,12 @@
 <div id="player-container">
     <div id="video-container" tabindex="0">
-        <video id="custom-video">
+        <video id="custom-video" data-id="<%= video._id %>">
             <source src="api/video/<%= video._id %>" type="video/mp4">
             Your browser does not support video.
         </video>
     </div>
     <div class="controls">
-        <input type="range" id="video-slider" min="0" max="100" value="0">
+        <input type="range" id="video-slider" min="0" value="0">
         <div class="bottom">
             <div class="group">
                 <button id="previous">

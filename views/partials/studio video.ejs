@@ -1,5 +1,5 @@
 <% videos.forEach(video => { %>
-    <div id="<%= video._id %>" class="video">
+    <div data-id="<%= video._id %>" data-title="<%= video.title %>" class="video">
         <img class="preview" src="/api/preview/<%= video._id %>" alt="" width="260px">
         <div class="metadata-row">
             <div>

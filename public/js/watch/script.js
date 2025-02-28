@@ -37,6 +37,7 @@ async function addComment(commentArea) {
                 }
                 wrapper.setAttribute("hidden", "");
             } else {
+                hasMoreComments = true;
                 loadComments();
             }
         } else {
@@ -81,6 +82,7 @@ function loadComments() {
     if (isFetching || !hasMoreComments) return; // Якщо вже вантажиться або немає більше коментарів - виходимо
     isFetching = true;
 
+    
 
     const urlParams = new URLSearchParams(window.location.search);
     const currentVideoId = urlParams.get('v');
@@ -100,6 +102,8 @@ function loadComments() {
             
             if(tempDiv.children.length === 0) {
                 hasMoreComments = false;
+                isFetching = false;
+                tempDiv.remove();
                 return;
             }
 
@@ -137,7 +141,9 @@ function loadVideoRecommendations() {
             tempDiv.innerHTML = htmlText;
             
             if(tempDiv.children.length === 0) {
-                hasMoreComments = false;
+                hasMoreVideos = false;
+                isFetchingVideos = false;
+                tempDiv.remove();
                 return;
             }
 
@@ -324,7 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const rect = container.getBoundingClientRect();
             const scrollPosition = window.innerHeight + window.scrollY;
-
+            
             if (rect.bottom - 100 <= scrollPosition) {
                 loadComments();
             }
@@ -362,6 +368,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             toggle.setAttribute('sort', 'popular');
             document.getElementById('comments-content').innerHTML = '';
+            hasMoreComments = true;
             loadComments();
         });
         document.getElementById('sorting-newer-comments').addEventListener('click', (event) => {
@@ -370,6 +377,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             toggle.setAttribute('sort', 'newer');
             document.getElementById('comments-content').innerHTML = '';
+            hasMoreComments = true;
             loadComments();
         });
     } catch (error) {

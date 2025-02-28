@@ -41,6 +41,7 @@ header {
     height: 38px;
     display: flex;
     flex-flow: row;
+    align-self: center;
     padding: 2px 2px;
 }
 
@@ -64,10 +65,11 @@ header {
 }
 
 
+#content-upload-video-btn,
 #create-video-btn {
     color: #fff;
     background-color: #000;
-    border: 2px solid #fff;
+    border: 2px solid #000;
     border-radius: 20px;
     padding-left: 6px;
     padding-right: 15px;
@@ -80,6 +82,7 @@ header {
     fill: #fff;
 }
 
+#content-upload-video-btn:hover,
 #create-video-btn:hover {
     color: #000;
     background-color: #fff;

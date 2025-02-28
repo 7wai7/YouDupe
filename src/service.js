@@ -57,21 +57,21 @@ export async function deleteAccount(moderatorId, userId) {
     }
 };
 
-export async function deleteVideo(userId, videoId) {
+export async function deleteVideo(user, videoId) {
     try {
-        const user = await User.findById(userId);
-        if(!user) {
-            return { success: false, message: 'User not found' }
-        }
-
         const video = await Video.findById(videoId);
         if(!video) {
             return { success: false, message: 'Video not found' };
         }
 
         if(user.role === 'admin' || user.role === 'moderator' || user._id.toString() === video.user.toString()) {
-            await Comment.deleteMany({ video: videoId });
-            await Video.findByIdAndDelete(videoId);
+            const comments = await Comment.find({ video: videoId, parentComment: null }).select('_id');
+            console.log(comments);
+            
+            Promise.all(comments.map(c => deleteComment(user, c._id)));
+            
+            await Reaction.deleteMany({ video: videoId });
+            await video.deleteOne();
             return { success: true, message: 'Video deleted successfully' };
         }
 
@@ -89,58 +89,23 @@ export async function deleteComment(user, commentId) {
             return { success: false, message: 'Comment not found' }
         }
 
-        const canDelete = user.role === 'admin' || user.role === 'moderator' || user._id.tpString() === comment.user.toString();
+        const canDelete = user.role === 'admin' || user.role === 'moderator' || user._id.toString() === comment.user.toString();
         if(!canDelete) return { success: false, message: 'No rights to delete comment' }
 
 
         // Знаходимо всі дочірні коментарі (ID)
-        const childComments = await Comment.find({ parentComment: commentId }).select('_id');
+        const childComments = await Comment.find({ parentComment: commentId }).distinct('_id');
         const childCommentIds = childComments.map(comment => comment._id);
 
         // Видаляємо всі реакції, пов'язані з цими коментарями включаючи головний
         await Reaction.deleteMany({ comment: { $in: [commentId, ...childCommentIds] } });
 
-        // Видаляємо всі дочірні коментарі
-        await Comment.deleteMany({ parentComment: commentId });
-
-        // Видаляємо головний коментар
-        await Comment.findByIdAndDelete(commentId);
+        // Видаляємо всі дочірні коментарі + головний коментар
+        await Comment.deleteMany({ _id: { $in: [commentId, ...childCommentIds] } });
 
         return { success: true, message: 'Comment deleted successfully' };
     } catch (error) {
         console.error(error);
         return { success: false, message: 'Error when deleting comment', error: error.message };
     }
-}
-
-
-
-export function getReactionsCount(commentIds, reactions) {
-    const reactionCount = {};
-    commentIds.forEach(id => reactionCount[id] = { likes: 0, dislikes: 0 });
-
-    reactions.forEach(reaction => {
-        if (reaction.reaction) {
-            reactionCount[reaction.comment].likes++;
-        } else {
-            reactionCount[reaction.comment].dislikes++;
-        }
-    });
-
-    return reactionCount;
-}
-
-export function getUserReactions(req, reactions) {
-    const userId = req.user?._id;
-    // Об'єкт для збереження реакцій користувача
-    const userReactions = {};
-    if (userId) {
-        reactions.forEach(reaction => {
-            if (reaction.user.toString() === userId.toString()) {
-                userReactions[reaction.comment] = reaction.reaction; // true (like) / false (dislike)
-            }
-        });
-    }
-
-    return userReactions;
 }

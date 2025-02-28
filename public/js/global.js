@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
         document.getElementById('logout-btn')?.addEventListener('click', (event) => {
-            fetch('api/auth/logout', { method: 'POST' })
+            fetch('/api/auth/logout', { method: 'POST' })
             .then(response => {
                 if(response.ok) {
                     window.location.href = '/';

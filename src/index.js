@@ -23,7 +23,7 @@ const app = express();
 
 
 
-// Міжпрограмне забезпечення для доступу до функції в кожному запиті
+// Міжпрограмне забезпечення для доступу до функцій в ejs файлах
 app.use((req, res, next) => {
     res.locals.timeAgo = functions.timeAgo;
     res.locals.formatTime = functions.formatTime;

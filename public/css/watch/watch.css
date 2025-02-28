@@ -245,7 +245,7 @@ main > .bottom {
   gap: 16px;
   display: flex;
   flex-flow: column;
-  height: max-content;
+  /* height: max-content; */
 }
 
 

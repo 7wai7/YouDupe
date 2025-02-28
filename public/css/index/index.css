@@ -15,24 +15,24 @@ main {
 
 /* ++++++ VIDEOS CONTAINER */
 
-.contents {
+#content-container {
     flex: 1;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     padding: 10px 30px 60px 30px;
 }
 
-.contents .video {
+#content-container .video {
     margin: 20px 20px;
 }
 
-.contents .details {
+#content-container .details {
     display: flex;
     flex-flow: row;
     padding: 10px 0 0;
 }
 
-.contents .details h1 {
+#content-container .details h1 {
     font-weight: 500;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -42,7 +42,7 @@ main {
     -webkit-box-orient: vertical;
 }
 
-.contents .meta {
+#content-container .meta {
     margin-left: 10px;
     flex: 1;
 }

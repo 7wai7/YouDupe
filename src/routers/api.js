@@ -13,7 +13,7 @@ import Video from '../models/Video.js';
 import { User } from '../models/User.js';
 import Comment from '../models/Comment.js';
 import Reaction from '../models/Reaction.js';
-import { deleteComment, getReactionsCount, getUserReactions } from '../service.js';
+import { deleteComment, deleteVideo } from '../service.js';
 import mongoose from 'mongoose';
 import Follower from '../models/Follower.js';
 
@@ -106,6 +106,22 @@ router.get("/video/download/:id", (req, res) => {
 
 // AJAX GETTERS
 
+router.get('/index/videos', async (req, res) => {
+    try {
+        const videos = await Video.find().populate('user', 'login');
+        
+        res.render('partials/index video', {
+            videos,
+            formatDistanceToNow,
+            uk,
+            layout: false
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
+})
+
 router.get("/header/notifications", authMiddleware, async (req, res) => {
     try {
         if (!req.user) return res.status(401).json({ message: 'Not registered' });
@@ -125,12 +141,13 @@ router.get("/header/notifications", authMiddleware, async (req, res) => {
                 }
             },
             { $project: { "user": 1, "title": 1, "createdAt": 1, "followers": 1, } },
-            { $sort: { createdAt: 1 } }
+            { $sort: { createdAt: -1 } },
+            { $limit: 10 }
         ]);
 
         const populatedVideos = await Video.populate(videos, {
-            path: 'user',          // поле в Video, яке містить ObjectId користувача
-            select: 'login'        // вибираємо лише поле login з колекції User
+            path: 'user',
+            select: 'login'
         });
 
         
@@ -165,7 +182,7 @@ router.get("/recommendedVideos", async (req, res) => {
         const videos = await query;
             
 
-        res.render('partials/recommendedVideo', {
+        res.render('partials/recommended video', {
             videos,
             formatDistanceToNow,
             uk,
@@ -431,7 +448,7 @@ router.get("/studio/videos", authMiddleware, async (req, res) => {
             { $limit: limit } // Обмежуємо кількість результатів
         ]);
 
-        res.render('partials/studioVideo', { videos: sortedVideos, layout: false });
+        res.render('partials/studio video', { videos: sortedVideos, layout: false });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error", error });
@@ -456,7 +473,7 @@ router.get("/channel/:login/load", async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
 
         const userChannel = await User.findOne({ login: userLogin });
-        if (!userChannel) return res.status(404).render('partials/channelVideo', { videos: [], layout: false });
+        if (!userChannel) return res.status(404).render('partials/channel video', { videos: [], layout: false });
 
         const videos = await Video.aggregate([
             { $match: { user: userChannel._id } },
@@ -482,7 +499,7 @@ router.get("/channel/:login/load", async (req, res) => {
             { $limit: limit }
         ]);
 
-        res.render('partials/channelVideo', {
+        res.render('partials/channel video', {
             videos,
             formatDistanceToNow,
             uk,
@@ -728,6 +745,23 @@ router.put('/:channel/subscribe', authMiddleware, async (req, res) => {
 
 
 // DELETES
+
+router.delete('/video/:id', authMiddleware, async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).json('Not registered');
+
+        const { success, message, error } = await deleteVideo(req.user, req.params.id);
+
+        if (!success) {
+            return res.status(error ? 500 : 403).json({ success, message, error });
+        }
+
+        res.status(200).json({ success, message });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error', error })
+    }
+})
 
 router.delete('/comment/:id', authMiddleware, async (req, res) => {
     try {

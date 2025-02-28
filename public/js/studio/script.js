@@ -104,7 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     try {
-        const createVideoBtn = document.getElementById('create-video-btn');
         const cancelUploadVideoBtn = document.getElementById('cancel-upload-video-btn');
         const uploadVideoModal = document.getElementById('upload-video-modal');
 
@@ -135,7 +134,11 @@ document.addEventListener("DOMContentLoaded", () => {
             hideModal();
         });
 
-        createVideoBtn.addEventListener('click', (event) => {
+        document.getElementById('create-video-btn').addEventListener('click', (event) => {
+            uploadVideoModal.removeAttribute('hidden');
+        });
+
+        document.getElementById('upload-video-btn').addEventListener('click', (event) => {
             uploadVideoModal.removeAttribute('hidden');
         });
 
@@ -315,12 +318,33 @@ document.addEventListener("DOMContentLoaded", () => {
             modal.setAttribute('hidden', '');
         })
 
-        const deleteVideoBtnList = document.querySelectorAll('.delete-video-btn');
+        
+        const videoContent = document.getElementById('video-content');
+        videoContent.addEventListener('click', (event) => {
+            if(event.target.matches('.delete-video-btn')) {
+                const video = event.target.closest('.video');
 
-        deleteVideoBtnList.forEach((btn) => {
-            btn.addEventListener('click', (event) => {
+                document.getElementById('delete-video-title').innerText = video.dataset.title
+                document.getElementById('confirm-delete-video-btn').dataset.videoId = video.dataset.id;
+
                 modal.removeAttribute('hidden');
+            }
+        })
+
+        document.getElementById('confirm-delete-video-btn').addEventListener('click', (event) => {
+            modal.setAttribute('hidden', '');
+
+            const videoId = document.getElementById('confirm-delete-video-btn').dataset.videoId;
+
+            fetch(`/api/video/${videoId}`, { method: 'DELETE' })
+            .then(res => {
+                if(res.ok) {
+                    document.querySelector(`[data-id="${videoId}"]`).remove();
+                }
+                return res.json();
             })
+            .then(data => console.log(data))
+            .catch(console.error)
         })
     } catch (error) {
         console.log(error);

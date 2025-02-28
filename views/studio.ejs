@@ -23,7 +23,12 @@
         <nav>
 
         </nav>
-        <div id="video-content"></div>
+        <div id="video-content">
+            <div id="no-video" <%= videoCount > 0 ? 'hidden' : '' %>>
+                <h1>You haven't videos</h1>
+                <button id="content-upload-video-btn">Upload</button>
+            </div>
+        </div>
 
         
         <div id="upload-video-modal" hidden>
@@ -105,8 +110,7 @@
         <div id="change-description-modal" hidden>
             <div class="panel-modal">
                 <h1>Change description</h1>
-                <textarea name="Change description" id="change-description-textarea"
-                    maxlength="2600"></textarea>
+                <textarea name="Change description" id="change-description-textarea" maxlength="2600"></textarea>
 
                 <div class="choice">
                     <button id="change-description-btn">Change</button>
@@ -118,8 +122,9 @@
         <div id="confirm-delete-modal" hidden>
             <div class="panel-modal">
                 <h1>Are you sure you want to delete the video?</h1>
+                <h1 id="delete-video-title"></h1>
                 <div class="choice">
-                    <button id="delete-video-btn">Yes</button>
+                    <button id="confirm-delete-video-btn">Yes</button>
                     <button id="cancel-deletion-btn">No</button>
                 </div>
             </div>

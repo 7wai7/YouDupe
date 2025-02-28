@@ -46,6 +46,7 @@ header {
     height: 38px;
     display: flex;
     flex-flow: row;
+    align-self: center;
     padding: 2px 2px;
 }
 

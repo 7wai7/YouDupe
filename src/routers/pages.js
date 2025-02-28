@@ -21,17 +21,12 @@ const router = new Router();
 
 
 router.get('/', authMiddleware, async (req, res) => {
-    const videos = await Video.find().populate('user', 'login');
-
     res.render('index', {
         title: 'YouDupe',
         stylesheets: ["index/index", 'header'],
-        scripts: ["index/buttons", 'header'],
+        scripts: ["index/script", 'header'],
         header: '../partials/header',
         user: req.user,
-        formatDistanceToNow,
-        uk,
-        videos,
     });
 });
 
@@ -117,13 +112,17 @@ router.get('/studio', authMiddleware, async (req, res) => {
 
     const filter = req.query.filter || "createdAt";
     const sort = req.query.sort || "down";
+
+    const videos = await Video.find({ user: req.user._id });
+    const videoCount = videos.length;
     
     res.render('studio', {
         title: 'Studio',
         stylesheets: ["studio/studio", 'studio/studioHeader'],
-        scripts: ["studio/script", 'studio/studioHeader'],
+        scripts: ["studio/script"],
         header: '../partials/studioHeader',
         user: req.user,
+        videoCount,
         filter,
         sort
     });

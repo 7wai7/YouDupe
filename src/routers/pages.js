@@ -21,12 +21,15 @@ const router = new Router();
 
 
 router.get('/', authMiddleware, async (req, res) => {
+    const channels = await Follower.find({ follower: req.user }).populate('user', 'login');
+    
     res.render('index', {
         title: 'YouDupe',
         stylesheets: ["index/index", 'header'],
         scripts: ["index/script", 'header'],
         header: '../partials/header',
         user: req.user,
+        channels,
     });
 });
 
@@ -52,6 +55,8 @@ router.get('/watch', authMiddleware, async (req, res) => {
     const reactions = await Reaction.find({ video: video._id });
     const reactionCount = { likes: 0, dislikes: 0 };
 
+    const channels = await Follower.find({ follower: req.user }).populate('user', 'login');
+    
     reactions.forEach(reaction => {
         if (reaction.reaction) {
             reactionCount.likes++;
@@ -78,7 +83,8 @@ router.get('/watch', authMiddleware, async (req, res) => {
         video,
         commentsCount,
         reactionCount,
-        userReaction
+        userReaction,
+        channels,
     });
 });
 
@@ -94,6 +100,8 @@ router.get('/channel/:login', authMiddleware, async (req, res) => {
     const videos = await Video.find({ user: userChannel._id });
     const isFollowing = !!(await Follower.findOne({ user: userChannel._id, follower: req.user._id }));
 
+    const channels = await Follower.find({ follower: req.user }).populate('user', 'login');
+    
     res.render('channel', {
         title: userChannel.login,
         stylesheets: ["channel/styles", 'header'],
@@ -103,7 +111,8 @@ router.get('/channel/:login', authMiddleware, async (req, res) => {
         userChannel,
         videos,
         followersCount,
-        isFollowing
+        isFollowing,
+        channels,
     });
 });
 
@@ -129,12 +138,15 @@ router.get('/studio', authMiddleware, async (req, res) => {
 });
 
 router.get('/coming-soon', authMiddleware, async (req, res) => {
+    const channels = await Follower.find({ follower: req.user }).populate('user', 'login');
+
     res.render('coming soon', {
         title: 'Coming soon',
         stylesheets: ["coming soon", 'header'],
         scripts: ['header'],
         header: '../partials/header',
         user: req.user,
+        channels,
     });
 });
 

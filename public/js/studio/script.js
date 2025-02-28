@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
             uploadVideoModal.removeAttribute('hidden');
         });
 
-        document.getElementById('upload-video-btn').addEventListener('click', (event) => {
+        document.getElementById('content-upload-video-btn').addEventListener('click', (event) => {
             uploadVideoModal.removeAttribute('hidden');
         });
 

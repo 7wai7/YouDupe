@@ -131,7 +131,7 @@ function loadVideoRecommendations() {
     const urlParams = new URLSearchParams(window.location.search);
     const currentVideoId = urlParams.get('v');
 
-    fetch(`/api/recommendedVideos?limit=10&offset=${offset}&current_video=${currentVideoId}`, { method: 'GET' })
+    fetch(`/api/watch/recommendedVideos?limit=10&offset=${offset}&current_video=${currentVideoId}`, { method: 'GET' })
         .then(response => response.text())
         .then(htmlText => {
             const container = document.getElementById('video-recommendations');

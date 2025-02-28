@@ -13,6 +13,7 @@ import Video from '../models/Video.js';
 import Follower from '../models/Follower.js';
 import Comment from '../models/Comment.js';
 import Reaction from '../models/Reaction.js';
+import mongoose from 'mongoose';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -21,8 +22,8 @@ const router = new Router();
 
 
 router.get('/', authMiddleware, async (req, res) => {
-    const channels = await Follower.find({ follower: req.user }).populate('user', 'login');
-    
+    const channels = req.user ? await Follower.find({ follower: req.user._id }).populate('user', 'login') : [];
+
     res.render('index', {
         title: 'YouDupe',
         stylesheets: ["index/index", 'header'],
@@ -38,38 +39,33 @@ router.get('/watch', authMiddleware, async (req, res) => {
     if (!id) return res.redirect('/');
 
     const video = await Video.findById(id);
-    if(!video) return res.redirect('/');
+    if (!video) return res.redirect('/');
 
     const userChannel = await User.findById(video.user);
-    if(!userChannel) return res.redirect('/');
+    if (!userChannel) return res.redirect('/');
 
     const followers = await Follower.find({ user: userChannel._id });
     const followersCount = followers.length;
 
-    const isFollowing = !!(await Follower.findOne({ user: userChannel._id, follower: req.user._id }));
+    const isFollowing = !!(await Follower.findOne({ user: userChannel._id, follower: req.user?._id }));
 
     const comments = await Comment.find({ video: video._id });
     const commentsCount = comments.length;
 
 
-    const reactions = await Reaction.find({ video: video._id });
-    const reactionCount = { likes: 0, dislikes: 0 };
-
-    const channels = await Follower.find({ follower: req.user }).populate('user', 'login');
-    
-    reactions.forEach(reaction => {
-        if (reaction.reaction) {
-            reactionCount.likes++;
-        } else {
-            reactionCount.dislikes++;
+    const [reactions] = await Reaction.aggregate([
+        { $match: { video: video._id } },
+        {
+            $group: {
+                _id: "$video",
+                likes: { $sum: { $cond: [{ $eq: ["$reaction", true] }, 1, 0] } },
+                dislikes: { $sum: { $cond: [{ $eq: ["$reaction", false] }, 1, 0] } }
+            }
         }
-    });
+    ]);
 
-    const userId = req.user?._id;
-    let userReaction = undefined;
-    if (userId) {
-        userReaction = reactions.find(reaction => reaction.user.toString() === userId.toString())?.reaction; // true (like) / false (dislike)   
-    }
+    const userReaction = req.user ? await Reaction.findOne({ video: video._id, user: req.user._id }).select("reaction").lean() : null;
+    const channels = req.user ? await Follower.find({ follower: req.user._id }).populate('user', 'login') : [];
 
     res.render('watchVideo', {
         title: id,
@@ -81,8 +77,8 @@ router.get('/watch', authMiddleware, async (req, res) => {
         followersCount,
         isFollowing,
         video,
+        reactions,
         commentsCount,
-        reactionCount,
         userReaction,
         channels,
     });
@@ -92,16 +88,16 @@ router.get('/channel/:login', authMiddleware, async (req, res) => {
     const userLogin = req.params.login;
 
     const userChannel = await User.findOne({ login: userLogin });
-    if(!userChannel) return res.redirect('/');
+    if (!userChannel) return res.redirect('/');
 
     const followers = await Follower.find({ user: userChannel._id });
     const followersCount = followers.length;
 
     const videos = await Video.find({ user: userChannel._id });
-    const isFollowing = !!(await Follower.findOne({ user: userChannel._id, follower: req.user._id }));
+    const isFollowing = !!(await Follower.findOne({ user: userChannel._id, follower: req.user?._id }));
 
-    const channels = await Follower.find({ follower: req.user }).populate('user', 'login');
-    
+    const channels = req.user ? await Follower.find({ follower: req.user._id }).populate('user', 'login') : [];
+
     res.render('channel', {
         title: userChannel.login,
         stylesheets: ["channel/styles", 'header'],
@@ -124,7 +120,7 @@ router.get('/studio', authMiddleware, async (req, res) => {
 
     const videos = await Video.find({ user: req.user._id });
     const videoCount = videos.length;
-    
+
     res.render('studio', {
         title: 'Studio',
         stylesheets: ["studio/studio", 'studio/studioHeader'],
@@ -138,7 +134,7 @@ router.get('/studio', authMiddleware, async (req, res) => {
 });
 
 router.get('/coming-soon', authMiddleware, async (req, res) => {
-    const channels = await Follower.find({ follower: req.user }).populate('user', 'login');
+    const channels = req.user ? await Follower.find({ follower: req.user._id }).populate('user', 'login') : [];
 
     res.render('coming soon', {
         title: 'Coming soon',

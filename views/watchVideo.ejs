@@ -25,11 +25,11 @@
                                     <%= followersCount %> followers
                                 </h5>
                             </a>
-                            <button id="subscribe-btn"  <%= user._id.toString() === userChannel._id.toString() ? 'hidden' : '' %>  data-channellogin="<%= userChannel.login %>"  <%= isFollowing ? 'subscribed' : '' %>><%= isFollowing ? 'Subscribed' : 'Subscribe' %></button>
+                            <button id="subscribe-btn"  <%= user?._id.toString() === userChannel._id.toString() ? 'hidden' : '' %>  data-channellogin="<%= userChannel.login %>"  <%= isFollowing ? 'subscribed' : '' %>><%= isFollowing ? 'Subscribed' : 'Subscribe' %></button>
                         </div>
                         <div class="actions">
                             <div class="action like-dislike-wrapper reaction-video">
-                                <button class="like icon-btn" <%= userReaction !== undefined ? userReaction ? 'selected' : '' : ''  %>>
+                                <button class="like icon-btn" <%= userReaction !== null ? userReaction.reaction ? 'selected' : '' : ''  %>>
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path
@@ -40,11 +40,9 @@
                                             stroke="#000" stroke-width="1.5" />
                                     </svg>
                                 </button>
-                                <h4 class="like-count">
-                                    <%= reactionCount.likes %>
-                                </h4>
+                                <h4 class="like-count"><%= reactions.likes %></h4>
                                 <div class="v-line"></div>
-                                <button class="dislike icon-btn" <%= userReaction !== undefined ? !userReaction ? 'selected' : '' : ''  %>>
+                                <button class="dislike icon-btn" <%= userReaction !== null ? !userReaction.reaction ? 'selected' : '' : ''  %>>
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path id="vector"
@@ -55,9 +53,7 @@
                                             stroke="#000000" stroke-width="1.5" />
                                     </svg>
                                 </button>
-                                <h4 class="dislike-count">
-                                    <%= reactionCount.dislikes %>
-                                </h4>
+                                <h4 class="dislike-count"><%= reactions.dislikes %></h4>
                             </div>
                             <button id="share-video" class="action">
                                 <div>

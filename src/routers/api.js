@@ -163,7 +163,7 @@ router.get("/header/notifications", authMiddleware, async (req, res) => {
     }
 })
 
-router.get("/recommendedVideos", async (req, res) => {
+router.get("/watch/recommendedVideos", async (req, res) => {
     try {
         const offset = parseInt(req.query.offset) || 0;
         const limit = parseInt(req.query.limit) || 10;
@@ -565,7 +565,6 @@ router.post("/comment", authMiddleware, async (req, res) => {
 
         const videoId = req.query.video;
         const text = req.body.text;
-        console.log(text);
 
         const comment = new Comment({
             user: req.user,

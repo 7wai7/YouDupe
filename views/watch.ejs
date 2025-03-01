@@ -6,7 +6,7 @@
                     <h4 class="title">
                         <%= video.title %>
                     </h4>
-                    <div class="top-row">
+                    <div class="top-row" hidden>
                         <div class="owner">
                             <a href="/channel/<%= userChannel.login %>" class="avatar-link">
                                 <svg width="40px" height="40px" viewBox="0 0 24 24" fill="none"
@@ -25,11 +25,14 @@
                                     <%= followersCount %> followers
                                 </h5>
                             </a>
-                            <button id="subscribe-btn"  <%= user?._id.toString() === userChannel._id.toString() ? 'hidden' : '' %>  data-channellogin="<%= userChannel.login %>"  <%= isFollowing ? 'subscribed' : '' %>><%= isFollowing ? 'Subscribed' : 'Subscribe' %></button>
+                            <button id="subscribe-btn" <%=user?._id.toString()===userChannel._id.toString() ? 'hidden'
+                                : '' %> data-channellogin="<%= userChannel.login %>" <%= isFollowing ? 'subscribed' : ''
+                                        %>><%= isFollowing ? 'Subscribed' : 'Subscribe' %></button>
                         </div>
                         <div class="actions">
                             <div class="action like-dislike-wrapper reaction-video">
-                                <button class="like icon-btn" <%= userReaction !== null ? userReaction.reaction ? 'selected' : '' : ''  %>>
+                                <button class="like icon-btn" <%=userReaction !==null ? userReaction.reaction
+                                    ? 'selected' : '' : '' %>>
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path
@@ -40,9 +43,12 @@
                                             stroke="#000" stroke-width="1.5" />
                                     </svg>
                                 </button>
-                                <h4 class="like-count"><%= reactions.likes %></h4>
+                                <h4 class="like-count">
+                                    <%= reactions.likes %>
+                                </h4>
                                 <div class="v-line"></div>
-                                <button class="dislike icon-btn" <%= userReaction !== null ? !userReaction.reaction ? 'selected' : '' : ''  %>>
+                                <button class="dislike icon-btn" <%=userReaction !==null ? !userReaction.reaction
+                                    ? 'selected' : '' : '' %>>
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path id="vector"
@@ -53,7 +59,9 @@
                                             stroke="#000000" stroke-width="1.5" />
                                     </svg>
                                 </button>
-                                <h4 class="dislike-count"><%= reactions.dislikes %></h4>
+                                <h4 class="dislike-count">
+                                    <%= reactions.dislikes %>
+                                </h4>
                             </div>
                             <button id="share-video" class="action">
                                 <div>
@@ -92,8 +100,8 @@
                                     </a>
                                     <button>
                                         <div>
-                                            <svg width="24px" height="24px" viewBox="0 0 25 25" id='clock'
-                                                fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <svg width="24px" height="24px" viewBox="0 0 25 25" id='clock' fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
                                                 <path
                                                     d="m 12.499995,5.9592998 v 6.5406942 l 4.360463,4.360463 m 7.26744,-4.360463 c 0,6.421946 -5.205958,11.627902 -11.627903,11.627902 -6.421916,0 -11.62790196,-5.205956 -11.62790196,-11.627902 0,-6.4219153 5.20598596,-11.62790096 11.62790196,-11.62790096 6.421945,0 11.627903,5.20598566 11.627903,11.62790096 z"
                                                     stroke="#121923" stroke-width="1.7442" />
@@ -129,6 +137,7 @@
                         </div>
                     </div>
                 </div>
+                <div class="video-recommendations first"></div>
                 <div class="comments-white-box">
                     <div class="comments-top-row">
                         <h4 class="comments-number">
@@ -140,8 +149,7 @@
                                     <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <g id="SVGRepo_bgCarrier" stroke-width="0" />
-                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-                                            stroke-linejoin="round" />
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
                                         <g id="SVGRepo_iconCarrier">
                                             <path d="M8 8H20M11 12H20M14 16H20M4 8H4.01M7 12H7.01M10 16H10.01"
                                                 stroke="#000000" stroke-width="1.2" stroke-linecap="round"
@@ -168,14 +176,15 @@
                             </svg>
                         </a>
                         <div class="add-comment-wrapper" notHide>
-                            <textarea name="Add comment" class="input-comment-textarea textarea-autosize"  maxlength="2600"></textarea>
+                            <textarea name="Add comment" class="input-comment-textarea textarea-autosize"
+                                maxlength="2600"></textarea>
                             <button class="add-comment-btn">Comment</button>
                         </div>
                     </div>
                     <div id="comments-content"></div>
                 </div>
             </div>
-            <div id="video-recommendations"></div>
+            <div class="video-recommendations second active-display"></div>
         </div>
 </main>
 </body>

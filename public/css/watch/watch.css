@@ -1,9 +1,4 @@
 
-
-
-
-
-
 main > .bottom {
   display: flex;
   flex-flow: row;
@@ -350,12 +345,16 @@ main > .bottom {
 
 
 /* RIGHT BOTTOM SIDE */
-#video-recommendations {
+.video-recommendations {
   display: flex;
   flex-flow: column;
   gap: 10px;
   width: 440px;
   height: max-content;
+}
+
+.video-recommendations.first {
+  width: 100%;
 }
 
 
@@ -365,6 +364,15 @@ main > .bottom {
   flex-flow: row;
   gap: 6px;
   width: 100%;
+}
+
+@media (max-width: 500px) {
+    .rec-video {
+      flex-flow: column;
+    }
+    .preview img {
+      width: 100%;
+    }
 }
 
 .rec-video .dropdown {

@@ -15,15 +15,21 @@ main {
 
 /* ++++++ VIDEOS CONTAINER */
 
+.content-wrapper {
+    width: 100%;
+}
+
 #content-container {
-    flex: 1;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    padding: 10px 30px 60px 30px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    column-gap: 30px;
+    width: 94%;
+    margin: 0 auto;
+    padding-bottom: 60px;
 }
 
 #content-container .video {
-    margin: 20px 20px;
+    margin: 20px 0;
 }
 
 #content-container .details {
@@ -45,6 +51,13 @@ main {
 #content-container .meta {
     margin-left: 10px;
     flex: 1;
+}
+
+
+@media (max-width: 480px) {
+    #content-container {
+        width: 100%;
+    }
 }
 
 

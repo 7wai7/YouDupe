@@ -1,6 +1,6 @@
 
 async function checkAuth() {
-    const response = await fetch('/api/me', { method: 'GET' });
+    const response = await fetch('/api/me', { method: 'GET', credentials: 'include' });
     const message = await response.json();
     console.log(message);
     return response.ok;
@@ -144,26 +144,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // SEARCH TEXT AREA
     try {
+        const hideSearchRowBtn = document.querySelector('.hide-search-row-btn-mobile');
+        const searchRow = document.querySelector('.search-row');
         const searchInput = document.getElementById("search-input");
         const searchBtn = document.querySelector(".search-btn");
+        const searchBtnMobile = document.querySelector(".search-btn-mobile");
+        const sectionRows = document.querySelectorAll('header .section-row');
+    
+        function resizeHeader() {
+            const isMobile = window.innerWidth <= 500;
+            searchRow.style.display = isMobile && hideSearchRowBtn.style.display !== 'block' ? 'none' : 'flex';
+            searchBtnMobile.style.display = isMobile ? 'block' : 'none';
 
+            if(!isMobile) {
+                sectionRows.forEach(section => section.style.display = 'flex');
+                hideSearchRowBtn.style.display = 'none';
+            }
+        }
+    
+        function showSearchRow() {
+            hideSearchRowBtn.style.display = 'block';
+            searchRow.style.display = 'flex';
+            sectionRows.forEach(section => section.style.display = 'none');
+            searchBtnMobile.style.display = 'none';
+        }
+    
+        function hideSearchRow() {
+            hideSearchRowBtn.style.display = 'none';
+            searchRow.style.display = 'flex';
+            sectionRows.forEach(section => section.style.display = 'flex');
+            resizeHeader();
+        }
+    
         function search() {
             const text = searchInput.value.trim();
+            if (!text) return;
             searchInput.value = '';
-
-            if (text === "") return;
-
-            if(window.location.pathname.split('/')[1] === 'studio') {
-                window.location.href = `/studio/find/${text}`;
-            } else window.location.href = `/find/${text}`;
+    
+            const basePath = window.location.pathname.includes('/studio') ? '/studio/find/' : '/find/';
+            window.location.href = basePath + encodeURIComponent(text);
         }
-
-        // Виконати пошук при кліку на кнопку
-        searchBtn?.addEventListener("click", (event) => {
-            event.preventDefault();
-            search();
-        });
-
+    
+        searchBtn?.addEventListener("click", search);
+        searchBtnMobile?.addEventListener("click", showSearchRow);
+        hideSearchRowBtn?.addEventListener("click", hideSearchRow);
+        
         // Виконати пошук при натисканні Enter
         searchInput?.addEventListener("keydown", (event) => {
             if (event.key === "Enter") {
@@ -171,9 +196,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 search();
             }
         });
+    
+        window.addEventListener('resize', resizeHeader);
+        resizeHeader();
     } catch (error) {
         console.error(error);
     }
+    
 
 
 

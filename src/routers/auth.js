@@ -24,7 +24,7 @@ router.post('/signup', async (req, res, next) => {
         const user = await User.create({ email, password, login });
         const token = jwt.sign({ id: user._id }, process.env.TOKEN_KEY);
 
-        res.cookie('token', token, { httpOnly: true, secure: true }); // httpOnly захищає від доступу через JS
+        res.cookie('token', token, { httpOnly: true, /* secure: true, */ sameSite: 'Lax', path: '/', }); // httpOnly захищає від доступу через JS
         res.status(200).json("Successful signup.");
     } catch (err) {
         next(err);
@@ -48,7 +48,7 @@ router.post('/login', async (req, res, next) => {
 
         const token = jwt.sign({ id: user._id }, process.env.TOKEN_KEY);
 
-        res.cookie('token', token, { httpOnly: true, secure: true }); // httpOnly захищає від доступу через JS
+        res.cookie('token', token, { httpOnly: true, /* secure: true, */ sameSite: 'Lax', path: '/', }); // httpOnly захищає від доступу через JS
         res.status(200).json({ message: "Successful login." });
     } catch (err) {
         next(err);

@@ -174,6 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
         const playerContainer = document.getElementById('player-container');
         const videoContainer = document.getElementById('video-container');
+        const customVideo = document.getElementById('custom-video');
         const fullScreenBtn = document.getElementById("full-screen");
 
         function fullScreen() {
@@ -182,9 +183,11 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!document.fullscreenElement) {
                 playerContainer.requestFullscreen();
                 img = 'full-screen-exit';
+                customVideo.classList.remove('limit-height');
             } else {
                 document.exitFullscreen();
                 img = 'full-screen';
+                customVideo.classList.add('limit-height');
             }
 
             fetch(`/img/${img}.svg`)

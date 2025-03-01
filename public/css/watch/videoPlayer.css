@@ -1,6 +1,4 @@
 #player-container {
-    height: 80vh;
-    min-height: 500px;
     background: #000;
     position: relative;
 }
@@ -12,6 +10,10 @@
 #custom-video {
     height: 100%;
     margin: 0 auto;
+}
+
+.limit-height {
+    max-height: 80vh;
 }
 
 

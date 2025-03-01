@@ -61,11 +61,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             const action = form.getAttribute("action");
     
             try {
+                console.log(data);
+                
                 const response = await fetch(action, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data),
                 });
+
+                
     
                 if (response.ok) {
                     window.location.reload();
@@ -90,7 +94,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const login = document.getElementById("login");
                     login.style.borderColor = 'red';
                     console.log(login);
-                    
                     break;
 
                 case 'email':
@@ -112,6 +115,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     break;
             }
         }
+        console.log(document.cookie);
     } catch (error) {
         console.error(error);
     }

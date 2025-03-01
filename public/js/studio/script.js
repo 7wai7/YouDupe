@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.addEventListener('scroll', () => {
             if (!hasMoreVideos || isFetchingVideos) return;
         
-            const container = document.getElementById('video-recommendations');
+            const container = document.getElementById('video-content');
             if (!container) return;
 
             const rect = container.getBoundingClientRect();

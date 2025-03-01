@@ -68,7 +68,7 @@ router.get('/watch', authMiddleware, async (req, res) => {
     const userReaction = req.user ? await Reaction.findOne({ video: video._id, user: req.user._id }).select("reaction").lean() : null;
     const channels = req.user ? await Follower.find({ follower: req.user._id }).populate('user', 'login') : [];
 
-    res.render('watchVideo', {
+    res.render('watch', {
         title: video.title,
         stylesheets: ["watch/videoPlayer", "watch/watch", 'header'],
         scripts: ["watch/buttons", 'header', "watch/script"],

@@ -127,14 +127,14 @@ function loadVideoRecommendations() {
     isFetchingVideos = true;
 
 
-    const offset = document.querySelectorAll('#video-recommendations .rec-video').length;    
+    const offset = document.querySelectorAll('.video-recommendations.active-display .rec-video').length;    
     const urlParams = new URLSearchParams(window.location.search);
     const currentVideoId = urlParams.get('v');
 
     fetch(`/api/watch/recommendedVideos?limit=10&offset=${offset}&current_video=${currentVideoId}`, { method: 'GET' })
         .then(response => response.text())
         .then(htmlText => {
-            const container = document.getElementById('video-recommendations');
+            const container = document.querySelector('.video-recommendations.active-display');
 
             // Створюємо тимчасовий контейнер для перетворення рядка в HTML
             const tempDiv = document.createElement('div');
@@ -157,6 +157,31 @@ function loadVideoRecommendations() {
             isFetchingVideos = false;
         })
         .catch(console.error)
+}
+
+function resize() {
+    const first = document.querySelector('.video-recommendations.first');
+    const second = document.querySelector('.video-recommendations.second');
+
+    if (window.innerWidth < 1000) {
+        if (!first.classList.contains('active-display')) {
+            second.classList.remove('active-display');
+            first.classList.add('active-display');
+            first.innerHTML = second.innerHTML;
+            second.innerHTML = ''; // Очищаємо, щоб уникнути дублювання
+            second.setAttribute('hidden', '');
+            first.removeAttribute('hidden');
+        }
+    } else {
+        if (!second.classList.contains('active-display')) {
+            first.classList.remove('active-display');
+            second.classList.add('active-display');
+            second.innerHTML = first.innerHTML;
+            first.innerHTML = ''; // Очищаємо, щоб уникнути дублювання
+            first.setAttribute('hidden', '');
+            second.removeAttribute('hidden');
+        }
+    }
 }
 
 
@@ -345,7 +370,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.addEventListener('scroll', () => {
             if (!hasMoreVideos || isFetchingVideos) return;
         
-            const container = document.getElementById('video-recommendations');
+            const container = document.querySelector('.video-recommendations.active-display');
             if (!container) return;
 
             const rect = container.getBoundingClientRect();
@@ -355,6 +380,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 loadVideoRecommendations();
             }
         });
+        
+        loadVideoRecommendations();
     } catch (error) {
         console.error(error);
     }
@@ -380,6 +407,15 @@ document.addEventListener("DOMContentLoaded", () => {
             hasMoreComments = true;
             loadComments();
         });
+    } catch (error) {
+        console.error(error);
+    }
+
+    
+
+    try {
+        resize();
+        window.addEventListener('resize', resize);
     } catch (error) {
         console.error(error);
     }

@@ -1,6 +1,8 @@
 <% videos.forEach(video => { %>
     <div data-id="<%= video._id %>" data-title="<%= video.title %>" class="video">
-        <img class="preview" src="/api/preview/<%= video._id %>" alt="" width="260px">
+        <div class="preview">
+            <img src="/api/preview/<%= video._id %>" alt="" width="260px">
+        </div>
         <div class="metadata-row">
             <div>
                 <h1 class="title"><%= video.title %></h1>

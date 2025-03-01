@@ -95,8 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 loadVideos();
             })
         })
-
-        loadVideos();
     } catch (error) {
         console.log(error);
     }
@@ -204,6 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     videoFileInput.value = '';
                     dropZone.setAttribute("hidden", "");
                     uploadContent.removeAttribute("hidden");
+                    document.getElementById('video-title-textarea').value = file.name.split('.')[0];
                 };
             }
         }
@@ -245,7 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Перевірка наявності відео перед відправкою
             if (!uploadedVideo.src) {
-                console.error("Файл відео не завантажений!");
+                console.error("Video file not uploaded!");
                 return;
             }
 
@@ -266,37 +265,50 @@ document.addEventListener("DOMContentLoaded", () => {
                             formData.append("preview", videoPreview.file);
                             sendUploadRequest(formData);
                         } else {
-                            console.error("Прев’ю не створене!");
+                            console.error("No preview has been created!");
                         }
                     })
-                    .catch(err => console.error("Помилка при створенні файлу:", err));
+                    .catch(err => console.error("Error creating a file:", err));
             } catch (error) {
-                console.error("Помилка завантаження відео:", error);
+                console.error("Video uploading error:", error);
             }
         });
 
-        function sendUploadRequest(formData) {
+        function sendUploadRequest(formData) { 
             fetch("api/studio/upload", {
                 method: "POST",
                 body: formData,
             })
-                .then(response => {
-                    if (response.ok) {
-                        document.getElementById('upload-video-btn').removeAttribute('notAvailable');
-                        const spinner = document.querySelector('.upload-video-btn-wrapper .loading-spinner');
-                        spinner?.classList.toggle('spinner');
-                        spinner?.setAttribute('hidden', '');
-                        hideModal();
-                        document.getElementById('video-content').innerHTML = '';
-                        loadVideos();
-                    }
-                    return response.json()
-                })
-                .then(data => {
-                    console.log(data);
-                })
-                .catch(console.error);
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                
+                document.getElementById('upload-video-btn').removeAttribute('notAvailable');
+                const spinner = document.querySelector('.upload-video-btn-wrapper .loading-spinner');
+                spinner?.classList.toggle('spinner');
+                spinner?.setAttribute('hidden', '');
+        
+                hideModal();
+                document.getElementById('video-content').innerHTML = '';
+                loadVideos();
+            })
+            .catch(error => {
+                console.error("Upload failed:", error);
+        
+                // Обробка помилки (від сервера чи з'єднання)
+                document.getElementById('upload-video-btn').removeAttribute('notAvailable');
+                const spinner = document.querySelector('.upload-video-btn-wrapper .loading-spinner');
+                spinner?.classList.toggle('spinner');
+                spinner?.setAttribute('hidden', '');
+        
+                alert("The video could not be uploaded. Please check your connection or try again.");
+            });
         }
+        
 
 
     } catch (error) {

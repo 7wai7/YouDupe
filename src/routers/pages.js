@@ -53,7 +53,7 @@ router.get('/watch', authMiddleware, async (req, res) => {
     const commentsCount = comments.length;
 
 
-    const [reactions] = await Reaction.aggregate([
+    const [aggregationResult] = await Reaction.aggregate([
         { $match: { video: video._id } },
         {
             $group: {
@@ -63,12 +63,13 @@ router.get('/watch', authMiddleware, async (req, res) => {
             }
         }
     ]);
+    const reactions = aggregationResult ?? { likes: 0, dislikes: 0 };
 
     const userReaction = req.user ? await Reaction.findOne({ video: video._id, user: req.user._id }).select("reaction").lean() : null;
     const channels = req.user ? await Follower.find({ follower: req.user._id }).populate('user', 'login') : [];
 
     res.render('watchVideo', {
-        title: id,
+        title: video.title,
         stylesheets: ["watch/videoPlayer", "watch/watch", 'header'],
         scripts: ["watch/buttons", 'header', "watch/script"],
         header: '../partials/header',

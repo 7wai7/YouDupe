@@ -535,6 +535,9 @@ router.post("/studio/upload", authMiddleware, async (req, res, next) => {
             if (!req.files || !req.files.video) {
                 return res.status(400).json({ error: "Video not uploaded" });
             }
+            if (!req.files.preview) {
+                return res.status(400).json({ error: "Preview not uploaded" });
+            }
 
             ffmpeg.ffprobe(path.join(__dirname, `../../${req.files.video[0].path}`), async function (err, metadata) {
                 if (err) {
@@ -544,6 +547,8 @@ router.post("/studio/upload", authMiddleware, async (req, res, next) => {
 
                 // Зберігаємо інформацію про відео в базу
                 video.user = req.user._id;
+                video.filename = req.files.video[0].filename;
+                video.preview = req.files.preview[0].filename;
                 video.duration = metadata.format.duration;
                 video.title = req.body.title || "Untitled";
                 video.description = req.body.description || "";

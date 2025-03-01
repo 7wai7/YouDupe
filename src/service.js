@@ -2,6 +2,7 @@ import { User } from './models/User.js';
 import Video from './models/Video.js';
 import Comment from './models/Comment.js';
 import Reaction from './models/Reaction.js';
+import fs from "fs/promises";
 
 export async function changeRole(moderatorId, userId, newRole) {
     try {
@@ -57,6 +58,16 @@ export async function deleteAccount(moderatorId, userId) {
     }
 };
 
+async function safeDelete(filePath) {
+    try {
+        await fs.access(filePath); // Перевіряємо існування
+        await fs.unlink(filePath); // Видаляємо, якщо файл є
+        console.log(`Deleted: ${filePath}`);
+    } catch (err) {
+        console.error(`Error removing file: ${filePath}`, err);
+    }
+}
+
 export async function deleteVideo(user, videoId) {
     try {
         const video = await Video.findById(videoId);
@@ -64,18 +75,24 @@ export async function deleteVideo(user, videoId) {
             return { success: false, message: 'Video not found' };
         }
 
-        if(user.role === 'admin' || user.role === 'moderator' || user._id.toString() === video.user.toString()) {
-            const comments = await Comment.find({ video: videoId, parentComment: null }).select('_id');
-            console.log(comments);
-            
-            Promise.all(comments.map(c => deleteComment(user, c._id)));
-            
-            await Reaction.deleteMany({ video: videoId });
-            await video.deleteOne();
-            return { success: true, message: 'Video deleted successfully' };
+        if(user.role !== 'admin' && user.role !== 'moderator' && user._id.toString() !== video.user.toString()) {
+            return { success: false, message: 'No rights to delete video' };
         }
 
-        return { success: false, message: 'No rights to delete video' };
+        const comments = await Comment.find({ video: videoId, parentComment: null }).select('_id');
+        
+        await Promise.all(comments.map(c => deleteComment(user, c._id)));
+        await Reaction.deleteMany({ video: videoId });
+
+
+        // Видалення файлів (відео та прев'ю)
+        await safeDelete(`./previews/${video.preview}`);
+        await safeDelete(`./videos/${video.filename}`);
+
+        // Видалення самого відео з БД
+        await video.deleteOne();
+
+        return { success: true, message: 'Video deleted successfully' };
     } catch (error) {
         console.error(error);
         return { success: false, message: 'Error when deleting a video', error };

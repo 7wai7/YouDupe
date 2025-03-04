@@ -1,0 +1,32 @@
+<% notifications.forEach(notification => {  %>
+    <% if(notification.type === 'video') { %>
+        <% const video = notification %>
+
+        <div class="notification">
+            <a href="/channel/<%= video.user.login %>" class="channel-info">
+                <img src="/img/user.svg" alt="" width="60px">
+            </a>
+            <a href="/watch?v=<%= video._id %>" class="video-info">
+                <div class="metadata">
+                    <h1 class="video-title"><%= video.title %></h1>
+                    <h1 class="time"><%= timeAgo(video.createdAt) %></h1>
+                </div>
+                <div class="preview">
+                    <img src="/api/preview/<%= video._id %>" alt="" width="200px">
+                </div>
+            </a>
+        </div>
+    <% } else if(notification.type === 'comment') { %>
+        <% const comment = notification %>
+        
+        <div class="notification">
+            <a href="/channel/<%= comment.user.login %>" class="channel-info">
+                <img src="/img/user.svg" alt="" width="60px">
+            </a>
+            <div class="metadata">
+                <h1 class="comment-text"><%= comment.text %></h1>
+                <h1 class="time"><%= timeAgo(comment.createdAt) %></h1>
+            </div>
+        </div>
+    <% } %>
+<% }); %>

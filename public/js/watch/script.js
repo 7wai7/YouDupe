@@ -12,14 +12,19 @@ async function addComment(commentArea) {
     
     if (!text) return;
 
-    commentArea.value = ""; // Очищуємо поле введення
+    commentArea.value = "";
 
     const urlParams = new URLSearchParams(window.location.search);
     const videoId = urlParams.get("v");
 
     const parentComment = wrapper.closest(".parentComment");
+    const taggedUser = commentArea.closest('.comment').dataset.userid;
+
+    console.log('taggedUser', taggedUser);
+    
+    
     const url = parentComment
-        ? `/api/comment/reply?video=${videoId}&parentComment=${parentComment.id}`
+        ? `/api/comment/reply?video=${videoId}&parentComment=${parentComment.dataset.id}&taggedUser=${taggedUser}`
         : `/api/comment?video=${videoId}`;
 
     try {
@@ -58,7 +63,7 @@ function loadReplies(container) {
     const urlParams = new URLSearchParams(window.location.search);
     const videoId = urlParams.get('v');
 
-    const commentId = container.closest('.parentComment').id;
+    const commentId = container.closest('.parentComment').dataset.id;
     const offset = container.children.length;
 
 
@@ -285,9 +290,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const wrapper = btn.closest('.comment-data').querySelector('.add-comment-wrapper');
                 wrapper.removeAttribute('hidden');
 
-                const commenter = btn.closest('.comment').getAttribute('login');
+                const commenter = btn.closest('.comment').dataset.login;
                 btn.closest('.comment-data').querySelector('.input-comment-textarea').value = `${commenter}, `;
-
             }
 
 
@@ -301,7 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const deleteCommentBtn = event.target.closest('.delete-comment-btn');
             if (deleteCommentBtn) {
-                const id = deleteCommentBtn.closest('.comment').id;
+                const id = deleteCommentBtn.closest('.comment').dataset.id;
 
                 fetch(`/api/comment/${id}`, { method: 'delete' })
                     .then(response => {

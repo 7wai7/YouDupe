@@ -76,6 +76,7 @@ header {
     height: 30px;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 #create-video-btn svg {
@@ -96,4 +97,14 @@ header {
 .avatar-link {
     border: 2px solid #000;
     border-radius: 100%;
+}
+
+@media (max-width: 600px) {
+    #create-video-btn {
+        padding: 0;
+        aspect-ratio: 1 / 1; 
+    }
+    #create-video-btn h4 {
+        display: none;
+    }
 }

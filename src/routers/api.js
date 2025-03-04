@@ -124,7 +124,7 @@ router.get('/index/videos', async (req, res) => {
     }
 })
 
-router.get("/header/notifications", authMiddleware, async (req, res) => {
+router.get('/subscriptions/videos', authMiddleware, async (req, res) => {
     try {
         if (!req.user) return res.status(401).json({ message: 'Not registered' });
 
@@ -142,7 +142,6 @@ router.get("/header/notifications", authMiddleware, async (req, res) => {
                     'followers.follower': req.user._id  // Фільтруємо, щоб підписник був req.user
                 }
             },
-            { $project: { "user": 1, "title": 1, "createdAt": 1, "followers": 1, } },
             { $sort: { createdAt: -1 } },
             { $limit: 10 }
         ]);
@@ -151,10 +150,80 @@ router.get("/header/notifications", authMiddleware, async (req, res) => {
             path: 'user',
             select: 'login'
         });
-
         
-        res.render('partials/notification video', {
+        res.render('partials/index video', {
             videos: populatedVideos,
+            formatDistanceToNow,
+            uk,
+            layout: false
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
+})
+
+router.get("/header/notifications", authMiddleware, async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).json({ message: 'Not registered' });
+
+        const notifications = await Video.aggregate([
+            {
+                $lookup: {
+                    from: 'followers',
+                    localField: 'user',   // Автор відео
+                    foreignField: 'user', // Кого фоловлять
+                    as: 'followers'
+                }
+            },
+            {
+                $match: {
+                    'followers.follower': req.user._id  // Юзер підписаний
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'user',
+                    foreignField: '_id',
+                    as: 'user'
+                }
+            },
+            { $unwind: "$user" },
+            { $project: { "user.login": 1, "title": 1, "createdAt": 1, "type": "video" } },
+            { $sort: { createdAt: -1 } },
+            { $limit: 10 },
+        
+            // Об'єднуємо з коментарями
+            {
+                $unionWith: {
+                    coll: "comments",
+                    pipeline: [
+                        { $match: { taggedUser: req.user._id } },
+                        {
+                            $lookup: {
+                                from: 'users',
+                                localField: 'user',
+                                foreignField: '_id',
+                                as: 'user'
+                            }
+                        },
+                        { $unwind: "$user" },
+                        { $project: { "user.login": 1, "text": 1, "createdAt": 1, "type": "comment" } },
+                        { $sort: { createdAt: -1 } },
+                        { $limit: 10 }
+                    ]
+                }
+            },
+        
+            // Фінальне сортування
+            { $sort: { createdAt: -1 } },
+            { $limit: 10 }
+        ]);
+
+
+        res.render('partials/notification', {
+            notifications,
             formatDistanceToNow,
             uk,
             layout: false
@@ -297,8 +366,9 @@ router.get("/comments", authMiddleware, async (req, res) => {
         });
 
         res.render('partials/comment', {
+            user: req.user,
             comments,
-            setParentComment: true,
+            isParentComment: true,
             formatDistanceToNow,
             uk,
             layout: false
@@ -389,9 +459,13 @@ router.get("/comments/replies", authMiddleware, async (req, res) => {
         });
 
 
+        console.log(comments);
+        
+
         res.render('partials/comment', {
+            user: req.user,
             comments,
-            setParentComment: false,
+            isParentComment: false,
             formatDistanceToNow,
             uk,
             layout: false
@@ -467,7 +541,7 @@ router.get("/video/:id/description", async (req, res) => {
     }
 })
 
-router.get("/channel/:login/load", async (req, res) => {
+router.get("/channel/:login/videos", async (req, res) => {
     try {
         const userLogin = req.params.login;
         const sort = req.query.sort || "newer";
@@ -479,23 +553,6 @@ router.get("/channel/:login/load", async (req, res) => {
 
         const videos = await Video.aggregate([
             { $match: { user: userChannel._id } },
-            /* {
-                $lookup: {
-                    from: 'reactions',
-                    localField: '_id',
-                    foreignField: 'video',
-                    as: 'reactions'
-                }
-            },
-            {
-                $addFields: {
-                    likes: {
-                        $size: {
-                            $filter: { input: '$reactions', as: 'r', cond: { $eq: ['$$r.reaction', true] } }
-                        }
-                    }
-                }
-            }, */
             { $sort: { [sort === 'newer' ? 'createdAt' : 'views']: -1 } },
             { $skip: offset },
             { $limit: limit }
@@ -594,12 +651,14 @@ router.post("/comment/reply", authMiddleware, async (req, res) => {
 
         const videoId = req.query.video;
         const parentCommentId = req.query.parentComment;
+        const taggedUser = req.query.taggedUser;
         const text = req.body.text;
 
         const comment = new Comment({
             user: req.user,
             video: videoId,
             parentComment: parentCommentId,
+            taggedUser,
             text
         });
 

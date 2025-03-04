@@ -1,0 +1,69 @@
+main {
+    padding: 14px;
+    padding-bottom: 80px;
+}
+
+.top {
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+}
+
+.top .login {
+    margin-left: 10px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.history {
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+.history-row {
+    margin-top: 10px;
+    overflow-x: auto;
+}
+
+.history-container {
+    display: flex;
+    gap: 10px;
+}
+
+.history-container .history-video {
+    width: 200px;
+    min-width: 200px;
+}
+
+.history-container .video-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.history-container .login {
+    font-size: 12px;
+}
+
+.no-videos {
+    align-self: center;
+    justify-self: center;
+}
+
+.buttons-container {
+    display: flex;
+    flex-flow: column;
+    align-items: start;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.buttons-container a,
+.buttons-container button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}

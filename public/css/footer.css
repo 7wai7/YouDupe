@@ -1,0 +1,39 @@
+footer {
+    display: block;
+    background-color: #000;
+    z-index: 99999;
+    gap: 20px;
+    width: 100%;
+    padding: 10px 8vw 5px;
+    position: fixed;
+    inset: auto auto 0 auto;
+}
+
+footer nav {
+    display: flex;
+    flex-flow: row;
+    align-items: start;
+    justify-content: space-between;
+}
+
+footer a svg,
+footer button svg {
+    margin: 0 auto;
+}
+
+footer h1 {
+    color: #fff;
+    font-size: 12px;
+}
+
+footer .upload-icon {
+    border: 2px solid #fff;
+    border-radius: 20px;
+}
+
+
+@media (hover: none) and (pointer: coarse) {
+    footer {
+        display: block;
+    }
+}

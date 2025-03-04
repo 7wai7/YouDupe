@@ -6,7 +6,9 @@ function loadVideos() {
 
     const container = document.getElementById('content-container');
 
-    fetch(`/api/index/videos`, { method: 'GET' })
+    const basePath = window.location.pathname.includes('/subscriptions') ? '/subscriptions' : '/index';
+    
+    fetch(`/api${basePath}/videos`, { method: 'GET' })
         .then(response => response.text())
         .then(htmlText => {
             const tempDiv = document.createElement('div');

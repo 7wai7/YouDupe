@@ -1,5 +1,5 @@
 <% comments.forEach(comment=> { %>
-    <div class="comment <%= setParentComment ? 'parentComment' : '' %>" id="<%= comment._id %>" login="<%= comment.user.login %>">
+    <div class="comment <%= isParentComment ? 'parentComment' : '' %>" data-id="<%= comment._id %>"  data-userid="<%= comment.user._id %>" data-login="<%= comment.user.login %>">
         <div class="comment-wrapper">
             <a href="/channel/<%= comment.user.login %>" class="avatar-link">
                 <svg width="34px" height="34px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -61,7 +61,7 @@
                     <%= comment.text %>
                 </div>
                 <div class="comment-bottom like-dislike-wrapper reaction-comment">
-                    <button class="like" <%= comment.userReaction === true ? 'selected' : '' %>                        >
+                    <button class="like" <%= comment.userReaction === true ? 'selected' : '' %>>
                         <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -76,13 +76,13 @@
                         <%= comment.likes %>
                     </h6>
                     <div class="v-line"></div>
-                    <button class="dislike" <%= comment.userReaction === false ? 'selected' : '' %>                        >
+                    <button class="dislike" <%= comment.userReaction === false ? 'selected' : '' %>>
                         <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
-                            <path id="vector"
+                            <path
                                 d="M16.34 13.8978L12.24 19.9978C11.84 20.5978 10.84 20.9978 10.04 20.6978C9.14 20.3978 8.54 19.3978 8.74 18.4978L9.24 15.2978C9.34 14.5978 8.84 14.0978 8.24 14.0978H4.24C2.74 14.0978 1.8199 12.9478 2.34 11.4978C2.86 10.0478 3.3199 7.44784 4.74 5.19784C5.3898 4.16823 6.1025 3.44784 7.31986 3.44784C11.3199 3.44784 17.34 3.44784 17.34 3.44784"
                                 stroke="#000000" stroke-width="1.5" stroke-miterlimit="10" />
-                            <path id="rec"
+                            <path
                                 d="M21.82 13.4478C21.82 14 21.3722 14.4478 20.82 14.4478H17.32C16.7677 14.4478 16.32 14 16.32 13.4478V3.44784H20.82C21.3722 3.44784 21.82 3.89555 21.82 4.44784V13.4478Z"
                                 stroke="#000000" stroke-width="1.5" />
                         </svg>
@@ -92,19 +92,19 @@
                     </h6>
                     <button class="reply-btn">Reply</button>
                 </div>
-                <div class="add-comment-wrapper" hidden>
-                    <textarea name="Add comment" class="input-comment-textarea textarea-autosize"
-                        maxlength="2600"></textarea>
-                    <div class="choice">
-                        <button class="cancel-comment-btn">Cancel</button>
-                        <button class="add-comment-btn">Comment</button>
+                <div class="show-add-comment-panel-if-registered" <%= !user ? 'hidden' : '' %>>
+                    <div class="add-comment-wrapper" hidden>
+                        <textarea name="Add comment" class="input-comment-textarea textarea-autosize"
+                            maxlength="2600"></textarea>
+                        <div class="choice">
+                            <button class="cancel-comment-btn">Cancel</button>
+                            <button class="add-comment-btn">Comment</button>
+                        </div>
                     </div>
                 </div>
                 <button class="show-answers-btn" <%= comment.hasReply ? '' : 'hidden' %>>Answers</button>
                 <div class="answers-wrapper" hidden>
-                    <div class="answers-container">
-
-                    </div>
+                    <div class="answers-container"></div>
                     <button class="load-other-answers-btn">Other answers</button>
                 </div>
             </div>

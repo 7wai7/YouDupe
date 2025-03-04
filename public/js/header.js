@@ -115,7 +115,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     break;
             }
         }
-        console.log(document.cookie);
     } catch (error) {
         console.error(error);
     }
@@ -175,6 +174,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(container) {
             const res = await fetch(`/api/header/notifications`, { method: 'GET' })
             const data = await res.text();
+            console.log(data);
+            
             if(res.ok) container.innerHTML = data;
         }
     } catch (error) {

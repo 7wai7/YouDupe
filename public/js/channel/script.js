@@ -14,7 +14,7 @@ function loadVideos() {
     const sort = document.getElementById('content-top-row').dataset.sort;
     const offset = container.querySelectorAll('.video').length;
 
-    fetch(`/api/channel/${login}/load?sort=${sort}&offset=${offset}`, { method: 'GET' })
+    fetch(`/api/channel/${login}/videos?sort=${sort}&offset=${offset}`, { method: 'GET' })
     .then(response => response.text())
     .then(htmlText => {
         const tempDiv = document.createElement('div');

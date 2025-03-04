@@ -1,7 +1,15 @@
+
+html, body {
+    height: 100%;
+}
+
 body {
     background-color: #f8f8f8;
     position: relative;
-    min-height: 100vh;
+}
+
+main {
+    flex: 1; /* Заповнює весь доступний простір між header і footer */
 }
 
 button {

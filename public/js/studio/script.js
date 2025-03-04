@@ -401,7 +401,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!dropdown) return;
     
             modal.removeAttribute('hidden');
-            modal.dataset.videoid = dropdown.closest('.video').id;
+            modal.dataset.videoid = dropdown.closest('.video').dataset.id;
 
             fetch(`/api/video/${modal.dataset.videoid}/description`, { method: 'GET' })
             .then(response => {

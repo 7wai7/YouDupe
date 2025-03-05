@@ -6,10 +6,14 @@ html, body {
 body {
     background-color: #f8f8f8;
     position: relative;
+    display: flex;
+    flex-flow: column;
 }
 
 main {
-    flex: 1; /* Заповнює весь доступний простір між header і footer */
+    padding-top: 60px;
+    height: 100%;
+    flex: 1;
 }
 
 button {
@@ -89,4 +93,18 @@ button {
     display: block;
     overflow: hidden;
     resize: none;
+}
+
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    animation: rotate 1s linear infinite;
 }

@@ -18,10 +18,8 @@ async function addComment(commentArea) {
     const videoId = urlParams.get("v");
 
     const parentComment = wrapper.closest(".parentComment");
-    const taggedUser = commentArea.closest('.comment').dataset.userid;
+    const taggedUser = commentArea.closest('.comment')?.dataset.userid;
 
-    console.log('taggedUser', taggedUser);
-    
     
     const url = parentComment
         ? `/api/comment/reply?video=${videoId}&parentComment=${parentComment.dataset.id}&taggedUser=${taggedUser}`
@@ -423,4 +421,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
         console.error(error);
     }
+
+    
+
 });

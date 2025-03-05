@@ -236,7 +236,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             document.getElementById('upload-video-btn').setAttribute('notAvailable', '');
             const spinner = document.querySelector('.upload-video-btn-wrapper .loading-spinner');
-            spinner?.classList.toggle('spinner');
             spinner?.removeAttribute('hidden');
 
 
@@ -289,7 +288,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 document.getElementById('upload-video-btn').removeAttribute('notAvailable');
                 const spinner = document.querySelector('.upload-video-btn-wrapper .loading-spinner');
-                spinner?.classList.toggle('spinner');
                 spinner?.setAttribute('hidden', '');
         
                 hideModal();
@@ -302,7 +300,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Обробка помилки (від сервера чи з'єднання)
                 document.getElementById('upload-video-btn').removeAttribute('notAvailable');
                 const spinner = document.querySelector('.upload-video-btn-wrapper .loading-spinner');
-                spinner?.classList.toggle('spinner');
                 spinner?.setAttribute('hidden', '');
         
                 alert("The video could not be uploaded. Please check your connection or try again.");

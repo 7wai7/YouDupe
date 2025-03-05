@@ -196,15 +196,16 @@ main {
 }
 
 #no-video h1 {
-    font-size: 40px;
+    font-size: 2rem;
     font-family: 'Poppins', sans-serif;
+    white-space: nowrap;
     margin-bottom: 10px;
     line-height: 1;
     font-weight: 700;
 }
 
 #no-video button {
-    font-size: 20px;
+    font-size: 1rem;
     font-family: 'Poppins', sans-serif;
     padding: 18px 14px;
     line-height: 1;
@@ -390,18 +391,6 @@ main {
 }
 
 
-@keyframes rotate {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-.spinner {
-    animation: rotate 1s linear infinite;
-}
 
 
 

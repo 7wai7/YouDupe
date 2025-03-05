@@ -39,8 +39,6 @@ const router = new Router();
 // GETTERS
 
 router.get('/me', authMiddleware, (req, res) => {
-    console.log(req.user);
-    
     if (req.user) res.status(200).json({ message: 'Authorised' });
     else res.status(401).json({ message: 'Not registered' });
 });

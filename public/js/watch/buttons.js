@@ -1,45 +1,79 @@
 
+
 document.addEventListener("DOMContentLoaded", () => {
+    const playerContainer = document.getElementById('player-container');
+    const playerModal = document.getElementById('player-modal');
+    const videoContainer = document.getElementById("video-container");
+    const video = document.getElementById("custom-video");
+    let timeout;
+
+
+    function resetTimeout() {
+        clearTimeout(timeout);
+        timeout = setTimeout(hideControls, 2000);
+    }
+
+    function hideControls() {
+        document.querySelector('.controls').style.opacity = 0;
+        playerModal.style.opacity = 0;
+        playerContainer.style.cursor = 'none';
+    }
+
+    function showControls() {
+        document.querySelector('.controls').style.opacity = 1;
+        if(isMobile()) playerModal.style.opacity = 1;
+        playerContainer.style.cursor = 'default';
+
+        resetTimeout();
+    }
+
+    function playOrPause() {
+        if (video.paused) {
+            video.play();
+        } else {
+            video.pause();
+        }
+    }
+
+    function updatePlayBtnImg() {
+        let img;
+
+        if (video.paused) {
+            img = 'pause';
+        } else {
+            img = 'play';
+        }
+
+        fetch(`/img/${img}.svg`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("play-pause").innerHTML = data;
+                document.getElementById("play-pause-modal-btn").innerHTML = data;
+            })
+            .catch(console.error);
+    }
+    
+
+
+
 
     // ++++++ VIDEO BUTTONS ++++++
 
     try {
-        const videoContainer = document.getElementById("video-container");
-        const video = document.getElementById("custom-video");
-        const playPause = document.getElementById("play-pause");
 
-        function updatePlayBtnImg() {
-            let img;
-
-            if (video.paused) {
-                img = 'pause';
-            } else {
-                img = 'play';
-            }
-
-            fetch(`/img/${img}.svg`)
-            .then(response => response.text())
-            .then(data => {
-                playPause.innerHTML = data;
-            })
-            .catch(console.error);
+        if (!isMobile()) {
+            videoContainer.addEventListener("click", playOrPause);
         }
-
-        function playOrPause() {
-            if (video.paused) {
-                video.play();
-            } else {
-                video.pause();
-            }
-            
-            updatePlayBtnImg();
-        }
-
-        videoContainer.addEventListener("click", playOrPause);
-        playPause.addEventListener("click", playOrPause);
+        document.getElementById("play-pause").addEventListener("click", playOrPause);
+        document.getElementById("play-pause-modal-btn").addEventListener("click", playOrPause);
 
 
-        
+
+        video.addEventListener("play", updatePlayBtnImg);
+        video.addEventListener("pause", updatePlayBtnImg);
+
+
+
         const soundBtn = document.getElementById("sound");
         const soundSlider = document.getElementById("sound-slider");
         let savedSound = 0;
@@ -58,11 +92,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             fetch(`/img/${img}.svg`)
-            .then(response => response.text())
-            .then(data => {
-                soundBtn.innerHTML = data;
-            })
-            .catch(console.error);
+                .then(response => response.text())
+                .then(data => {
+                    soundBtn.innerHTML = data;
+                })
+                .catch(console.error);
         }
 
         soundSlider.addEventListener("input", (event) => {
@@ -70,6 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
             video.volume = v;
 
             updateSoundBtnImg();
+            resetTimeout();
         });
 
         soundBtn.addEventListener('click', (event) => {
@@ -84,6 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             video.volume = Number(soundSlider.value);
             updateSoundBtnImg();
+            resetTimeout();
         });
 
 
@@ -113,12 +149,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     break;
             }
 
-            updatePlayBtnImg();
             updateSoundBtnImg();
+            showControls();
         });
 
         // Автофокус при кліку на контейнер
         videoContainer.addEventListener("click", () => videoContainer.focus());
+        videoContainer.focus();
     } catch (error) {
         console.error(error);
     }
@@ -127,7 +164,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ++++++ VIDEO SLIDER ++++++
     try {
-        const video = document.getElementById("custom-video");
         const videoSlider = document.getElementById("video-slider");
 
         const timeCurrent = document.getElementById('time-current');
@@ -163,6 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Змінює час відтворення при русі повзунка
         videoSlider.addEventListener("input", () => {
             video.currentTime = videoSlider.value;
+            resetTimeout();
         });
     } catch (error) {
         console.error(error);
@@ -172,30 +209,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ++++++ FULL SCREEN ++++++
     try {
-        const playerContainer = document.getElementById('player-container');
-        const videoContainer = document.getElementById('video-container');
-        const customVideo = document.getElementById('custom-video');
         const fullScreenBtn = document.getElementById("full-screen");
 
         function fullScreen() {
+            resetTimeout();
             let img;
 
             if (!document.fullscreenElement) {
                 playerContainer.requestFullscreen();
                 img = 'full-screen-exit';
-                customVideo.classList.remove('limit-height');
+                video.classList.remove('limit-height');
             } else {
                 document.exitFullscreen();
                 img = 'full-screen';
-                customVideo.classList.add('limit-height');
+                video.classList.add('limit-height');
             }
 
             fetch(`/img/${img}.svg`)
-            .then(response => response.text())
-            .then(data => {
-                fullScreenBtn.innerHTML = data;
-            })
-            .catch(console.error);
+                .then(response => response.text())
+                .then(data => {
+                    fullScreenBtn.innerHTML = data;
+                })
+                .catch(console.error);
         }
 
         fullScreenBtn.addEventListener('click', fullScreen);
@@ -206,34 +241,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     try {
-        const playerContainer = document.getElementById('player-container');
-        const controls = document.querySelector('.controls');
-        let timeout;
-
-        function hideControls() {
-            controls.style.display = 'none';
-            playerContainer.style.cursor = 'none';
-        }
-
-        function showControls() {
-            controls.style.display = 'block';
-            playerContainer.style.cursor = 'default';
-
-            clearTimeout(timeout);
-            timeout = setTimeout(hideControls, 1200);
-        }
-
         playerContainer.addEventListener('mousemove', showControls);
         playerContainer.addEventListener('mouseleave', hideControls);
+        resetTimeout();
     } catch (error) {
         console.error(error);
     }
-
-
-
-
-
-
 
 
 });

@@ -1,3 +1,6 @@
+function isMobile() {
+    return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+}
 
 async function checkAuth() {
     const response = await fetch('/api/me', { method: 'GET', credentials: 'include' });
@@ -14,6 +17,7 @@ function formatTime(seconds) {
 
 
 document.addEventListener("DOMContentLoaded", () => {
+
 
     // ДОДАВАННЯ EVENT DELEGATION
     try {
@@ -32,6 +36,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
+        document.querySelectorAll(".dropdown .content").forEach(content => {
+            const observer = new MutationObserver(mutations => {
+                mutations.forEach(mutation => {
+                    const button = content.closest(".dropdown").querySelector("button");
+
+                    // Отримати розміри кнопки і меню
+                    const buttonRect = button.getBoundingClientRect();
+                    const contentRect = content.getBoundingClientRect();
+                    const screenWidth = window.innerWidth;
+
+                    // Якщо меню виходить за правий край, зміщуємо його ліворуч
+                    if (buttonRect.right + contentRect.width > screenWidth) {
+                        content.style.left = "auto";
+                        content.style.right = "0";
+                    } else {
+                        content.style.left = "0";
+                        content.style.right = "auto";
+                    }
+
+                    content.style.width = "max-content";
+                });
+            });
+            
+            observer.observe(content, { childList: true, subtree: true, attributes: true });
+        });
+
+
         document.addEventListener("click", function (event) {
             const dropdown = event.target.closest(".dropdown");
 
@@ -59,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const buttonRect = button.getBoundingClientRect();
                 const contentRect = content.getBoundingClientRect();
                 const screenWidth = window.innerWidth;
-    
+
                 // Якщо меню виходить за правий край, зміщуємо його ліворуч
                 if (buttonRect.right + contentRect.width > screenWidth) {
                     content.style.left = "auto";
@@ -68,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     content.style.left = "0";
                     content.style.right = "auto";
                 }
-    
+
                 content.style.width = "max-content";
             }
         });
@@ -234,4 +265,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error(error)
     }
 
+
+    
 });

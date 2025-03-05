@@ -3,11 +3,12 @@ header {
     z-index: 9996;
     display: flex;
     flex-flow: row;
+    align-items: center;
     justify-content: space-between;
-    align-items: stretch;
     gap: 20px;
     width: 100%;
-    padding: 10px 2vw 5px;
+    height: 60px;
+    padding: 0 2vw;
     position: fixed;
     inset: 0 auto auto;
 }
@@ -69,12 +70,6 @@ header {
     height: max-content;
 }
 
-@media (hover: none) and (pointer: coarse) {
-    .user-avatar {
-        display: none;
-    }
-}
-
 
 
 .authorise-btn,
@@ -128,14 +123,6 @@ header {
     }
 }
 
-@media (hover: none) and (pointer: coarse) {
-    #menu {
-        display: none;
-    }
-    #create-video-btn {
-        display: none;
-    }
-}
 
 
 #notifications-dropdown .content {
@@ -156,16 +143,6 @@ header {
 
 #notifications-btn-mobile {
     display: none;
-}
-
-@media (hover: none) and (pointer: coarse) {
-    #notifications-btn-mobile {
-        display: block;
-    }
-
-    #notifications-btn {
-        display: none;
-    }
 }
 
 
@@ -217,8 +194,7 @@ header {
 #auth-panel {
     background: #fff;
     border-radius: 12px;
-    padding: 20px 10px;
-    width: 500px;
+    padding: 20px 10vw;
     display: flex;
     flex-flow: column;
     align-items: center;
@@ -235,7 +211,8 @@ header {
     flex-flow: column;
     align-items: center;
     justify-content: center;
-    width: 60%;
+    /* width: 60%; */
+    width: 240px;
     gap: 10px;
 }
 
@@ -301,11 +278,15 @@ header .authorise-btn:hover svg path {
     background-color: #f8f8f8;
     z-index: 9990;
     position: fixed;
+    inset: auto auto auto 0;
     width: 240px;
-    height: 100vh;
-    padding: 10px 10px;
-    padding-top: 80px;
+    height: 100%;
+    margin-top: 60px;
     overflow-y: auto;
+}
+
+.guide-wrapper {
+    padding: 10px 10px 80px 10px;
     display: flex;
     flex-flow: column;
     gap: 10px;
@@ -362,3 +343,26 @@ header .authorise-btn:hover svg path {
 }
 
 /* GUIDE CONTENT ++++++ */
+
+
+
+
+.mobile-device #menu {
+    display: none;
+}
+
+.mobile-device #create-video-btn {
+    display: none;
+}
+
+.mobile-device .user-avatar {
+    display: none;
+}
+
+.mobile-device #notifications-btn-mobile {
+    display: block;
+}
+
+.mobile-device #notifications-btn {
+    display: none;
+}

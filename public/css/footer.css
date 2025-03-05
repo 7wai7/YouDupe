@@ -1,7 +1,7 @@
 footer {
-    display: block;
+    display: none;
     background-color: #000;
-    z-index: 99999;
+    z-index: 9995;
     gap: 20px;
     width: 100%;
     padding: 10px 8vw 5px;
@@ -32,8 +32,9 @@ footer .upload-icon {
 }
 
 
-@media (hover: none) and (pointer: coarse) {
-    footer {
-        display: block;
-    }
+
+
+
+.mobile-device footer {
+    display: block;
 }

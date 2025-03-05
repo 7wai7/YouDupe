@@ -193,6 +193,7 @@ main > .bottom {
 
 
 .comments-white-box {
+  margin-top: 20px;
   gap: 10px;
   display: flex;
   flex-flow: column;
@@ -392,6 +393,7 @@ main > .bottom {
 
 .video-recommendations.first {
   width: 100%;
+  margin-top: 20px;
 }
 
 
@@ -412,9 +414,6 @@ main > .bottom {
     .rec-video {
       flex-flow: column;
     }
-    /* .preview img {
-      width: 100%;
-    } */
 
     .rec-video .preview {
       width: 100%;

@@ -2,6 +2,15 @@
 <html lang="en">
 
 <head>
+    <script>
+        (function() {
+            if (/Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent)) {
+                document.documentElement.classList.add("mobile-device");
+            }
+        })();
+    </script>
+
+    
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <title><%= title %></title>
@@ -22,12 +31,7 @@
 </head>
 
 <body>
-
-    <%- include(header) %>
-
     <%- body %>
-
-    <%- include(footer) %>
 
     <script src="/js/global.js"></script>
 

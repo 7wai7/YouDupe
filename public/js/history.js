@@ -3,9 +3,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
         const container = document.getElementById('content-container');
-        const offset = container.querySelectorAll('.notification').length;
+        const offset = container.querySelectorAll('.video').length;
 
-        const res = await fetch(`/api/notifications?offset=${offset}`, { method: 'GET' })
+        const res = await fetch(`/api/history?offset=${offset}`, { method: 'GET' })
         if(res.ok) {
             const htmlText = await res.text();
 

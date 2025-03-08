@@ -127,7 +127,8 @@ header {
 
 #notifications-dropdown .content {
     overflow-y: auto;
-    height: 420px;
+    height: 600px;
+    min-width: 500px;
     padding: 10px 10px;
 }
 
@@ -146,27 +147,6 @@ header {
 }
 
 
-.notification {
-    display: flex;
-    flex-flow: row;
-    align-items: start;
-    gap: 10px;
-}
-
-.notification .metadata {
-    margin-right: 20px;
-    width: 240px;
-}
-
-.notification .video-title {
-    font-size: 18px;
-    font-weight: 500;
-}
-
-.notification .comment-text {
-    font-size: 16px;
-}
-
 .search-btn-mobile {
     margin: 0 0 0 auto;
     display: none;
@@ -176,6 +156,32 @@ header {
     display: none;
 }
 
+
+.notification {
+    width: 100%;
+    display: inline-flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.avatar {
+    align-self: flex-start;
+}
+
+.notification .metadata {
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+}
+
+.notification .title {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.notification .comment-text {
+    font-size: 16px;
+}
 
 
 
@@ -272,6 +278,7 @@ header .authorise-btn:hover svg path {
 .guide-spacer {
     width: 240px;
     min-width: 240px;
+    height: 100%;
 }
 
 .guide {

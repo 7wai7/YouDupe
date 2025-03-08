@@ -16,6 +16,8 @@ function formatTime(seconds) {
 }
 
 
+
+
 document.addEventListener("DOMContentLoaded", () => {
 
 
@@ -36,30 +38,44 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
+        function calculateDropdownRect(button, content) {
+            const buttonRect = button.getBoundingClientRect();
+            const contentRect = content.getBoundingClientRect();
+            const screenWidth = window.innerWidth;
+            const screeHeight = window.innerHeight;
+
+            // Якщо меню виходить за правий край, зміщуємо його ліворуч
+            if (buttonRect.right + contentRect.width > screenWidth) {
+                content.style.left = "auto";
+                content.style.right = "0";
+            } else {
+                content.style.left = "0";
+                content.style.right = "auto";
+            }
+
+            if (buttonRect.bottom + contentRect.height > screeHeight) {
+                content.style.top = "auto";
+                content.style.bottom = buttonRect.height + 'px';
+            } else {
+                content.style.top = buttonRect.height + 'px';
+                content.style.bottom = "auto";
+            }
+
+            content.style.width = "max-content";
+            content.style.height = "max-content";
+        }
+
+
         document.querySelectorAll(".dropdown .content").forEach(content => {
             const observer = new MutationObserver(mutations => {
                 mutations.forEach(mutation => {
                     const button = content.closest(".dropdown").querySelector("button");
 
-                    // Отримати розміри кнопки і меню
-                    const buttonRect = button.getBoundingClientRect();
-                    const contentRect = content.getBoundingClientRect();
-                    const screenWidth = window.innerWidth;
-
-                    // Якщо меню виходить за правий край, зміщуємо його ліворуч
-                    if (buttonRect.right + contentRect.width > screenWidth) {
-                        content.style.left = "auto";
-                        content.style.right = "0";
-                    } else {
-                        content.style.left = "0";
-                        content.style.right = "auto";
-                    }
-
-                    content.style.width = "max-content";
+                    calculateDropdownRect(button, content);
                 });
             });
             
-            observer.observe(content, { childList: true, subtree: true, attributes: true });
+            observer.observe(content, { childList: true, subtree: true });
         });
 
 
@@ -85,22 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.querySelectorAll(".dropdown .content").forEach(c => c.setAttribute("hidden", ""));
         
                 content.removeAttribute("hidden");
-
-                // Отримати розміри кнопки і меню
-                const buttonRect = button.getBoundingClientRect();
-                const contentRect = content.getBoundingClientRect();
-                const screenWidth = window.innerWidth;
-
-                // Якщо меню виходить за правий край, зміщуємо його ліворуч
-                if (buttonRect.right + contentRect.width > screenWidth) {
-                    content.style.left = "auto";
-                    content.style.right = "0";
-                } else {
-                    content.style.left = "0";
-                    content.style.right = "auto";
-                }
-
-                content.style.width = "max-content";
+                calculateDropdownRect(button, content);
             }
         });
     } catch (error) {

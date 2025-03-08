@@ -174,6 +174,23 @@ router.get('/studio', authMiddleware, async (req, res) => {
     }
 });
 
+router.get('/history', authMiddleware, async (req, res) => {
+    try {
+        const channels = req.user ? await Follower.find({ follower: req.user._id }).populate('user', 'login') : [];
+
+        res.render('history', {
+            title: 'History',
+            stylesheets: ['header', 'footer', "history"],
+            scripts: ['header', "history"],
+            user: req.user,
+            channels,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
+});
+
 router.get('/coming-soon', authMiddleware, async (req, res) => {
     try {
         const channels = req.user ? await Follower.find({ follower: req.user._id }).populate('user', 'login') : [];
@@ -199,7 +216,7 @@ router.get('/notifications', authMiddleware, async (req, res) => {
         res.render('notifications', {
             title: 'Notifications',
             stylesheets: ['notifications', 'footer'],
-            scripts: [],
+            scripts: ['notifications'],
             user: req.user,
         })
     } catch (error) {

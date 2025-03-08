@@ -130,7 +130,7 @@ function loadVideoRecommendations() {
     isFetchingVideos = true;
 
 
-    const offset = document.querySelectorAll('.video-recommendations.active-display .rec-video').length;    
+    const offset = document.querySelectorAll('.video-recommendations.active-display .video').length;    
     const urlParams = new URLSearchParams(window.location.search);
     const currentVideoId = urlParams.get('v');
 

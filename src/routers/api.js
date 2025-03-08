@@ -7,15 +7,16 @@ import path from 'path';
 import { dirname } from 'path';
 import { formatDistanceToNow } from 'date-fns';
 import { uk } from 'date-fns/locale';
+import mongoose from 'mongoose';
 
 import { authMiddleware } from '../middlewares/middlewares.js';
-import Video from '../models/Video.js';
+import { deleteComment, deleteVideo } from '../service.js';
 import { User } from '../models/User.js';
+import Video from '../models/Video.js';
 import Comment from '../models/Comment.js';
 import Reaction from '../models/Reaction.js';
-import { deleteComment, deleteVideo } from '../service.js';
-import mongoose from 'mongoose';
 import Follower from '../models/Follower.js';
+import History from '../models/History.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -161,9 +162,11 @@ router.get('/subscriptions/videos', authMiddleware, async (req, res) => {
     }
 })
 
-router.get("/header/notifications", authMiddleware, async (req, res) => {
+router.get("/notifications", authMiddleware, async (req, res) => {
     try {
-        if (!req.user) return res.status(401).json({ message: 'Not registered' });
+        if (!req.user) {
+            return res.status(401).json({ message: 'Not registered' });
+        }
 
         const notifications = await Video.aggregate([
             {
@@ -251,7 +254,7 @@ router.get("/watch/recommendedVideos", async (req, res) => {
         const videos = await query;
             
 
-        res.render('partials/recommended video', {
+        res.render('partials/video', {
             videos,
             formatDistanceToNow,
             uk,
@@ -558,10 +561,56 @@ router.get("/channel/:login/videos", async (req, res) => {
 
         res.render('partials/channel video', {
             videos,
-            formatDistanceToNow,
-            uk,
             layout: false
         });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
+})
+
+router.get("/history", authMiddleware, async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).json({ message: 'Not registered' });
+
+        const offset = parseInt(req.query.offset) || 0;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const historyVideos = await History.aggregate([
+            { $match: { user: req.user._id } },
+            { $sort: { updatedAt: -1 } },
+            { $skip: offset },
+            { $limit: limit },
+            { 
+                $lookup: {
+                    from: "videos", 
+                    localField: "video", 
+                    foreignField: "_id", 
+                    as: "video"
+                } 
+            },
+            { $unwind: "$video" }, // Перетворюємо масив `video` в об'єкт
+            { 
+                $lookup: { // Заповнюємо автора відео
+                    from: "users", 
+                    localField: "video.user", 
+                    foreignField: "_id", 
+                    as: "video.user"
+                } 
+            },
+            { $unwind: "$video.user" },
+            { 
+                $replaceRoot: { newRoot: "$video" } // Замінюємо кореневий об'єкт на `video`
+            }
+        ]);
+
+        console.log(historyVideos);
+        
+
+        res.render('partials/video', {
+            videos: historyVideos,
+            layout: false
+        })
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error", error });

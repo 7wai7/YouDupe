@@ -1,19 +1,19 @@
 <% videos.forEach(video=> { %>
-    <div class="rec-video">
+    <div class="video">
         <a href="/watch?v=<%= video._id %>" class="preview">
-            <img src="/api/preview/<%= video._id %>" width="auto">
+            <img src="/api/preview/<%= video._id %>" width="100%">
             <div class="video-duration"><%= formatTime(video.duration) %></div>
         </a>
-        <div class="rec-metadata-wrapper">
-            <a href="/watch?v=<%= video._id %>" class="rec-metadata">
-                <h3><%= video.title %></h3>
-                <div class="rec-bottom-metadata">
-                    <h4><%= video.user.login %></h4>
-                    <h4><%= video.views %> views • <%= timeAgo(video.createdAt) %></h4>
+        <div class="metadata-wrapper">
+            <a href="/watch?v=<%= video._id %>" class="metadata">
+                <div class="title"><%= video.title %></div>
+                <div class="metadata-bottom">
+                    <div class="channel-name"><%= video.user.login %></div>
+                    <div class="date"><%= video.views %> views • <%= timeAgo(video.createdAt) %></div>
                 </div>
             </a>
             <div class="dropdown">
-                <button class="rec-video-options">
+                <button class="video-options">
                     <div>
                         <svg width="18px" height="18px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                             <path

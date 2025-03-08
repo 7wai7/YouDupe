@@ -3,24 +3,22 @@
         <% const video = notification %>
 
         <div class="notification">
-            <a href="/channel/<%= video.user.login %>" class="channel-info">
+            <a href="/channel/<%= video.user.login %>" class="avatar">
                 <img src="/img/user.svg" alt="" width="60px">
             </a>
-            <a href="/watch?v=<%= video._id %>" class="video-info">
-                <div class="metadata">
-                    <h1 class="video-title"><%= video.title %></h1>
-                    <h1 class="time"><%= timeAgo(video.createdAt) %></h1>
-                </div>
-                <div class="preview">
-                    <img src="/api/preview/<%= video._id %>" alt="" width="200px">
-                </div>
+            <a href="/watch?v=<%= video._id %>" class="metadata">
+                <h1 class="title"><%= video.title %></h1>
+                <h1 class="time"><%= timeAgo(video.createdAt) %></h1>
+            </a>
+            <a href="/watch?v=<%= video._id %>" class="preview">
+                <img src="/api/preview/<%= video._id %>" alt="" width="200px">
             </a>
         </div>
     <% } else if(notification.type === 'comment') { %>
         <% const comment = notification %>
         
         <div class="notification">
-            <a href="/channel/<%= comment.user.login %>" class="channel-info">
+            <a href="/channel/<%= comment.user.login %>" class="avatar">
                 <img src="/img/user.svg" alt="" width="60px">
             </a>
             <div class="metadata">

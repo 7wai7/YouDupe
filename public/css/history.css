@@ -1,0 +1,138 @@
+main {
+    display: inline-flex;
+}
+
+.content-wrapper {
+    padding: 20px;
+    margin: 0 8vw;
+    display: flex;
+    flex-flow: row;
+    gap: 10%;
+    flex: 1;
+}
+
+#content-container {
+    display: flex;
+    flex-flow: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.options {
+    width: 340px;
+    display: flex;
+    flex-flow: column;
+    align-items: start;
+    gap: 20px;
+}
+
+.find-in-history {
+    display: inline-flex;
+    gap: 10px;
+    border-bottom: 1px solid #000;
+}
+
+#find-in-history-input {
+    width: 100%;
+    outline: none;
+}
+
+.choice-wrapper {
+    display: inline-flex;
+    gap: 10px;
+}
+
+.choice-wrapper .active {
+    font-weight: 500;
+}
+
+.choice-wrapper button {
+    margin-bottom: 1px;
+}
+
+.choice-wrapper button:hover {
+    border-bottom: 1px solid #000;
+    margin-bottom: 0;
+}
+
+#clear-history-btn {
+    display: inline-flex;
+    gap: 10px;
+}
+
+
+
+.video {
+    display: inline-flex;
+    gap: 6px;
+    width: 100%;
+}
+
+.preview {
+    width: 220px;
+}
+
+.video .dropdown {
+    margin: 0 0 auto auto;
+}
+
+.metadata-wrapper {
+    display: flex;
+    flex-flow: row;
+    flex: 1;
+}
+
+.metadata {
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    flex: 1;
+    padding: 4px 0;
+}
+
+.video .title {
+    font-weight: 600;
+    font-size: 18px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.metadata-bottom {
+    display: contents;
+    flex-flow: column;
+}
+
+.metadata-bottom .channel-name {
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.metadata-bottom .date {
+    display: none;
+}
+
+.video-options {
+    border-radius: 100%;
+    padding: 5px 5px;
+}
+
+.video-options:hover {
+    background: #d5d5d5;
+}
+
+
+@media (max-width: 800px) {
+    .content-wrapper {
+        flex-flow: column;
+    }
+
+    .options {
+        order: -1;
+    }
+}

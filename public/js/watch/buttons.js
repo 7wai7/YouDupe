@@ -2,6 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     const playerContainer = document.getElementById('player-container');
+    const controls = document.querySelector('.controls');
     const playerModal = document.getElementById('player-modal');
     const videoContainer = document.getElementById("video-container");
     const video = document.getElementById("custom-video");
@@ -14,13 +15,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function hideControls() {
-        document.querySelector('.controls').style.opacity = 0;
+        controls.style.visibility = 'hidden';
+        playerModal.style.visibility = 'hidden';
+        controls.style.opacity = 0;
         playerModal.style.opacity = 0;
         playerContainer.style.cursor = 'none';
     }
 
     function showControls() {
-        document.querySelector('.controls').style.opacity = 1;
+        controls.style.visibility = 'visible';
+        if(isMobile()) playerModal.style.visibility = 'visible';
+        controls.style.opacity = 1;
         if(isMobile()) playerModal.style.opacity = 1;
         playerContainer.style.cursor = 'default';
 

@@ -1,9 +1,49 @@
 main {
     padding: 0;
+}
+
+#content-container {
     display: flex;
+    flex-flow: column;
     align-items: center;
+    margin: 10px;
 }
 
 .loading-spinner {
-    margin: 0 auto;
+    margin: auto 0;
+}
+
+
+.notification {
+    width: 100%;
+    gap: 10px;
+    display: inline-flex;
+    margin: 15px 0;
+}
+
+.avatar {
+    width: 14%;
+    align-self: flex-start;
+    max-width: 80px;
+}
+
+.metadata {
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+}
+
+.title {
+    font-weight: 600;
+}
+
+.time {
+    font-size: 14px;
+}
+
+.preview {
+    margin: auto 0 auto auto;
+}
+.preview img {
+    width: 160px;
 }

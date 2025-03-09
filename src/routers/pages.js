@@ -1,10 +1,6 @@
 import Router from 'express';
-import fs from "fs";
 import { fileURLToPath } from 'url';
-import path from 'path';
 import { dirname } from 'path';
-import { formatDistanceToNow } from 'date-fns';
-import { uk } from 'date-fns/locale';
 
 import { authMiddleware } from '../middlewares/middlewares.js';
 import { User } from '../models/User.js';

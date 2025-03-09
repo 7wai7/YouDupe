@@ -71,6 +71,7 @@
 
 #time {
     color: #fff;
+    white-space: nowrap;
 }
 
 #player-modal {

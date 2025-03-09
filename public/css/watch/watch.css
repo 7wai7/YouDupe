@@ -473,3 +473,31 @@ main > .bottom {
 
 
 
+
+
+
+/* MINI PLAYER */
+
+#mini-player {
+  position: fixed;
+  width: 50%;
+  max-width: 300px;
+  height: auto;
+  padding: 0;
+  right: 10px;
+  bottom: 70px;
+  transition: width .2s, max-width .2s;
+  /* transition: top 0.3s ease-out, right 0.3s ease-out, bottom 0.3s ease-out, left 0.3s ease-out; */
+}
+
+#mini-player.dragging {
+  transition: none;
+}
+
+#hide-mini-player-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 7000;
+  transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+}

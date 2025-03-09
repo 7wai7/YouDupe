@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const playerContainer = document.getElementById('player-container');
     const controls = document.querySelector('.controls');
     const playerModal = document.getElementById('player-modal');
+    const hideMiniPlayerBtn = document.getElementById('hide-mini-player-btn');
     const videoContainer = document.getElementById("video-container");
     const video = document.getElementById("custom-video");
     let timeout;
@@ -16,19 +17,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function hideControls() {
         controls.style.visibility = 'hidden';
-        playerModal.style.visibility = 'hidden';
         controls.style.opacity = 0;
+
+        playerModal.style.visibility = 'hidden';
         playerModal.style.opacity = 0;
+
+        hideMiniPlayerBtn.style.visibility = 'hidden';
+        hideMiniPlayerBtn.style.opacity = 0;
+
         playerContainer.style.cursor = 'none';
     }
 
     function showControls() {
         controls.style.visibility = 'visible';
-        if(isMobile()) playerModal.style.visibility = 'visible';
         controls.style.opacity = 1;
-        if(isMobile()) playerModal.style.opacity = 1;
-        playerContainer.style.cursor = 'default';
 
+        if(isMobile()) playerModal.style.visibility = 'visible';
+        if(isMobile()) playerModal.style.opacity = 1;
+
+        hideMiniPlayerBtn.style.visibility = 'visible';
+        hideMiniPlayerBtn.style.opacity = 1;
+
+        playerContainer.style.cursor = 'default';
         resetTimeout();
     }
 
@@ -246,12 +256,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     try {
-        playerContainer.addEventListener('mousemove', showControls);
-        playerContainer.addEventListener('mouseleave', hideControls);
+        document.getElementById('player-wrapper').addEventListener('mousemove', showControls);
+        document.getElementById('mini-player').addEventListener('mousemove', event => {
+            document.getElementById('mini-player').style.width = '70%'
+            document.getElementById('mini-player').style.maxWidth = '500px'
+            showControls();
+        });
+
+        document.getElementById('player-wrapper').addEventListener('mouseleave', hideControls);
+        document.getElementById('mini-player').addEventListener('mouseleave', event => {
+            document.getElementById('mini-player').style.width = '50%'
+            document.getElementById('mini-player').style.maxWidth = '300px'
+            hideControls();
+        });
         resetTimeout();
     } catch (error) {
         console.error(error);
     }
 
 
+
+    try {
+        document.getElementById('hide-mini-player-btn').addEventListener('click', event => {
+            document.getElementById('mini-player').setAttribute('hidden', '');
+        })
+    } catch (error) {
+        console.error(error)
+    }
 });

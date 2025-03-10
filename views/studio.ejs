@@ -4,7 +4,11 @@
 <main>
     <div class="top">
         <div class="img-wrapper">
-            <img src="/api/avatar/<%= user._id %>" alt="" width="60px">
+            <button id="upload-avatar-btn">
+                <img src="/api/avatar/<%= user._id %>" alt="" width="60px">
+                <div class="modal"></div>
+                <input type="file" accept="image/png" id="upload-avatar-input" hidden>
+            </button>
             <h1><%= user.login %></h1>
         </div>
         <div class="content-top">

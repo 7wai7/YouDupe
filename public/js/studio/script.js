@@ -446,5 +446,30 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
         console.error(error);
     }
+
+
+
+
+    try {
+        document.getElementById('upload-avatar-btn').addEventListener('click', event => {
+            document.getElementById('upload-avatar-input').click();
+        });
+        
+        document.getElementById('upload-avatar-input').addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            
+            if(file && file.type.startsWith("image/")) {
+                const formData = new FormData();
+                formData.append("avatar", file); 
+
+                await fetch(`/api/avatar`, {
+                    method: 'PUT',
+                    body: formData
+                })
+            }
+        });
+    } catch(error) {
+        console.error(error);
+    }
     
 });

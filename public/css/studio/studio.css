@@ -33,8 +33,22 @@ main {
     border-right: 1px solid gray;
 }
 
+#upload-avatar-btn {
+    position: relative;
+}
+
 .img-wrapper img {
     border-radius: 50%;
+}
+
+#upload-avatar-btn .modal {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+}
+
+#upload-avatar-btn:hover .modal {
+    background-color: #00000022;
 }
 
 

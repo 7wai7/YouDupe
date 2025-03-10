@@ -26,10 +26,11 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         if (file.fieldname === 'video') cb(null, "data/videos/");
         else if (file.fieldname === 'preview') cb(null, "data/previews/");
+        else if (file.fieldname === 'avatar') cb(null, "data/avatars/");
     },
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
-        cb(null, req.videoId + ext);
+        cb(null, req.filename + ext);
     }
 });
 const upload = multer({ storage });
@@ -668,7 +669,7 @@ router.post("/studio/upload", authMiddleware, async (req, res, next) => {
 
         // Створюємо новий документ в базі (ID буде одразу доступним)
         const video = new Video({});
-        req.videoId = video._id.toString(); // Зберігаємо ID для використання в Multer
+        req.filename = video._id.toString(); // Зберігаємо ID для використання в Multer
 
         // Виконуємо Multer для завантаження файлів
         upload.fields([
@@ -761,6 +762,28 @@ router.post("/comment/reply", authMiddleware, async (req, res) => {
 
 
 // PUTS
+
+router.put("/avatar", authMiddleware, async (req, res) => {
+    try {
+        if (!req.user) return res.status(401).json({ message: "Not registered" });
+        req.filename = req.user._id.toString();
+
+        upload.fields([
+            { name: 'avatar', maxCount: 1 }
+        ])(req, res, async(err) => {
+            if(err) return res.status(500).json({ error: "Error uploading files" });
+
+            if (!req.files || !req.files.avatar) {
+                return res.status(400).json({ error: "Avatar not uploaded" });
+            }
+
+            return res.json({ message: "Avatar uploaded successfully", avatarPath: `api/avatars/${req.user._id}.png` });
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
+});
 
 router.put("/:type/:id/reaction/:reaction", authMiddleware, async (req, res) => {
     try {

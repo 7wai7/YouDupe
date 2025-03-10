@@ -117,11 +117,6 @@ main {
     margin-bottom: 4px;
 }
 
-.views-date {
-    display: inline-flex;
-    gap: 4px;
-}
-
 .point {
     display: none;
 }

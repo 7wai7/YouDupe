@@ -43,6 +43,7 @@ main > .bottom {
   gap: 10px;
   display: flex;
   flex-flow: row;
+  align-items: center;
 }
 
 .channel-info {
@@ -401,16 +402,23 @@ main > .bottom {
 
 
 /* FOR RECOMMENDATION VIDEO */
+
 .video {
-  display: flex;
-  flex-flow: row;
-  gap: 6px;
-  width: 100%;
+  display: inline-flex;
+  gap: 10px;
 }
 
 .video .preview {
   width: 220px;
   min-width: 220px;
+}
+
+.video .metadata {
+  height: 100%;
+}
+
+.video .avatar {
+  display: none;
 }
 
 @media (max-width: 500px) {
@@ -421,61 +429,6 @@ main > .bottom {
     .video .preview {
       width: 100%;
     }
-}
-
-.video .dropdown {
-  margin: 0 0 auto auto;
-}
-
-
-.metadata-wrapper {
-  display: flex;
-  flex-flow: row;
-  width: 100%;
-}
-
-.metadata {
-  display: flex;
-  flex-flow: column;
-  justify-content: space-between;
-  flex: 1;
-  padding: 4px 0;
-}
-
-.video .title {
-  font-weight: 600;
-  font-size: 18px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  line-clamp: 2;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-.metadata-bottom {
-  display: flex;
-  flex-flow: column;
-}
-
-.views-date {
-  display: inline-flex;
-  gap: 4px;
-}
-
-.metadata-bottom .views-date,
-.metadata-bottom .channel-name {
-  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-  font-size: 14px;
-}
-
-.video-options {
-  border-radius: 100%;
-  padding: 5px 5px;
-}
-
-.video-options:hover {
-  background: #d5d5d5;
 }
 
 

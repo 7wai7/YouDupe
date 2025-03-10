@@ -11,7 +11,7 @@ body {
 }
 
 main {
-    padding-top: 60px;
+    margin: 60px 0;
     height: 100%;
     flex: 1;
 }
@@ -75,7 +75,7 @@ button {
 
 
 
-.preview {
+.video .preview {
     background: #000;
     border: 1px solid #000;
     border-radius: 16px;
@@ -86,13 +86,70 @@ button {
     aspect-ratio: 1280 / 720; 
 }
 
-.video-duration {
+.video .video-duration {
     color: #fff;
     background-color: #0000008a;
     padding: 0 4px;
     position: absolute;
     inset: auto 5px 5px auto;
 }
+
+.video .dropdown {
+  margin: 0 0 auto auto;
+}
+
+.video .metadata-wrapper {
+  display: flex;
+  flex-flow: row;
+  align-items: start;
+  gap: 10px;
+  width: 100%;
+  margin: 6px 0;
+}
+
+.video .metadata {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.video .title {
+  font-weight: 600;
+  font-size: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.video .views-date {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.video .metadata-bottom {
+  display: flex;
+  flex-flow: column;
+}
+
+.video .metadata-bottom .views-date,
+.video .metadata-bottom .channel-name {
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+.video .video-options {
+  border-radius: 100%;
+  padding: 5px 5px;
+}
+
+.video .video-options:hover {
+  background: #d5d5d5;
+}
+
 
 .textarea-autosize {
     display: block;

@@ -159,7 +159,7 @@ router.get('/index/videos', async (req, res) => {
     try {
         const videos = await Video.find().populate('user', 'login');
         
-        res.render('partials/index video', {
+        res.render('partials/video', {
             videos,
             formatDistanceToNow,
             uk,
@@ -602,7 +602,7 @@ router.get("/channel/:login/videos", async (req, res) => {
             { $limit: limit }
         ]);
 
-        res.render('partials/channel video', {
+        res.render('partials/video', {
             videos,
             layout: false
         });

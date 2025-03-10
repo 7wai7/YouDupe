@@ -27,25 +27,4 @@ main {
     margin: 20px 0;
 }
 
-#content-container .details {
-    display: flex;
-    flex-flow: row;
-    padding: 10px 0 0;
-}
-
-#content-container .details h1 {
-    font-weight: 500;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    line-clamp: 2;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-}
-
-#content-container .meta {
-    margin-left: 10px;
-    flex: 1;
-}
-
 /* VIDEOS CONTAINER ++++++ */

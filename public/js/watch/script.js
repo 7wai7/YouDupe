@@ -166,7 +166,7 @@ function resize() {
     const first = document.querySelector('.video-recommendations.first');
     const second = document.querySelector('.video-recommendations.second');
 
-    if (window.innerWidth < 1000) {
+    if (window.innerWidth < 1120) {
         if (!first.classList.contains('active-display')) {
             second.classList.remove('active-display');
             first.classList.add('active-display');

@@ -24,7 +24,8 @@
 
 
 #player-container .controls {
-    display: block;
+    display: flex;
+    flex-flow: column;
     padding: 0 2vw;
     position: absolute;
     inset: auto 0 0;
@@ -106,4 +107,24 @@
 
 .mobile-device #sound-slider {
     display: block;
+}
+
+.mobile-device #play-pause {
+    display: none;
+}
+
+.mobile-device #previous {
+    display: none;
+}
+
+.mobile-device #next {
+    display: none;
+}
+
+.mobile-device .sound-container {
+    display: none;
+}
+
+.mobile-device .controls .bottom {
+    order: -1;
 }

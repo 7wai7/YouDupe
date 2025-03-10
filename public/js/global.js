@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const type = wrapper.classList.contains("reaction-video") ? "video" : "comment";
             const id = type === "video" 
                 ? new URLSearchParams(window.location.search).get("v") 
-                : wrapper.closest(".comment")?.id;
+                : wrapper.closest(".comment").dataset.id;
         
             try {
                 const response = await fetch(`/api/${type}/${id}/reaction/${isLike ? "1" : "0"}`, {
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
         function resizeHeader() {
             const isMobile = window.innerWidth <= 500;
             searchRow.style.display = isMobile && hideSearchRowBtn.style.display !== 'block' ? 'none' : 'flex';
-            searchBtnMobile.style.display = isMobile ? 'block' : 'none';
+            searchBtnMobile.style.display = isMobile && hideSearchRowBtn.style.display !== 'block' ? 'block' : 'none';
 
             if(!isMobile) {
                 sectionRows.forEach(section => section.style.display = 'flex');

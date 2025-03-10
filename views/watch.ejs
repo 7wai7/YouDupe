@@ -163,14 +163,15 @@
                             </nav>
                         </div>
                     </div>
-                    <div class="comments-middle-row">
-                        <img src="/api/avatar/<%= user._id %>" alt="" width="34px" class="avatar">
-                        <div class="add-comment-wrapper" notHide>
-                            <textarea name="Add comment" class="input-comment-textarea textarea-autosize"
-                                maxlength="2600"></textarea>
-                            <button class="add-comment-btn">Comment</button>
+                    <% if(user) { %>
+                        <div class="comments-middle-row">
+                            <img src="/api/avatar/<%= user?._id %>" alt="" width="34px" class="avatar">
+                            <div class="add-comment-wrapper" notHide>
+                                <textarea name="Add comment" class="input-comment-textarea textarea-autosize" maxlength="2600"></textarea>
+                                <button class="add-comment-btn">Comment</button>
+                            </div>
                         </div>
-                    </div>
+                    <% } %>
                     <div id="comments-content"></div>
                 </div>
             </div>

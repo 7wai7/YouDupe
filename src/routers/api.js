@@ -161,9 +161,8 @@ router.get('/index/videos', async (req, res) => {
         const videos = await Video.find().populate('user', 'login');
         
         res.render('partials/video', {
+            user: req.user,
             videos,
-            formatDistanceToNow,
-            uk,
             layout: false
         })
     } catch (error) {
@@ -199,10 +198,8 @@ router.get('/subscriptions/videos', authMiddleware, async (req, res) => {
             select: 'login'
         });
         
-        res.render('partials/index video', {
+        res.render('partials/video', {
             videos: populatedVideos,
-            formatDistanceToNow,
-            uk,
             layout: false
         })
     } catch (error) {
@@ -303,9 +300,8 @@ router.get("/watch/recommendedVideos", async (req, res) => {
             
 
         res.render('partials/video', {
+            user: req.user,
             videos,
-            formatDistanceToNow,
-            uk,
             layout: false
         });
     } catch (error) {
@@ -649,6 +645,7 @@ router.get("/history", authMiddleware, async (req, res) => {
         ]);
 
         res.render('partials/video', {
+            user: req.user,
             videos: historyVideos,
             layout: false
         })

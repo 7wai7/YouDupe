@@ -25,6 +25,7 @@ main {
 
 .metadata-row .avatar {
     align-self: self-start;
+    min-width: 70px;
 }
 
 .meta {
@@ -148,6 +149,10 @@ main {
 
 .video .title {
     font-size: 20px;
+}
+
+.video .not-interest-btn {
+    display: none !important;
 }
 
 @media (max-width: 500px) {

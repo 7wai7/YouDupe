@@ -2,30 +2,15 @@
 <main>
     <div class="top">
         <div class="avatar">
-            <img src="/api/avatar/<%= video.user._id %>" alt="" width="80px">
+            <img src="/api/avatar/<%= user._id %>" alt="" width="80px">
         </div>
         <h1 class="login"><%= user.login %></h1>
     </div>
     <h1 class="history">History</h1>
     <div class="history-row">
         <div class="history-container">
-            <div class="no-videos" <%= historyVideos.length > 0 ? 'hidden' : '' %>>Your history is empty</div>
-            <% historyVideos.forEach(history => { %>
-                <% const video = history.video; %>
-
-                <div class="history-video">
-                    <a href="/watch?v=<%= video._id %>" class="video-info">
-                        <div class="preview">
-                            <img src="/api/preview/<%= video._id %>" alt="" width="auto">
-                            <div class="video-duration"><%= formatTime(video.duration) %></div>
-                        </div>
-                        <div class="metadata">
-                            <h1 class="video-title"><%= video.title %></h1>
-                            <h1 class="login"><%= video.user.login %></h1>
-                        </div>
-                    </a>
-                </div>
-            <% }); %>
+            <div class="no-videos" <%= videos.length > 0 ? 'hidden' : '' %>>Your history is empty</div>
+                <%- include('partials/video') %>
         </div>
     </div>
     <div class="buttons-container">

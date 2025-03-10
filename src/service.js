@@ -2,6 +2,7 @@ import { User } from './models/User.js';
 import Video from './models/Video.js';
 import Comment from './models/Comment.js';
 import Reaction from './models/Reaction.js';
+import History from './models/History.js';
 import fs from "fs/promises";
 
 export async function changeRole(moderatorId, userId, newRole) {
@@ -83,6 +84,7 @@ export async function deleteVideo(user, videoId) {
         
         await Promise.all(comments.map(c => deleteComment(user, c._id)));
         await Reaction.deleteMany({ video: videoId });
+        await History.deleteMany({ video: videoId });
 
 
         // Видалення файлів (відео та прев'ю)

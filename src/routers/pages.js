@@ -225,20 +225,40 @@ router.get('/me', authMiddleware, async (req, res) => {
     try {
         if (!req.user) return res.status(401).json('Not registered');
 
-        const historyVideos = await History.find({ user: req.user._id })
-            .populate({
-                path: 'video',
-                populate: { path: 'user', select: 'login' } // Заповнюємо `user` всередині `video`
-            })
-            .sort({ updatedAt: -1 })
-            .limit(10);
+        const videos = await History.aggregate([
+            { $match: { user: req.user._id }},
+            {
+                $lookup: {
+                    from: "videos",
+                    localField: "video",
+                    foreignField: "_id",
+                    as: "video"
+                }
+            },
+            { $unwind: "$video" },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "video.user",
+                    foreignField: "_id",
+                    as: "video.user"
+                }
+            },
+            { $unwind: "$video.user" },
+            { $sort: { updatedAt: -1 }},
+            { $limit: 10 },
+            { 
+                $replaceRoot: { newRoot: "$video" } // Замінюємо кореневий об'єкт на `video`
+            }
+        ])
 
+        
         res.render('me', {
             title: 'Me',
             stylesheets: ['me', 'footer'],
             scripts: [],
             user: req.user,
-            historyVideos
+            videos
         });
     } catch (error) {
         console.error(error);

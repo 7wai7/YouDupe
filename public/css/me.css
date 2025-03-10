@@ -29,28 +29,30 @@ main {
     gap: 10px;
 }
 
-.history-container .history-video {
-    width: 200px;
-    min-width: 200px;
-}
-
-.history-container .video-title {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    line-clamp: 2;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-}
-
-.history-container .login {
-    font-size: 12px;
-}
-
 .no-videos {
     align-self: center;
     justify-self: center;
 }
+
+
+
+
+.video {
+    width: 200px;
+    min-width: 200px;
+}
+
+.video .avatar {
+    display: none;
+}
+
+.video .views-date {
+    display: none;
+}
+
+
+
+
 
 .buttons-container {
     display: flex;

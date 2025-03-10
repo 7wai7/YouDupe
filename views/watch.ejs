@@ -13,14 +13,8 @@
                     </h4>
                     <div class="top-row">
                         <div class="owner">
-                            <a href="/channel/<%= userChannel.login %>" class="avatar-link">
-                                <svg width="40px" height="40px" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="12" cy="6" r="4" stroke="#000000" stroke-width="1.5" />
-                                    <path opacity="0.5"
-                                        d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"
-                                        stroke="#000000" stroke-width="1.5" />
-                                </svg>
+                            <a href="/channel/<%= userChannel.login %>">
+                                <img src="/api/avatar/<%= userChannel._id %>" alt="" width="40px" class="avatar">
                             </a>
                             <a href="/channel/<%= userChannel.login %>" class="channel-info">
                                 <h4 class="channel-name">
@@ -170,15 +164,7 @@
                         </div>
                     </div>
                     <div class="comments-middle-row">
-                        <a href="#" class="avatar-link">
-                            <svg width="34px" height="34px" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="12" cy="6" r="4" stroke="#000000" stroke-width="1.5" />
-                                <path opacity="0.5"
-                                    d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"
-                                    stroke="#000000" stroke-width="1.5" />
-                            </svg>
-                        </a>
+                        <img src="/api/avatar/<%= user._id %>" alt="" width="34px" class="avatar">
                         <div class="add-comment-wrapper" notHide>
                             <textarea name="Add comment" class="input-comment-textarea textarea-autosize"
                                 maxlength="2600"></textarea>

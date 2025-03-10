@@ -100,7 +100,7 @@
         <div id="subscriptions-container" class="buttons-container" <%= !user ? 'hidden' : '' %>>
             <% channels.forEach(channel => { %>
                 <a href="/channel/<%= channel.user.login %>">
-                    <img src="/img/user.svg" alt="" width="40px">
+                    <img src="/api/avatar/<%= channel.user._id %>" alt="" width="40px" class="avatar">
                     <h1><%= channel.user.login %></h1>
                 </a>
             <% }); %>

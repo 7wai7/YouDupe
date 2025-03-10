@@ -20,6 +20,11 @@ button {
     cursor: pointer;
 }
 
+.avatar {
+    border: 2px solid #000;
+    border-radius: 100%;
+    overflow: hidden;
+}
 
 
 

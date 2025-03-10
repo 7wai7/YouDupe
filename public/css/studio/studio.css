@@ -33,6 +33,10 @@ main {
     border-right: 1px solid gray;
 }
 
+.img-wrapper img {
+    border-radius: 50%;
+}
+
 
 .content-top {
     flex: 1;
@@ -112,6 +116,12 @@ main {
 .video .title {
     font-size: 20px;
     font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .video .date {

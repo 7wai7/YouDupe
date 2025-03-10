@@ -7,6 +7,7 @@ import path from 'path';
 import { dirname } from 'path';
 import { formatDistanceToNow } from 'date-fns';
 import { uk } from 'date-fns/locale';
+import { createCanvas } from "canvas";
 import mongoose from 'mongoose';
 
 import { authMiddleware } from '../middlewares/middlewares.js';
@@ -23,8 +24,8 @@ const __dirname = dirname(__filename);
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        if (file.fieldname === 'video') cb(null, "videos/");
-        else if (file.fieldname === 'preview') cb(null, "previews/");
+        if (file.fieldname === 'video') cb(null, "data/videos/");
+        else if (file.fieldname === 'preview') cb(null, "data/previews/");
     },
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
@@ -49,7 +50,7 @@ router.get("/video/:id", (req, res) => {
 
     if (!id) return;
 
-    const videoPath = `videos/${id}.mp4`;
+    const videoPath = `data/videos/${id}.mp4`;
     const stat = fs.statSync(videoPath);
     const fileSize = stat.size;
     const range = req.headers.range;
@@ -76,21 +77,68 @@ router.get("/video/:id", (req, res) => {
 });
 
 router.get('/preview/:id', (req, res) => {
-    const previewPath = path.join(__dirname, '../../previews', `${req.params.id}.png`);
+    const previewPath = path.join(__dirname, '../../data/previews', `${req.params.id}.png`);
 
     // Перевіряємо, чи існує файл
     if (fs.existsSync(previewPath)) {
         res.sendFile(previewPath);
     } else {
-        res.status(404).send('Прев’ю не знайдено');
+        res.status(404).send('Preview not found');
     }
 });
+
+router.get('/avatar/:id', async (req, res) => {
+    const avatarPath = path.join(__dirname, '../../data/avatars', `${req.params.id}.png`);
+
+    // Якщо файл вже існує — відправляємо його
+    if (fs.existsSync(avatarPath)) {
+        return res.sendFile(avatarPath);
+    }
+
+    const user = await User.findById(req.params.id);
+    if(!user) return res.status(404).send('User not found');
+
+    // Генеруємо аватарку
+    const avatarBuffer = generateAvatar(user.login[0].toUpperCase()); // Перша літера логіна
+
+    // Зберігаємо зображення
+    fs.writeFileSync(avatarPath, avatarBuffer);
+
+    // Відправляємо клієнту
+    res.setHeader("Content-Type", "image/png");
+    res.send(avatarBuffer);
+});
+
+// Функція для генерації аватарки
+function generateAvatar(letter) {
+    const size = 128;
+    const canvas = createCanvas(size, size);
+    const ctx = canvas.getContext("2d");
+
+    // Генеруємо випадковий колір
+    const randomColor = `hsl(${Math.random() * 360}, 70%, 60%)`;
+    
+    // Малюємо фон
+    ctx.fillStyle = randomColor;
+    ctx.fillRect(0, 0, size, size);
+
+    // Налаштовуємо текст
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 64px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    // Малюємо першу літеру
+    ctx.fillText(letter, size / 2, size / 2);
+
+    return canvas.toBuffer("image/png");
+}
 
 router.get("/video/download/:id", (req, res) => {
     const id = req.params.id;
     if (!id) return;
 
-    const videoPath = `videos/${id}.mp4`;
+    const videoPath = `data/videos/${id}.mp4`;
     const stat = fs.statSync(videoPath);
     const fileSize = stat.size;
 
@@ -191,7 +239,7 @@ router.get("/notifications", authMiddleware, async (req, res) => {
                 }
             },
             { $unwind: "$user" },
-            { $project: { "user.login": 1, "title": 1, "createdAt": 1, "type": "video" } },
+            { $project: { "user._id": 1, "user.login": 1, "title": 1, "createdAt": 1, "type": "video" } },
             { $sort: { createdAt: -1 } },
             { $limit: 10 },
         
@@ -210,7 +258,7 @@ router.get("/notifications", authMiddleware, async (req, res) => {
                             }
                         },
                         { $unwind: "$user" },
-                        { $project: { "user.login": 1, "text": 1, "createdAt": 1, "type": "comment" } },
+                        { $project: { "user._id": 1, "user.login": 1, "text": 1, "createdAt": 1, "type": "comment" } },
                         { $sort: { createdAt: -1 } },
                         { $limit: 10 }
                     ]
@@ -221,7 +269,6 @@ router.get("/notifications", authMiddleware, async (req, res) => {
             { $sort: { createdAt: -1 } },
             { $limit: 10 }
         ]);
-
 
         res.render('partials/notification', {
             notifications,
@@ -459,10 +506,6 @@ router.get("/comments/replies", authMiddleware, async (req, res) => {
             comment.userReaction = comment.userReaction?.reaction ?? null;
         });
 
-
-        console.log(comments);
-        
-
         res.render('partials/comment', {
             user: req.user,
             comments,
@@ -603,9 +646,6 @@ router.get("/history", authMiddleware, async (req, res) => {
                 $replaceRoot: { newRoot: "$video" } // Замінюємо кореневий об'єкт на `video`
             }
         ]);
-
-        console.log(historyVideos);
-        
 
         res.render('partials/video', {
             videos: historyVideos,

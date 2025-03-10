@@ -9,7 +9,11 @@
                 <div class="title"><%= video.title %></div>
                 <div class="metadata-bottom">
                     <div class="channel-name"><%= video.user.login %></div>
-                    <div class="date"><%= video.views %> views • <%= timeAgo(video.createdAt) %></div>
+                    <div class="views-date">
+                        <div class="views"><%= video.views %> views</div>
+                        <div class="point">•</div>
+                        <div class="date"><%= timeAgo(video.createdAt) %></div>
+                    </div>
                 </div>
             </a>
             <div class="dropdown">

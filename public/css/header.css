@@ -63,13 +63,6 @@ header {
     padding: 5px 10px;
 }
 
-.avatar-link {
-    border: 2px solid #000;
-    border-radius: 100%;
-    width: max-content;
-    height: max-content;
-}
-
 
 
 .authorise-btn,
@@ -160,12 +153,9 @@ header {
 .notification {
     width: 100%;
     display: inline-flex;
+    align-items: start;
     gap: 10px;
     margin: 15px 0;
-}
-
-.avatar {
-    align-self: flex-start;
 }
 
 .notification .metadata {

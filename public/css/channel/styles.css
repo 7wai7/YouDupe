@@ -23,12 +23,12 @@ main {
     width: 60%;
 }
 
-.avatar {
+/* .avatar {
     border: 1px solid #000;
     border-radius: 50%;
     min-width: 80px;
     align-self: self-start;
-}
+} */
 
 .meta {
     display: flex;

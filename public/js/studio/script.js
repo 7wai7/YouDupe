@@ -2,7 +2,7 @@ let isFetchingVideos = false;
 let hasMoreVideos = true;
 
 function loadVideos() {
-    if (isFetchingVideos || !hasMoreVideos) return; // Якщо вже вантажиться або немає більше коментарів - виходимо
+    if (isFetchingVideos || !hasMoreVideos) return;
     isFetchingVideos = true;
 
 

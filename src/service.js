@@ -86,8 +86,8 @@ export async function deleteVideo(user, videoId) {
 
 
         // Видалення файлів (відео та прев'ю)
-        await safeDelete(`./previews/${video.preview}`);
-        await safeDelete(`./videos/${video.filename}`);
+        await safeDelete(`./data/previews/${video.preview}`);
+        await safeDelete(`./data/videos/${video.filename}`);
 
         // Видалення самого відео з БД
         await video.deleteOne();

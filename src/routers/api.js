@@ -5,8 +5,6 @@ import ffmpeg from 'fluent-ffmpeg';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { dirname } from 'path';
-import { formatDistanceToNow } from 'date-fns';
-import { uk } from 'date-fns/locale';
 import { createCanvas } from "canvas";
 import mongoose from 'mongoose';
 
@@ -192,7 +190,7 @@ router.get('/subscriptions/videos', authMiddleware, async (req, res) => {
             { $sort: { createdAt: -1 } },
             { $limit: 10 }
         ]);
-
+        
         const populatedVideos = await Video.populate(videos, {
             path: 'user',
             select: 'login'
@@ -270,8 +268,6 @@ router.get("/notifications", authMiddleware, async (req, res) => {
 
         res.render('partials/notification', {
             notifications,
-            formatDistanceToNow,
-            uk,
             layout: false
         })
     } catch (error) {
@@ -414,8 +410,6 @@ router.get("/comments", authMiddleware, async (req, res) => {
             user: req.user,
             comments,
             isParentComment: true,
-            formatDistanceToNow,
-            uk,
             layout: false
         });
     } catch (error) {
@@ -507,8 +501,6 @@ router.get("/comments/replies", authMiddleware, async (req, res) => {
             user: req.user,
             comments,
             isParentComment: false,
-            formatDistanceToNow,
-            uk,
             layout: false
         });
     } catch (error) {

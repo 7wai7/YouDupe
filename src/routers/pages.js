@@ -1,6 +1,7 @@
 import Router from 'express';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import mongoose from 'mongoose';
 
 import { authMiddleware } from '../middlewares/middlewares.js';
 import { User } from '../models/User.js';
@@ -8,7 +9,6 @@ import Video from '../models/Video.js';
 import Follower from '../models/Follower.js';
 import Comment from '../models/Comment.js';
 import Reaction from '../models/Reaction.js';
-import mongoose from 'mongoose';
 import History from '../models/History.js';
 
 const __filename = fileURLToPath(import.meta.url);

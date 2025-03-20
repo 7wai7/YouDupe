@@ -112,8 +112,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const uploadedVideo = document.getElementById("uploaded-video");
         const videoPreview = document.getElementById("video-preview");
-        const fileInput = document.getElementById("video-file-input");
-        const fileInputPreview = document.getElementById("preview-file-input");
+
+        const videoFileInput = document.getElementById("video-file-input");
+        const previewFileInput = document.getElementById("preview-file-input");
 
         function hideModal() {
             uploadVideoModal.setAttribute('hidden', '');
@@ -124,8 +125,8 @@ document.addEventListener("DOMContentLoaded", () => {
             descriptionTextarea.value = '';
             uploadedVideo.src = '';
             videoPreview.src = '';
-            fileInput.value = '';
-            fileInputPreview.value = '';
+            videoFileInput.value = '';
+            previewFileInput.value = '';
         }
 
         cancelUploadVideoBtn.addEventListener('click', (event) => {
@@ -144,9 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         const chooseFileBtn = document.getElementById("choose-file-btn");
-
-        const videoFileInput = document.getElementById("video-file-input");
-        const previewFileInput = document.getElementById("preview-file-input");
 
 
         document.getElementById("upload-preview-btn").addEventListener("click", () => previewFileInput.click());

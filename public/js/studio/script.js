@@ -329,7 +329,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const videoContent = document.getElementById('video-content');
         videoContent.addEventListener('click', (event) => {
             if(event.target.matches('.delete-video-btn')) {
-                const video = event.target.closest('.video');
+                const video = event.target.closest('.studio-video');
 
                 document.getElementById('delete-video-title').innerText = video.dataset.title
                 document.getElementById('confirm-delete-video-btn').dataset.videoId = video.dataset.id;

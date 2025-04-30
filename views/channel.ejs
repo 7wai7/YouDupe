@@ -23,8 +23,10 @@
                         </span>
                         <div class="about"><%= userChannel.about %></div>
                     </div>
-                    <button id="subscribe-btn" <%= user?._id.toString() === userChannel._id.toString() ? 'hidden' : '' %>  <%= isFollowing ? 'subscribed' : '' %>  data-channellogin="<%= userChannel.login %>"><%= isFollowing ? 'Subscribed' : 'Subscribe' %></button>
-                    <a href="/studio" id="manage-video-btn" <%= user?._id.toString() !== userChannel._id.toString() ? 'hidden' : '' %>>Manage video</a>
+                    <% if(user) { %>
+                        <button id="subscribe-btn" <%= user?._id.toString() === userChannel._id.toString() ? 'hidden' : '' %>  <%= isFollowing ? 'subscribed' : '' %>  data-channellogin="<%= userChannel.login %>"><%= isFollowing ? 'Subscribed' : 'Subscribe' %></button>
+                        <a href="/studio" id="manage-video-btn" <%= user?._id.toString() !== userChannel._id.toString() ? 'hidden' : '' %>>Manage video</a>
+                    <% } %>
                 </div>
             </div>
         </div>

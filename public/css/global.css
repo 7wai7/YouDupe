@@ -69,6 +69,10 @@ button {
 }
 
 
+.video {
+    max-width: 500px;
+}
+
 .video .preview {
     background: #000;
     border: 1px solid #000;

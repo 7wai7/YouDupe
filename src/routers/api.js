@@ -198,7 +198,8 @@ router.get('/subscriptions/videos', authMiddleware, async (req, res) => {
         
         res.render('partials/video', {
             videos: populatedVideos,
-            layout: false
+            layout: false,
+            user: req.user
         })
     } catch (error) {
         console.error(error);

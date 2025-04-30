@@ -101,7 +101,7 @@ main {
     gap: 20px;
 }
 
-.video {
+.studio-video {
     display: flex;
     flex-flow: row;
 }
@@ -113,12 +113,18 @@ main {
     align-self: center;
 }
 
-.video .preview {
-    border-radius: 12px;
+.studio-video .preview {
+    background: #000;
     border: 1px solid #000;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 1280 / 720; 
 }
 
-.video .metadata-row {
+.studio-video .metadata-row {
     flex: 1;
     padding: 5px 30px;
     display: grid;
@@ -127,7 +133,7 @@ main {
 }
 
 
-.video .title {
+.studio-video .title {
     font-size: 20px;
     font-weight: 500;
     overflow: hidden;
@@ -138,7 +144,7 @@ main {
     -webkit-box-orient: vertical;
 }
 
-.video .date {
+.studio-video .date {
     font-size: 14px;
 }
 
@@ -150,14 +156,14 @@ main {
     gap: 5px;
 }
 
-.video .metadata-column {
+.studio-video .metadata-column {
     height: 100%;
     display: flex;
     flex-flow: column;
     justify-content: space-between;
 }
 
-.video .meta-block {
+.studio-video .meta-block {
     display: flex;
     flex-flow: row;
     gap: 5px;

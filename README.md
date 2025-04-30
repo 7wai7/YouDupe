@@ -1,7 +1,7 @@
 # YouDupe
  YouTube clone
 
-![MainPage:](images/Main page.png)
+![MainPage:](images/MainPage.png)
 
 ![Auth:](images/Auth.png)
 
@@ -13,4 +13,4 @@
 
 ![Studio:](images/Studio.png)
 
-![UploadVideo:](images/Studio upload video.png)
+![UploadVideo:](images/UploadVideo.png)

@@ -593,7 +593,8 @@ router.get("/channel/:login/videos", async (req, res) => {
 
         res.render('partials/video', {
             videos,
-            layout: false
+            layout: false,
+            user: req.user
         });
     } catch (error) {
         console.error(error);
